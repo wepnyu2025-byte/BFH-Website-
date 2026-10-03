@@ -1,0 +1,110 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (request.auth.token.role == 'admin' || request.auth.token.email == 'wepnyu2025@gmail.com');
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Settings: Public can read business configs, only admin can write
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Access codes for Selar purchases
+    match /accessCodes/{code} {
+      allow read: if true;
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (
+        resource.data.status == 'AVAILABLE' && 
+        request.resource.data.status == 'REDEEMED'
+      );
+    }
+
+    // Programs: Public read, admin write
+    match /programs/{programId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Modules & Lessons: Public or active student read, admin write
+    match /modules/{moduleId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /lessons/{lessonId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Quizzes: Only students or admins can read; answers are never exposed
+    match /quizzes/{quizId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Students: Students can read their own profile; admins can read all
+    match /students/{studentId} {
+      allow read: if isOwner(studentId) || isAdmin();
+      allow create: if isAuthenticated() && request.auth.uid == studentId;
+      allow update: if (isOwner(studentId) && 
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['status', 'studentId', 'isEmailVerified'])) 
+        || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Enrollments: Read by student or admin, only admin can activate or suspend
+    match /enrollments/{enrollmentId} {
+      allow read: if (isAuthenticated() && resource.data.studentId == request.auth.uid) || isAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+
+    // Payment claims: Students can create a pending claim; only admin can approve or reject
+    match /paymentClaims/{claimId} {
+      allow read: if (isAuthenticated() && resource.data.studentId == request.auth.uid) || isAdmin();
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // Transaction records: Immutable, read and written only by admin
+    match /transactionRecords/{txHash} {
+      allow read, write: if isAdmin();
+    }
+
+    // Lesson progress: Student can read their own; write requires authentication
+    match /lessonProgress/{progressId} {
+      allow read: if (isAuthenticated() && resource.data.studentId == request.auth.uid) || isAdmin();
+      allow write: if isAuthenticated() && (request.resource.data.studentId == request.auth.uid || isAdmin());
+    }
+
+    // Certificates: Public can read for verification; only admin can issue or revoke
+    match /certificates/{certId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Consent records: Immutable logs
+    match /consentRecords/{consentId} {
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.studentId == request.auth.uid);
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // Fallback rule
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

@@ -16,6 +16,7 @@ import { Reveal } from '../components/Reveal';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
 import { CustomDropdown, DropdownOption } from '../components/CustomDropdown';
 import { FAQ_CONTENT } from '../content/content';
+import { submitToNetlify } from '../services/formService';
 
 const FAQ_TOPIC_OPTIONS: DropdownOption[] = [
   { value: 'General Inquiry', label: 'General Question & Mission' },
@@ -36,6 +37,7 @@ export const FAQ: React.FC = () => {
   const [phone, setPhone] = useState('');
   const [topic, setTopic] = useState('General Inquiry');
   const [question, setQuestion] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formError, setFormError] = useState('');
 
@@ -75,7 +77,13 @@ Submitted via Baby First Health FAQ Portal`;
     return `https://wa.me/237650082327?text=${encodeURIComponent(text)}`;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const constructMailtoUrl = () => {
+    const subject = encodeURIComponent(`[FAQ Question] ${topic} - ${fullName}`);
+    const body = encodeURIComponent(constructEmailBody());
+    return `mailto:babyfirsthealth@gmail.com?subject=${subject}&body=${body}`;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName.trim() || !email.trim() || !phone.trim() || !question.trim()) {
       setFormError('Please fill in your name, email, contact number, and question before submitting.');
@@ -83,12 +91,18 @@ Submitted via Baby First Health FAQ Portal`;
     }
 
     setFormError('');
-    setIsSubmitted(true);
+    setIsSubmitting(true);
 
-    // Trigger preformatted mailto to babyfirsthealth@gmail.com
-    const subject = encodeURIComponent(`[FAQ Question] ${topic} - ${fullName}`);
-    const body = encodeURIComponent(constructEmailBody());
-    window.location.href = `mailto:babyfirsthealth@gmail.com?subject=${subject}&body=${body}`;
+    await submitToNetlify('faq-inquiry', {
+      fullName,
+      email,
+      phone,
+      topic,
+      question,
+    });
+
+    setIsSubmitting(false);
+    setIsSubmitted(true);
   };
 
   const handleResetForm = () => {
@@ -283,11 +297,11 @@ Submitted via Baby First Health FAQ Portal`;
                   </div>
 
                   <Headline as="h2" align="auto">
-                    {"Question {{Ready to Send}}"}
+                    {"Question {{Submitted Successfully}}"}
                   </Headline>
 
                   <p className="font-body text-base md:text-lg text-teal-950/80 leading-relaxed [text-wrap:pretty]">
-                    Your inquiry details regarding <strong>{topic}</strong> have been prepared for our clinical support desk at <strong>babyfirsthealth@gmail.com</strong>.
+                    Your inquiry details regarding <strong>{topic}</strong> have been received and dispatched to our clinical support desk at <strong className="text-teal-900">babyfirsthealth@gmail.com</strong>.
                   </p>
 
                   <div className="bg-teal-50 rounded-[24px] p-6 space-y-3 text-left">
@@ -302,21 +316,28 @@ Submitted via Baby First Health FAQ Portal`;
                     </p>
                   </div>
 
-                  <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
                     <a
                       href={constructWhatsAppLink()}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-body font-bold text-base transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-body font-bold text-sm transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
                     >
                       <WhatsAppIcon className="w-5 h-5 fill-current" />
                       <span>Send via WhatsApp</span>
                     </a>
 
+                    <a
+                      href={constructMailtoUrl()}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-teal-700 hover:bg-teal-800 text-white font-body font-semibold text-sm transition-colors"
+                    >
+                      <span>Open in Email App</span>
+                    </a>
+
                     <button
                       type="button"
                       onClick={handleResetForm}
-                      className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full bg-teal-100 hover:bg-teal-200 text-teal-900 font-body font-semibold text-base transition-colors cursor-pointer"
+                      className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-full bg-teal-100 hover:bg-teal-200 text-teal-900 font-body font-semibold text-sm transition-colors cursor-pointer"
                     >
                       Ask Another Question
                     </button>
@@ -337,7 +358,14 @@ Submitted via Baby First Health FAQ Portal`;
                     </p>
                   </div>
 
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                  <form
+                    name="faq-inquiry"
+                    method="POST"
+                    data-netlify="true"
+                    onSubmit={handleSubmit}
+                    className="space-y-6"
+                  >
+                    <input type="hidden" name="form-name" value="faq-inquiry" />
                     {formError && (
                       <div className="p-4 rounded-2xl bg-red-50 text-red-700 text-sm font-medium">
                         {formError}
@@ -439,9 +467,10 @@ Submitted via Baby First Health FAQ Portal`;
                     <div className="pt-2 flex flex-col sm:flex-row items-center gap-4">
                       <button
                         type="submit"
-                        className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-body font-bold text-base transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                        disabled={isSubmitting}
+                        className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-body font-bold text-base transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-60"
                       >
-                        Submit
+                        {isSubmitting ? 'Submitting Question...' : 'Submit Question'}
                       </button>
 
                       <a

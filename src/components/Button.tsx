@@ -13,6 +13,7 @@ interface ButtonProps {
   className?: string;
   type?: 'button' | 'submit' | 'reset';
   ariaLabel?: string;
+  disabled?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -25,6 +26,7 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   type = 'button',
   ariaLabel,
+  disabled = false,
 }) => {
   const variantClasses: Record<ButtonVariant, string> = {
     primary:
@@ -93,7 +95,8 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       type={type}
       onClick={onClick}
-      className={combinedClasses}
+      disabled={disabled}
+      className={`${combinedClasses} ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
       aria-label={ariaLabel || children}
     >
       {innerLabel}

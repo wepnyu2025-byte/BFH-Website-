@@ -16,6 +16,7 @@ import { Button } from '../components/Button';
 import { SmartImage } from '../components/SmartImage';
 import { Reveal } from '../components/Reveal';
 import { CONTACT_CONTENT } from '../content/content';
+import { submitToNetlify } from '../services/formService';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -26,6 +27,7 @@ export const Contact: React.FC = () => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const validate = () => {
@@ -47,7 +49,7 @@ export const Contact: React.FC = () => {
     return errs;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
@@ -56,7 +58,32 @@ export const Contact: React.FC = () => {
     }
 
     setErrors({});
+    setIsSubmitting(true);
+
+    await submitToNetlify('contact', {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      message: formData.message,
+    });
+
+    setIsSubmitting(false);
     setIsSubmitted(true);
+  };
+
+  const constructMailtoUrl = () => {
+    const subject = encodeURIComponent(`Contact Inquiry - ${formData.name}`);
+    const body = encodeURIComponent(
+      `Name: ${formData.name}\nEmail: ${formData.email}\nPhone / WhatsApp: ${formData.phone}\n\nMessage:\n${formData.message}\n\nSubmitted via Baby First Health Contact Portal`
+    );
+    return `mailto:babyfirsthealth@gmail.com?subject=${subject}&body=${body}`;
+  };
+
+  const constructWhatsAppUrl = () => {
+    const text = encodeURIComponent(
+      `Hello Baby First Health,\n\nMy name is *${formData.name}*.\n*Email:* ${formData.email}\n*Phone:* ${formData.phone}\n\n*Message:*\n${formData.message}`
+    );
+    return `https://wa.me/237650082327?text=${text}`;
   };
 
   const handleChange = (
@@ -212,16 +239,50 @@ export const Contact: React.FC = () => {
                 </div>
 
                 {isSubmitted ? (
-                  <div className="bg-teal-50 rounded-[28px] p-8 text-center space-y-4">
-                    <div className="w-14 h-14 bg-teal-600 text-white rounded-full flex items-center justify-center mx-auto">
-                      <CheckCircle2 size={32} />
+                  <div className="bg-teal-50 rounded-[28px] p-8 md:p-10 text-center space-y-6">
+                    <div className="w-16 h-16 bg-teal-600 text-white rounded-full flex items-center justify-center mx-auto shadow-none">
+                      <CheckCircle2 size={36} strokeWidth={2.5} />
                     </div>
-                    <h3 className="font-headline font-extrabold text-teal-900 text-2xl">
-                      Message Received!
-                    </h3>
-                    <p className="font-body text-base text-teal-950/80 max-w-md mx-auto leading-relaxed">
-                      Thank you for reaching out to Baby First Health. A member of our team will contact you shortly.
-                    </p>
+                    <div className="space-y-2">
+                      <h3 className="font-headline font-extrabold text-teal-900 text-2xl md:text-3xl">
+                        Message Successfully Sent!
+                      </h3>
+                      <p className="font-body text-base text-teal-950/80 max-w-md mx-auto leading-relaxed">
+                        Thank you for reaching out. Your message has been dispatched to our care team at <strong className="text-teal-900">babyfirsthealth@gmail.com</strong>.
+                      </p>
+                    </div>
+
+                    {/* Summary of submitted inquiry */}
+                    <div className="bg-white rounded-[24px] p-6 text-left space-y-2 font-body text-sm text-teal-950/85">
+                      <p><strong>From:</strong> {formData.name}</p>
+                      <p><strong>Email:</strong> {formData.email}</p>
+                      <p><strong>Phone:</strong> {formData.phone}</p>
+                      <p className="pt-2 text-xs text-teal-900/70 border-t border-teal-100">
+                        {formData.message}
+                      </p>
+                    </div>
+
+                    {/* Quick action buttons */}
+                    <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                      <a
+                        href={constructWhatsAppUrl()}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-body font-bold text-sm transition-all duration-300 hover:scale-105 active:scale-95"
+                      >
+                        <WhatsAppIcon className="w-4 h-4 fill-current" />
+                        <span>Send via WhatsApp</span>
+                      </a>
+
+                      <a
+                        href={constructMailtoUrl()}
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-teal-700 hover:bg-teal-800 text-white font-body font-semibold text-sm transition-colors"
+                      >
+                        <Mail size={16} />
+                        <span>Open in Email App</span>
+                      </a>
+                    </div>
+
                     <div className="pt-2">
                       <button
                         onClick={() => {
@@ -235,7 +296,15 @@ export const Contact: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} noValidate className="space-y-6">
+                  <form
+                    name="contact"
+                    method="POST"
+                    data-netlify="true"
+                    onSubmit={handleSubmit}
+                    noValidate
+                    className="space-y-6"
+                  >
+                    <input type="hidden" name="form-name" value="contact" />
                     {/* Name */}
                     <div className="space-y-2">
                       <label
@@ -338,8 +407,13 @@ export const Contact: React.FC = () => {
 
                     {/* Submit Button */}
                     <div className="pt-2">
-                      <Button type="submit" variant="primary" fullWidthOnMobile>
-                        Send Message
+                      <Button
+                        type="submit"
+                        variant="primary"
+                        fullWidthOnMobile
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? 'Sending Message...' : 'Send Message'}
                       </Button>
                     </div>
                   </form>

@@ -9,7 +9,9 @@ export const NAV_LINKS = [
   { label: 'Community', href: '/community' },
   { label: 'Products', href: '/products' },
   { label: 'Certifications', href: '/certifications' },
+  { label: 'Student Portal', href: '/portal' },
   { label: 'Live Sessions', href: '/live-sessions' },
+  { label: 'Blog', href: '/blog' },
   { label: 'FAQ', href: '/faq' },
   { label: 'Contact', href: '/contact' },
 ] as const;

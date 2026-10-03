@@ -2,15 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import {
   CheckCircle2,
-  ArrowLeft,
+  Copy,
+  Download,
+  ExternalLink,
+  ShieldAlert,
+  ArrowRight,
+  BookOpen,
+  Check,
+  AlertCircle,
+  KeyRound
 } from 'lucide-react';
 import { Container } from '../components/Container';
 import { Section } from '../components/Section';
 import { Headline } from '../components/Headline';
-import { Reveal } from '../components/Reveal';
-import { WhatsAppIcon } from '../components/WhatsAppIcon';
-import { CustomDropdown } from '../components/CustomDropdown';
-import { CERTIFICATIONS_CONTENT } from '../content/content';
+import { Button } from '../components/Button';
+import { registerStudentLocallyOrFirestore, getPortalSettings } from '../services/portalService';
+import { CurrencyCode, PortalSettings } from '../types/studentPortal';
+import { DEFAULT_SETTINGS, DEFAULT_PROGRAM } from '../data/portalDefaults';
 
 const ACADEMIC_LEVELS = [
   'High School / Secondary Certificate',
@@ -30,405 +38,478 @@ const ENGLISH_PROFICIENCY_LEVELS = [
 
 export const CertificationApply: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const preselectedCourse = searchParams.get('course') || 'cif-certification';
+
+  const [settings, setSettings] = useState<PortalSettings>(DEFAULT_SETTINGS);
+  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyCode>('XAF');
 
   const [formData, setFormData] = useState({
-    courseId: preselectedCourse,
-    nameAsOnId: '',
-    country: '',
+    fullName: '',
+    countryOfResidence: 'Cameroon',
+    stateRegion: '',
     placeOfBirth: '',
-    profession: '',
-    contactNumber: '',
+    whatsappNumber: '',
     email: '',
+    profession: 'Parent / Caregiver',
     academicLevel: ACADEMIC_LEVELS[0] as string,
     englishProficiency: ENGLISH_PROFICIENCY_LEVELS[1] as string,
-    statement: '',
   });
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [policyRead, setPolicyRead] = useState(false);
+  const [policyAgreed, setPolicyAgreed] = useState(false);
+  const [showPolicyModal, setShowPolicyModal] = useState(false);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [generatedStudentId, setGeneratedStudentId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState(false);
 
   useEffect(() => {
-    if (preselectedCourse) {
-      setFormData((prev) => ({ ...prev, courseId: preselectedCourse }));
-    }
-  }, [preselectedCourse]);
-
-  const selectedProgram =
-    CERTIFICATIONS_CONTENT.programs.find((p) => p.id === formData.courseId) ||
-    CERTIFICATIONS_CONTENT.programs[0];
+    getPortalSettings().then(setSettings);
+  }, []);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleDropdownChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const constructEmailBody = () => {
-    return `OFFICIAL APPLICATION DETAILS:
-------------------------------------------
-Program: ${selectedProgram.title}
-Full Name (as on ID): ${formData.nameAsOnId}
-Country of Residence: ${formData.country}
-Place of Birth: ${formData.placeOfBirth}
-Profession / Occupation: ${formData.profession}
-Contact Number (WhatsApp): ${formData.contactNumber}
-Email Address: ${formData.email}
-Academic Level: ${formData.academicLevel}
-English Proficiency: ${formData.englishProficiency}
-Goals / Notes: ${formData.statement || 'None provided'}
-------------------------------------------
-Submitted via Baby First Health Portal`;
-  };
-
-  const constructWhatsAppMessage = () => {
-    const text = `Hello Baby First Health, I would like to submit my formal application for the *${selectedProgram.title}*.\n\n*Name as on ID:* ${formData.nameAsOnId}\n*Country:* ${formData.country}\n*Place of Birth:* ${formData.placeOfBirth}\n*Profession:* ${formData.profession}\n*Phone:* ${formData.contactNumber}\n*Email:* ${formData.email}\n*Academic Level:* ${formData.academicLevel}\n*English Proficiency:* ${formData.englishProficiency}`;
-    return encodeURIComponent(text);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!policyAgreed) {
+      alert('Please read and agree to the Refund and Payment Policy before submitting.');
+      return;
+    }
 
-    // Trigger mailto link to babyfirsthealth@gmail.com
-    const subject = encodeURIComponent(
-      `Certification Application - ${selectedProgram.title} - ${formData.nameAsOnId}`
-    );
-    const body = encodeURIComponent(constructEmailBody());
-    const mailtoUrl = `mailto:babyfirsthealth@gmail.com?subject=${subject}&body=${body}`;
+    setIsSubmitting(true);
+    try {
+      const res = await registerStudentLocallyOrFirestore({
+        fullName: formData.fullName,
+        email: formData.email,
+        whatsappNumber: formData.whatsappNumber,
+        countryOfResidence: formData.countryOfResidence,
+        stateRegion: formData.stateRegion,
+        placeOfBirth: formData.placeOfBirth,
+        profession: formData.profession,
+        academicLevel: formData.academicLevel,
+        englishProficiency: formData.englishProficiency,
+        programId: DEFAULT_PROGRAM.id,
+      });
 
-    window.location.href = mailtoUrl;
-    setIsSubmitted(true);
+      setGeneratedStudentId(res.studentId);
+    } catch (err) {
+      console.error('Registration error:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const courseOptions = CERTIFICATIONS_CONTENT.programs.map((program) => ({
-    value: program.id,
-    label: program.title,
-    badge: program.isFlagship ? 'Flagship' : undefined,
-  }));
+  const handleCopyId = () => {
+    if (generatedStudentId) {
+      navigator.clipboard.writeText(generatedStudentId);
+      setCopiedId(true);
+      setTimeout(() => setCopiedId(false), 2000);
+    }
+  };
+
+  const handleDownloadId = () => {
+    if (!generatedStudentId) return;
+    const content = `BABY FIRST HEALTH - OFFICIAL STUDENT CREDENTIALS
+=====================================================
+Student Name: ${formData.fullName}
+Student ID: ${generatedStudentId}
+Registered Program: Early Childhood Development Certificate
+Registration Date: ${new Date().toLocaleDateString()}
+Official Verification Portal: https://babyfirsthealth.netlify.app/portal
+Support WhatsApp: ${settings.businessWhatsApp}
+=====================================================
+IMPORTANT: Save this document. You will need this Student ID to access your Student Portal and receive your accredited certificate upon completion.`;
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `BFH-Student-ID-${generatedStudentId}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const getPaymentUrl = () => {
+    if (selectedCurrency === 'NGN') return settings.selarProductLinkNGN || settings.connectPayeLinkNGN;
+    if (selectedCurrency === 'USD') return settings.selarProductLinkUSD || settings.connectPayeLinkUSD;
+    return settings.selarProductLinkXAF || settings.connectPayeLinkXAF;
+  };
 
   return (
-    <div className="relative w-full">
-      {/* 1. HERO SECTION */}
-      <section className="relative pt-36 md:pt-44 pb-[85px] md:pb-[100px] bg-white overflow-hidden">
-        {/* Subtle decorative heart */}
-        <div
-          className="absolute -right-24 top-20 w-[420px] h-[420px] text-teal-50 pointer-events-none -z-10"
-          aria-hidden="true"
-        >
-          <svg viewBox="0 0 100 100" fill="currentColor" className="w-full h-full opacity-60">
-            <path d="M50 88.5L42.5 81.6C16 57.5 0 43 0 25C0 10.5 11.5 0 26 0C34.2 0 42 3.8 50 9.8C58 3.8 65.8 0 74 0C88.5 0 100 10.5 100 25C100 43 84 57.5 57.5 81.6L50 88.5Z" />
-          </svg>
-        </div>
-
-        <Container>
-          <Reveal type="up">
-            <div className="max-w-3xl mx-auto space-y-6 text-left md:text-center">
-              <div className="flex items-center justify-start md:justify-center gap-2">
-                <Link
-                  to="/certifications"
-                  className="inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 font-body text-sm font-semibold transition-colors"
-                >
-                  <ArrowLeft size={16} />
-                  <span>Back to All Certifications</span>
-                </Link>
-              </div>
-
-              <Headline as="h1" align="auto" isHero>
-                {"Formal Certification {{Application}}"}
-              </Headline>
-
-              <p className="font-body text-lg md:text-xl text-teal-950/80 leading-relaxed [text-wrap:pretty]">
-                Please fill in your official details to register for your verified Baby First Health certificate program.
-              </p>
+    <div className="pt-28 md:pt-36">
+      {/* Policy Modal */}
+      {showPolicyModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-teal-950/60 backdrop-blur-sm">
+          <div className="bg-white rounded-[32px] p-6 sm:p-8 max-w-[620px] w-full max-h-[85vh] flex flex-col space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-teal-50">
+              <span className="font-body font-semibold text-teal-900 text-lg">
+                Strict Refund & Payment Policy (v{settings.refundPolicyVersion})
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowPolicyModal(false);
+                  setPolicyRead(true);
+                }}
+                className="text-xs font-semibold px-3 py-1.5 rounded-full bg-teal-50 text-teal-900 hover:bg-teal-100"
+              >
+                Close & Confirm Read
+              </button>
             </div>
-          </Reveal>
-        </Container>
-      </section>
 
-      {/* 2. APPLICATION FORM SECTION */}
-      <Section bg="teal-50">
+            <div className="overflow-y-auto space-y-3 font-body text-xs sm:text-sm text-teal-950/80 leading-relaxed pr-2">
+              <div className="bg-orange-50 text-orange-950 p-3 rounded-[16px] text-xs">
+                <strong>Important Notice:</strong> All course fees are strictly non-refundable digital intellectual property. Please read these terms carefully before proceeding.
+              </div>
+              <p className="whitespace-pre-line">{settings.refundPolicyContent}</p>
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowPolicyModal(false);
+                  setPolicyRead(true);
+                  setPolicyAgreed(true);
+                }}
+                className="w-full py-3 rounded-full bg-teal-600 hover:bg-teal-700 text-white font-body font-bold text-sm transition-colors"
+              >
+                I Have Read & Agree to These Terms
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Hero Header */}
+      <Section bg="white" className="pt-[85px] pb-12">
         <Container>
-          <div className="max-w-3xl mx-auto">
-            {isSubmitted ? (
-              <Reveal type="up">
-                <div className="bg-white rounded-[32px] p-8 md:p-12 text-left md:text-center space-y-6">
-                  <div className="w-16 h-16 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center mx-auto">
-                    <CheckCircle2 size={36} strokeWidth={2.5} />
-                  </div>
+          <div className="max-w-[760px] mx-auto text-left md:text-center space-y-4">
+            <span className="px-4 py-1.5 rounded-full bg-teal-50 text-teal-900 font-body text-xs font-semibold inline-block">
+              Clinical Certification Enrollment
+            </span>
+            <Headline as="h1" align="auto">
+              {"Student Registration & {{Admissions}}"}
+            </Headline>
+            <p className="font-body text-base md:text-lg text-teal-950/80 leading-relaxed [text-wrap:pretty]">
+              Register for the accredited <strong>Early Childhood Development Certificate</strong>. Complete the student application below to receive your permanent Student ID.
+            </p>
+          </div>
+        </Container>
+      </Section>
 
-                  <Headline as="h2" align="auto">
-                    {"Application {{Ready to Send}}"}
-                  </Headline>
-
-                  <p className="font-body text-base md:text-lg text-teal-950/80 leading-relaxed">
-                    Your formal application details for <strong>{selectedProgram.title}</strong> have been prepared for our admissions office at <strong>babyfirsthealth@gmail.com</strong>.
+      {/* Main Registration Content */}
+      <Section bg="teal-50" className="pt-[85px] pb-[85px]">
+        <Container>
+          <div className="max-w-[680px] mx-auto">
+            {!generatedStudentId ? (
+              /* Registration Form */
+              <div className="bg-white rounded-[32px] p-6 sm:p-10 space-y-8">
+                <div className="space-y-2">
+                  <h2 className="font-body font-semibold text-teal-900 text-2xl">
+                    Learner Profile Details
+                  </h2>
+                  <p className="font-body text-xs sm:text-sm text-teal-950/70">
+                    Your details will appear on your verified digital and printed certificate upon graduation.
                   </p>
-
-                  <div className="bg-teal-50 rounded-[24px] p-6 space-y-3 text-left">
-                    <p className="font-body font-semibold text-teal-900 text-sm">
-                      Candidate: {formData.nameAsOnId}
-                    </p>
-                    <p className="font-body text-xs text-teal-950/80">
-                      Country: {formData.country} • Profession: {formData.profession} • Academic Level: {formData.academicLevel}
-                    </p>
-                    <p className="font-body text-xs text-teal-950/80">
-                      Contact: {formData.contactNumber} • Email: {formData.email}
-                    </p>
-                  </div>
-
-                  <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <a
-                      href={`https://wa.me/237650082327?text=${constructWhatsAppMessage()}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-body font-bold text-base transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
-                    >
-                      <WhatsAppIcon className="w-5 h-5 fill-current" />
-                      <span>Send via WhatsApp</span>
-                    </a>
-
-                    <Link
-                      to="/certifications"
-                      className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full bg-teal-100 hover:bg-teal-200 text-teal-900 font-body font-semibold text-base transition-colors"
-                    >
-                      View Other Programs
-                    </Link>
-                  </div>
                 </div>
-              </Reveal>
-            ) : (
-              <Reveal type="up" delay={100}>
-                <div className="bg-white rounded-[32px] p-8 md:p-12 space-y-8">
-                  {/* Form header */}
-                  <div className="space-y-2 pb-2">
-                    <h3 className="font-headline font-extrabold text-teal-900 text-2xl tracking-tight">
-                      Candidate Registration
-                    </h3>
-                    <p className="font-body text-sm text-teal-950/80 leading-relaxed">
-                      All applications are formally processed by Dolly and Laurence at our admissions desk. Official certificates of completion are issued in accordance with your verified identification.
-                    </p>
+
+                <form onSubmit={handleRegisterSubmit} className="space-y-5">
+                  <div>
+                    <label className="block text-xs font-semibold text-teal-900 mb-1.5">
+                      Full Legal Name (as it should appear on your Certificate) *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Marie Claire Fotso"
+                      className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm text-teal-950 outline-none"
+                    />
                   </div>
 
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Custom Branded Course selection */}
-                    <CustomDropdown
-                      name="courseId"
-                      label="Selected Certificate Program *"
-                      value={formData.courseId}
-                      options={courseOptions}
-                      onChange={(val) => handleDropdownChange('courseId', val)}
-                      required
-                    />
-
-                    {/* Name as on ID */}
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="nameAsOnId"
-                        className="block font-body text-sm font-semibold text-teal-900"
-                      >
-                        Full Name (as on official ID / Passport) *
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-teal-900 mb-1.5">
+                        Country of Residence *
                       </label>
                       <input
                         type="text"
-                        id="nameAsOnId"
-                        name="nameAsOnId"
-                        value={formData.nameAsOnId}
-                        onChange={handleInputChange}
-                        placeholder="e.g. Dolly Laurence Ndifon"
                         required
-                        className="w-full bg-teal-50 hover:bg-teal-100/60 focus:bg-white text-teal-950 placeholder:text-teal-900/40 font-body text-base rounded-full px-6 py-4 outline-none transition-all duration-200"
+                        name="countryOfResidence"
+                        value={formData.countryOfResidence}
+                        onChange={handleInputChange}
+                        placeholder="e.g. Cameroon, Nigeria"
+                        className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm text-teal-950 outline-none"
                       />
                     </div>
-
-                    {/* Two columns: Country and Place of Birth */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="country"
-                          className="block font-body text-sm font-semibold text-teal-900"
-                        >
-                          Country of Residence *
-                        </label>
-                        <input
-                          type="text"
-                          id="country"
-                          name="country"
-                          value={formData.country}
-                          onChange={handleInputChange}
-                          placeholder="e.g. Cameroon / Nigeria / Ghana"
-                          required
-                          className="w-full bg-teal-50 hover:bg-teal-100/60 focus:bg-white text-teal-950 placeholder:text-teal-900/40 font-body text-base rounded-full px-6 py-4 outline-none transition-all duration-200"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="placeOfBirth"
-                          className="block font-body text-sm font-semibold text-teal-900"
-                        >
-                          Place of Birth *
-                        </label>
-                        <input
-                          type="text"
-                          id="placeOfBirth"
-                          name="placeOfBirth"
-                          value={formData.placeOfBirth}
-                          onChange={handleInputChange}
-                          placeholder="e.g. Douala / Lagos / Yaoundé"
-                          required
-                          className="w-full bg-teal-50 hover:bg-teal-100/60 focus:bg-white text-teal-950 placeholder:text-teal-900/40 font-body text-base rounded-full px-6 py-4 outline-none transition-all duration-200"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Two columns: Profession and Contact Number */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="profession"
-                          className="block font-body text-sm font-semibold text-teal-900"
-                        >
-                          Current Profession / Occupation *
-                        </label>
-                        <input
-                          type="text"
-                          id="profession"
-                          name="profession"
-                          value={formData.profession}
-                          onChange={handleInputChange}
-                          placeholder="e.g. Parent, Nanny, Nurse, Teacher"
-                          required
-                          className="w-full bg-teal-50 hover:bg-teal-100/60 focus:bg-white text-teal-950 placeholder:text-teal-900/40 font-body text-base rounded-full px-6 py-4 outline-none transition-all duration-200"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="contactNumber"
-                          className="block font-body text-sm font-semibold text-teal-900"
-                        >
-                          Contact Number (WhatsApp) *
-                        </label>
-                        <input
-                          type="tel"
-                          id="contactNumber"
-                          name="contactNumber"
-                          value={formData.contactNumber}
-                          onChange={handleInputChange}
-                          placeholder="e.g. +237 650082327"
-                          required
-                          className="w-full bg-teal-50 hover:bg-teal-100/60 focus:bg-white text-teal-950 placeholder:text-teal-900/40 font-body text-base rounded-full px-6 py-4 outline-none transition-all duration-200"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Email address with gmail address template sample */}
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="email"
-                        className="block font-body text-sm font-semibold text-teal-900"
-                      >
-                        Official Email Address *
+                    <div>
+                      <label className="block text-xs font-semibold text-teal-900 mb-1.5">
+                        State / Region / Province *
                       </label>
                       <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
+                        type="text"
+                        required
+                        name="stateRegion"
+                        value={formData.stateRegion}
                         onChange={handleInputChange}
-                        placeholder="e.g. name@gmail.com"
-                        required
-                        className="w-full bg-teal-50 hover:bg-teal-100/60 focus:bg-white text-teal-950 placeholder:text-teal-900/40 font-body text-base rounded-full px-6 py-4 outline-none transition-all duration-200"
+                        placeholder="e.g. Centre, Littoral, Lagos"
+                        className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm text-teal-950 outline-none"
                       />
                     </div>
+                  </div>
 
-                    {/* Two custom branded dropdowns: Academic Level and English Proficiency */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                      <CustomDropdown
-                        name="academicLevel"
-                        label="Highest Academic Level *"
-                        value={formData.academicLevel}
-                        options={ACADEMIC_LEVELS}
-                        onChange={(val) => handleDropdownChange('academicLevel', val)}
-                        required
-                      />
-
-                      <CustomDropdown
-                        name="englishProficiency"
-                        label="English Language Proficiency *"
-                        value={formData.englishProficiency}
-                        options={ENGLISH_PROFICIENCY_LEVELS}
-                        onChange={(val) => handleDropdownChange('englishProficiency', val)}
-                        required
-                      />
-                    </div>
-
-                    {/* Personal goals / notes */}
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="statement"
-                        className="block font-body text-sm font-semibold text-teal-900"
-                      >
-                        Personal Goals / Specific Experience (Optional)
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-teal-900 mb-1.5">
+                        Place of Birth (for registry) *
                       </label>
-                      <textarea
-                        id="statement"
-                        name="statement"
-                        value={formData.statement}
+                      <input
+                        type="text"
+                        required
+                        name="placeOfBirth"
+                        value={formData.placeOfBirth}
                         onChange={handleInputChange}
-                        rows={3}
-                        placeholder="Briefly state your background or what you hope to achieve through this certificate..."
-                        className="w-full bg-teal-50 hover:bg-teal-100/60 focus:bg-white text-teal-950 placeholder:text-teal-900/40 font-body text-base rounded-[24px] p-5 outline-none transition-all duration-200 resize-none"
+                        placeholder="e.g. Yaoundé, Douala"
+                        className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm text-teal-950 outline-none"
                       />
                     </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-teal-900 mb-1.5">
+                        WhatsApp Contact Number *
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        name="whatsappNumber"
+                        value={formData.whatsappNumber}
+                        onChange={handleInputChange}
+                        placeholder="e.g. +237 671 00 00 00"
+                        className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm text-teal-950 outline-none"
+                      />
+                    </div>
+                  </div>
 
-                    {/* Submit CTA - White text, bright orange button, simply "Submit" */}
-                    <div className="pt-4 space-y-4">
-                      <button
-                        type="submit"
-                        className="w-full py-4 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-body font-bold text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                  <div>
+                    <label className="block text-xs font-semibold text-teal-900 mb-1.5">
+                      Email Address (for portal access and password setup) *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="e.g. learner@example.com"
+                      className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm text-teal-950 outline-none"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-teal-900 mb-1.5">
+                        Profession / Occupation
+                      </label>
+                      <input
+                        type="text"
+                        name="profession"
+                        value={formData.profession}
+                        onChange={handleInputChange}
+                        placeholder="e.g. Nurse, Educator, Mother"
+                        className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm text-teal-950 outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-teal-900 mb-1.5">
+                        Academic Level
+                      </label>
+                      <select
+                        name="academicLevel"
+                        value={formData.academicLevel}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm text-teal-950 outline-none"
                       >
-                        Submit
+                        {ACADEMIC_LEVELS.map((lvl) => (
+                          <option key={lvl} value={lvl}>
+                            {lvl}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Selected Program Box */}
+                  <div className="p-4 rounded-[20px] bg-teal-50/80 space-y-2">
+                    <span className="text-xs uppercase font-semibold text-teal-800 tracking-wider">
+                      Enrolling Program
+                    </span>
+                    <h3 className="font-body font-semibold text-teal-900 text-base">
+                      {DEFAULT_PROGRAM.title}
+                    </h3>
+                    <p className="font-body text-xs text-teal-950/75 leading-relaxed">
+                      Tuition: 30,000 XAF • 75,000 NGN • $50 USD (Self-paced, clinical faculty feedback, accredited diploma).
+                    </p>
+                  </div>
+
+                  {/* Strict No-Refund Consent Control */}
+                  <div className="p-4 rounded-[20px] bg-orange-50/70 space-y-3">
+                    <div className="flex items-start gap-2.5">
+                      <ShieldAlert className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" />
+                      <div className="space-y-1">
+                        <span className="font-body font-semibold text-xs text-orange-950 block">
+                          Mandatory No-Refund Policy Agreement
+                        </span>
+                        <p className="font-body text-xs text-orange-950/80">
+                          All payments are final. You must review the policy before registering.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => setShowPolicyModal(true)}
+                        className="px-4 py-2 rounded-full bg-white text-xs font-semibold text-teal-900 hover:bg-teal-100 transition-colors"
+                      >
+                        Read Full Policy
                       </button>
 
-                      <p className="font-body text-xs text-teal-950/70 text-center leading-relaxed">
-                        All applications are routed directly to <strong>babyfirsthealth@gmail.com</strong>. We will contact you within 24 hours to confirm your registration and tuition details.
-                      </p>
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-teal-900">
+                        <input
+                          type="checkbox"
+                          checked={policyAgreed}
+                          disabled={!policyRead}
+                          onChange={(e) => setPolicyAgreed(e.target.checked)}
+                          className="w-4 h-4 rounded text-orange-500 focus:ring-0"
+                        />
+                        <span>I have read & agree to the Refund Policy</span>
+                      </label>
                     </div>
-                  </form>
-                </div>
-              </Reveal>
-            )}
+                  </div>
 
-            {/* Direct Support Card without inline icon, button is WhatsApp Icon and Contact Support */}
-            <Reveal type="up" delay={200}>
-              <div className="mt-10 bg-white rounded-[28px] p-6 md:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-                <div className="space-y-1">
-                  <h4 className="font-headline font-bold text-teal-900 text-lg">
-                    Need Direct Support with Your Application?
-                  </h4>
-                  <p className="font-body text-sm text-teal-950/80 leading-relaxed">
-                    Connect with our admissions desk on WhatsApp at <strong>+237 650082327</strong> or email <strong>babyfirsthealth@gmail.com</strong>.
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !policyAgreed}
+                    className="w-full py-4 rounded-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-body font-bold text-base transition-all duration-300"
+                  >
+                    {isSubmitting ? 'Creating Student Profile...' : 'Complete Registration & Generate ID'}
+                  </button>
+                </form>
+              </div>
+            ) : (
+              /* Registration Success & Next Steps */
+              <div className="bg-white rounded-[32px] p-6 sm:p-10 space-y-8 text-center">
+                <div className="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center mx-auto text-teal-700">
+                  <CheckCircle2 className="w-10 h-10" />
+                </div>
+
+                <div className="space-y-2">
+                  <h2 className="font-body font-semibold text-teal-900 text-2xl sm:text-3xl">
+                    Registration Successful!
+                  </h2>
+                  <p className="font-body text-sm text-teal-950/80 max-w-md mx-auto">
+                    Your official Baby First Health student account has been created. Save your Student ID securely below.
                   </p>
                 </div>
 
-                <div className="shrink-0 w-full sm:w-auto">
+                {/* Student ID Card */}
+                <div className="bg-teal-900 text-white rounded-[24px] p-6 sm:p-8 space-y-4 text-left">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs uppercase tracking-wider text-teal-300 font-semibold">
+                      Official Student ID
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-teal-800 text-[11px] font-bold text-teal-200">
+                      STATUS: REGISTERED
+                    </span>
+                  </div>
+
+                  <div className="font-mono text-2xl sm:text-3xl font-extrabold tracking-wider text-white">
+                    {generatedStudentId}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={handleCopyId}
+                      className="px-4 py-2 rounded-full bg-teal-800 hover:bg-teal-700 text-xs font-semibold text-teal-100 inline-flex items-center gap-1.5 transition-colors"
+                    >
+                      {copiedId ? <Check className="w-3.5 h-3.5 text-orange-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedId ? 'Copied' : 'Copy Student ID'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDownloadId}
+                      className="px-4 py-2 rounded-full bg-teal-800 hover:bg-teal-700 text-xs font-semibold text-teal-100 inline-flex items-center gap-1.5 transition-colors"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download ID Card</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Currency & Tuition Selection */}
+                <div className="text-left space-y-3 pt-2">
+                  <label className="block text-xs font-semibold text-teal-900">
+                    Select Tuition Currency:
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(['XAF', 'NGN', 'USD'] as CurrencyCode[]).map((cur) => (
+                      <button
+                        key={cur}
+                        type="button"
+                        onClick={() => setSelectedCurrency(cur)}
+                        className={`py-3 rounded-[16px] text-xs font-bold transition-colors ${
+                          selectedCurrency === cur
+                            ? 'bg-teal-600 text-white'
+                            : 'bg-teal-50 text-teal-900 hover:bg-teal-100'
+                        }`}
+                      >
+                        {cur} {cur === 'XAF' ? '(30,000)' : cur === 'NGN' ? '(75,000)' : '($50)'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Payment CTA */}
+                <div className="space-y-4 pt-2">
                   <a
-                    href="https://wa.me/237650082327"
+                    href={getPaymentUrl()}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-full bg-teal-600 hover:bg-teal-700 text-white font-body text-sm font-semibold transition-colors cursor-pointer"
+                    className="w-full inline-flex items-center justify-center gap-2 py-4 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-body font-bold text-base transition-all duration-300"
                   >
-                    <WhatsAppIcon className="w-5 h-5 fill-current" />
-                    <span>Contact Support</span>
+                    <span>Proceed to Tuition Payment on Selar ({selectedCurrency})</span>
+                    <ExternalLink className="w-4 h-4" />
                   </a>
+
+                  <p className="text-xs text-teal-950/70">
+                    After completing your purchase on Selar, you will receive an Access Code in your digital receipt. You will be redirected back to activate your course access immediately.
+                  </p>
+
+                  <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4 text-xs font-semibold">
+                    <Link
+                      to="/redeem"
+                      className="px-5 py-2.5 rounded-full bg-teal-50 text-teal-900 hover:bg-teal-100 transition-colors inline-flex items-center gap-1.5"
+                    >
+                      <KeyRound className="w-3.5 h-3.5 text-orange-500" />
+                      <span>Have your Access Code? Redeem Here</span>
+                    </Link>
+                    <Link
+                      to="/payment-confirmation"
+                      className="text-teal-700 hover:text-teal-900 underline"
+                    >
+                      Manual payment verification status
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </Reveal>
+            )}
           </div>
         </Container>
       </Section>

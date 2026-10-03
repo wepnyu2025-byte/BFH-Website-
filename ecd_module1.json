@@ -1,0 +1,450 @@
+{
+  "schemaVersion": "1.0",
+  "importNotes": [
+    "This file is course content to be imported as a DRAFT for admin review. Do not publish automatically.",
+    "passingScorePercent (70) and maxAttempts (null) are placeholders the owner has not confirmed. The admin sets the final values.",
+    "No lesson has a video yet. hasVideo is false and videoUrl is null for every lesson. The admin can turn on video per lesson.",
+    "finalAssessment is null because only Module 1 exists so far. It will be added when the remaining modules are imported."
+  ],
+  "program": {
+    "title": "Early Childhood Development Certificate",
+    "code": "ECD",
+    "description": "",
+    "status": "DRAFT",
+    "professionalNote": "This course provides educational knowledge about Early Childhood Development. It does not replace professional medical assessment or diagnosis. Developmental milestones are guides and should be interpreted in context. If you have concerns about a child's development, please discuss them with an appropriately qualified healthcare or child-development professional (for example, a doctor, nurse, or early childhood specialist).",
+    "modules": [
+      {
+        "id": "ecd-m1",
+        "order": 1,
+        "title": "Understanding Early Childhood Development",
+        "estimatedDurationMinutes": {
+          "min": 25,
+          "max": 30
+        },
+        "learningObjectives": [
+          "Explain what Early Childhood Development (ECD) means in simple language.",
+          "Explain why the first five years of life are important.",
+          "Identify the major areas in which young children develop.",
+          "Understand that children develop at different rates.",
+          "Recognize the importance of the child's environment, relationships, nutrition, safety, play, and learning.",
+          "Understand the difference between normal individual differences and possible developmental concerns.",
+          "Know when a caregiver should seek professional advice."
+        ],
+        "lessons": [
+          {
+            "id": "ecd-m1-l01",
+            "order": 1,
+            "title": "Welcome to the Module",
+            "content": "Welcome! This module introduces you to Early Childhood Development (ECD). By the end, you will understand what child development really means and what to pay attention to when caring for a child aged 0–5. You do not need any special training—just a willingness to learn and care for children well.",
+            "hasVideo": false,
+            "videoUrl": null,
+            "contentFormat": "markdown",
+            "resources": [],
+            "coachNotes": "",
+            "requiresVideoBeforeComplete": false
+          },
+          {
+            "id": "ecd-m1-l02",
+            "order": 2,
+            "title": "What Is Early Childhood Development?",
+            "content": "### Simple Meaning\n\n- **Early childhood** = the time from birth up to about 5 years (before primary school).\n- **Development** = the process of gaining new abilities and skills over time.\n- **Early Childhood Development (ECD)** = how a young child grows and learns in body, mind, feelings, and relationships during the first years of life.\n\n### Growth and Development: What's the Difference?\n\n| Growth | Development |\n| --- | --- |\n| Changes in physical size (height, weight, head size). | Gaining new abilities and skills (sitting, talking, sharing, solving simple problems). |\n| Example: A baby's weight increases from 3 kg to 7 kg. | Example: A toddler learns to stack blocks and say new words. |\n\n**Real-life example:** A 9-month-old baby in Yaoundé learns to sit without support (development) while also getting taller and heavier (growth). Both happen together, but they are not the same thing.",
+            "hasVideo": false,
+            "videoUrl": null,
+            "contentFormat": "markdown",
+            "resources": [],
+            "coachNotes": "",
+            "requiresVideoBeforeComplete": false
+          },
+          {
+            "id": "ecd-m1-l03",
+            "order": 3,
+            "title": "Why the First Five Years Matter",
+            "content": "The first five years are a special time because:\n\n- **Brain development is fastest.** In the first 3 years, a child's brain forms more than 1 million new connections every second. These connections are the foundation for learning, behavior, and health later in life.\n- **Relationships shape the brain.** Warm, responsive interactions (smiling, talking, holding, playing) between a child and caring adults build healthy brain circuits. Scientists call this \"serve and return.\"\n- **Early experiences affect learning and emotions.** Children who are talked to, read to, and played with learn language faster, manage feelings better, and are more ready for school.\n- **Health and nutrition matter.** Good food, clean water, sleep, and protection from illness help the body and brain grow well. Malnutrition and frequent sickness can slow development.\n- **Safe environments protect development.** Violence, neglect, and constant stress can harm a child's developing brain and body. Safe, loving homes and communities help children thrive.\n\n**Important:** The early years are very important, but they do not \"decide everything\" forever. Children can still learn and grow later, especially with support. The goal is to give the best start possible.",
+            "hasVideo": false,
+            "videoUrl": null,
+            "contentFormat": "markdown",
+            "resources": [],
+            "coachNotes": "",
+            "requiresVideoBeforeComplete": false
+          },
+          {
+            "id": "ecd-m1-l04",
+            "order": 4,
+            "title": "How Children Develop: Major Areas",
+            "content": "Children develop in several connected areas. Here are the main ones, with simple examples:\n\n### Physical Development\n\n- **What it is:** How the body grows and how movement skills develop.\n- **Example:** A baby learns to roll over, sit, crawl, stand, and walk. A 3-year-old learns to run, climb, and use a spoon.\n\n### Cognitive Development\n\n- **What it is:** How the child learns, thinks, remembers, solves problems, and understands the world.\n- **Example:** A toddler figures out how to fit shapes into a puzzle or finds a hidden toy.\n\n### Language and Communication\n\n- **What it is:** How the child understands and uses sounds, gestures, words, and communication.\n- **Example:** A 1-year-old points and says \"mama.\" A 3-year-old tells a short story about what happened at the market.\n\n### Social and Emotional Development\n\n- **What it is:** How the child understands feelings, relates to others, develops confidence, and learns to manage emotions.\n- **Example:** A 2-year-old learns to wait for a turn with a toy or comforts a crying friend.\n\n**Note:** These areas work together. For example, playing with blocks (physical) helps a child learn about size and shape (cognitive) and talk about what they are building (language).",
+            "hasVideo": false,
+            "videoUrl": null,
+            "contentFormat": "markdown",
+            "resources": [],
+            "coachNotes": "",
+            "requiresVideoBeforeComplete": false
+          },
+          {
+            "id": "ecd-m1-l05",
+            "order": 5,
+            "title": "Children Do Not All Develop at the Same Speed",
+            "content": "### Key Points\n\n- **Individual differences are normal.** One child may walk at 10 months, another at 14 months. One may talk early, another may be more active physically.\n- **Milestones are guides, not deadlines.** Developmental milestones are skills many children reach around certain ages. They help us know what to expect, but every child is unique.\n- **Avoid constant comparison.** Comparing one child to another can cause unnecessary worry. Focus on the child's own progress over time.\n\n### When to Seek Professional Advice\n\nTalk to a qualified health or child-development professional if you notice:\n\n- The child is not gaining new skills over several months.\n- The child loses skills they once had.\n- There are significant delays in multiple areas (for example, not sitting by 9 months, no words by 18 months, not walking by 18 months).\n- You have persistent concerns about hearing, vision, movement, or interaction.\n\n**Remember:** Early advice can help. It does not mean something is \"wrong\"—it means you are being careful and supportive.",
+            "hasVideo": false,
+            "videoUrl": null,
+            "contentFormat": "markdown",
+            "resources": [],
+            "coachNotes": "",
+            "requiresVideoBeforeComplete": false
+          },
+          {
+            "id": "ecd-m1-l06",
+            "order": 6,
+            "title": "What Helps a Child Develop Well?",
+            "content": "Research shows that children thrive when they have:\n\n- **Safe and responsive relationships:** Caring adults who notice, respond, and comfort the child.\n- **Talking and communicating:** Singing, talking, reading, and listening to the child every day.\n- **Play:** Simple, everyday play with safe objects (spoons, cups, blocks, balls) helps learning.\n- **Good nutrition:** Breastfeeding (when possible), timely introduction of varied foods, and regular meals.\n- **Adequate sleep:** Regular sleep helps the brain and body grow.\n- **Protection from violence and neglect:** Safe, predictable care without fear or harm.\n- **A safe environment:** Clean water, hygiene, safe spaces to move and explore.\n- **Healthcare:** Regular check-ups, vaccinations, and treatment when sick.\n- **Opportunities to learn:** Everyday activities like helping at home, exploring nature, and simple games.\n- **Consistent and supportive caregiving:** Routines and calm responses help children feel secure.\n\nYou do not need expensive toys. Everyday interactions and a loving environment matter most.",
+            "hasVideo": false,
+            "videoUrl": null,
+            "contentFormat": "markdown",
+            "resources": [],
+            "coachNotes": "",
+            "requiresVideoBeforeComplete": false
+          },
+          {
+            "id": "ecd-m1-l07",
+            "order": 7,
+            "title": "The Adult's Role",
+            "content": "Children develop within relationships and environments. Adults—parents, caregivers, teachers, health workers, and family members—play a key role.\n\n### Practical Examples of What Adults Can Do Every Day\n\n- **Talk and listen:** When giving a child a toy, name it (\"This is a red ball\"), ask simple questions (\"Can you roll the ball?\"), and respond to the child's sounds.\n- **Play together:** Sit on the floor, stack cups, sing songs, or play peek-a-boo. Follow the child's lead.\n- **Read and tell stories:** Use picture books or tell stories about family, animals, or daily life. Point to pictures and name them.\n- **Encourage helping:** Let the child help with small tasks (putting away toys, handing you a spoon). Praise effort (\"You are a good helper\").\n- **Comfort and reassure:** When a child is upset, hold them, speak softly, and help them calm down. This teaches emotional regulation.\n- **Create routines:** Regular times for eating, sleeping, and playing help children feel safe and learn what to expect.",
+            "hasVideo": false,
+            "videoUrl": null,
+            "contentFormat": "markdown",
+            "resources": [],
+            "coachNotes": "",
+            "requiresVideoBeforeComplete": false
+          },
+          {
+            "id": "ecd-m1-l08",
+            "order": 8,
+            "title": "A Simple Case Study",
+            "content": "**Situation:** A mother in Cameroon has two children, both around 2 years old. Child A talks a lot and knows many words. Child B walks and runs early but says only a few words. The mother worries because she expects both children to develop in exactly the same way.\n\n### What the case teaches\n\n- **Individual differences:** Children can be stronger in different areas. One may talk earlier; another may move earlier.\n- **Developmental areas:** Language and physical skills are different areas. Progress in one does not mean delay in the other.\n- **Observation:** The mother should watch each child's progress over time, not just compare them to each other.\n- **Avoid unnecessary comparison:** Comparing siblings can create worry. Focus on each child's own growth.\n- **When to seek advice:** If Child B shows no new words over many months, does not respond to name, or has other concerns, the mother can talk to a health worker for guidance.\n\n### Questions to think about\n\n- Why is it normal for siblings to develop differently?\n- Which developmental areas are strong in Child A and Child B?\n- What can the mother do at home to support both children?\n- When might it be helpful to speak with a health professional?\n- How can the mother avoid unhelpful comparisons?",
+            "hasVideo": false,
+            "videoUrl": null,
+            "contentFormat": "markdown",
+            "resources": [],
+            "coachNotes": "",
+            "requiresVideoBeforeComplete": false
+          },
+          {
+            "id": "ecd-m1-l09",
+            "order": 9,
+            "title": "Common Mistakes Adults Make",
+            "content": "| Mistake | Better Approach |\n| --- | --- |\n| **Comparing children constantly.** | Focus on each child's own progress over time. Celebrate their unique strengths. |\n| **Labeling a child because of one behavior.** | Describe the behavior, not the child (\"You are feeling angry\" instead of \"You are a difficult child\"). |\n| **Ignoring the child's need for interaction.** | Make time daily for talking, playing, and responding to the child's cues. |\n| **Assuming expensive toys are necessary for learning.** | Use everyday objects (cups, spoons, stones, leaves) for play and learning. Interaction matters more than toys. |\n| **Believing every child must reach a skill at exactly the same age.** | Understand milestones as guides. Support the child's pace and seek advice only if there are significant or persistent delays. |",
+            "hasVideo": false,
+            "videoUrl": null,
+            "contentFormat": "markdown",
+            "resources": [],
+            "coachNotes": "",
+            "requiresVideoBeforeComplete": false
+          },
+          {
+            "id": "ecd-m1-l10",
+            "order": 10,
+            "title": "Key Takeaways",
+            "content": "- Early Childhood Development (ECD) means how children grow and learn in body, mind, feelings, and relationships from birth to about age 5.\n- The first five years are especially important because the brain develops rapidly and early experiences shape lifelong health and learning.\n- Children develop in several areas: physical, cognitive, language, and social-emotional.\n- Children do not all develop at exactly the same pace. Individual differences are normal.\n- Developmental milestones are useful guides, not strict deadlines for every child.\n- Warm, responsive relationships (\"serve and return\") are essential for healthy brain development.\n- Everyday interactions—talking, playing, reading, comforting—support development more than expensive toys.\n- Good nutrition, sleep, safety, healthcare, and a clean environment help children grow and learn well.\n- Adults should observe each child's progress over time and avoid constant comparison.\n- If you have persistent concerns about a child's development, speak with a qualified health or child-development professional.",
+            "hasVideo": false,
+            "videoUrl": null,
+            "contentFormat": "markdown",
+            "resources": [],
+            "coachNotes": "",
+            "requiresVideoBeforeComplete": false
+          }
+        ],
+        "quiz": {
+          "id": "ecd-m1-quiz",
+          "title": "Module 1 Knowledge Check",
+          "instructions": "Choose the best answer for each question.",
+          "passingScorePercent": 70,
+          "maxAttempts": null,
+          "shuffleQuestions": true,
+          "shuffleOptions": true,
+          "questions": [
+            {
+              "id": "ecd-m1-q01",
+              "difficulty": "easy",
+              "text": "What does \"Early Childhood Development\" (ECD) mean?",
+              "options": [
+                {
+                  "id": "A",
+                  "text": "Only how tall a child grows"
+                },
+                {
+                  "id": "B",
+                  "text": "How a child gains new abilities and skills in body, mind, feelings, and relationships from birth to about age 5"
+                },
+                {
+                  "id": "C",
+                  "text": "Only how much a child eats"
+                },
+                {
+                  "id": "D",
+                  "text": "Only how well a child does in school at age 10"
+                }
+              ],
+              "correctOptionId": "B",
+              "explanation": "ECD covers growth and learning in multiple areas during the early years, not just physical size or school performance."
+            },
+            {
+              "id": "ecd-m1-q02",
+              "difficulty": "easy",
+              "text": "Which of these is an example of \"development\" (not just growth)?",
+              "options": [
+                {
+                  "id": "A",
+                  "text": "A child's weight increases"
+                },
+                {
+                  "id": "B",
+                  "text": "A child's height increases"
+                },
+                {
+                  "id": "C",
+                  "text": "A child learns to stack blocks and say new words"
+                },
+                {
+                  "id": "D",
+                  "text": "A child's head gets bigger"
+                }
+              ],
+              "correctOptionId": "C",
+              "explanation": "Development refers to gaining new skills and abilities, such as stacking blocks or using language."
+            },
+            {
+              "id": "ecd-m1-q03",
+              "difficulty": "easy",
+              "text": "Why are the first five years especially important?",
+              "options": [
+                {
+                  "id": "A",
+                  "text": "Because children stop learning after age 5"
+                },
+                {
+                  "id": "B",
+                  "text": "Because the brain develops rapidly and early experiences shape lifelong health and learning"
+                },
+                {
+                  "id": "C",
+                  "text": "Because children only eat food in the first five years"
+                },
+                {
+                  "id": "D",
+                  "text": "Because children do not need love after age 5"
+                }
+              ],
+              "correctOptionId": "B",
+              "explanation": "Rapid brain development and early experiences create foundations for later learning, behavior, and health."
+            },
+            {
+              "id": "ecd-m1-q04",
+              "difficulty": "moderate",
+              "text": "What are \"developmental milestones\"?",
+              "options": [
+                {
+                  "id": "A",
+                  "text": "Exact deadlines that every child must meet"
+                },
+                {
+                  "id": "B",
+                  "text": "Skills or abilities that many children develop around certain ages, used as guides"
+                },
+                {
+                  "id": "C",
+                  "text": "Only physical skills like walking"
+                },
+                {
+                  "id": "D",
+                  "text": "Only language skills like talking"
+                }
+              ],
+              "correctOptionId": "B",
+              "explanation": "Milestones are typical skills reached around certain ages, but they are guides, not strict rules for every child."
+            },
+            {
+              "id": "ecd-m1-q05",
+              "difficulty": "moderate",
+              "text": "Which of these best describes \"serve and return\" interactions?",
+              "options": [
+                {
+                  "id": "A",
+                  "text": "A child plays alone without adults"
+                },
+                {
+                  "id": "B",
+                  "text": "An adult ignores a child's cries"
+                },
+                {
+                  "id": "C",
+                  "text": "A child reaches out (smile, sound, gesture) and an adult responds warmly, back and forth"
+                },
+                {
+                  "id": "D",
+                  "text": "An adult gives a child a toy and walks away"
+                }
+              ],
+              "correctOptionId": "C",
+              "explanation": "\"Serve and return\" means responsive, back-and-forth interactions that build healthy brain connections."
+            },
+            {
+              "id": "ecd-m1-q06",
+              "difficulty": "moderate",
+              "text": "When should a caregiver consider seeking professional advice about development?",
+              "options": [
+                {
+                  "id": "A",
+                  "text": "When a child is slightly slower than a sibling but still gaining new skills"
+                },
+                {
+                  "id": "B",
+                  "text": "When a child loses skills they once had or shows significant delays in multiple areas"
+                },
+                {
+                  "id": "C",
+                  "text": "When a child prefers one toy over another"
+                },
+                {
+                  "id": "D",
+                  "text": "When a child sleeps a little less one night"
+                }
+              ],
+              "correctOptionId": "B",
+              "explanation": "Loss of skills or significant, persistent delays are reasons to talk to a qualified professional."
+            },
+            {
+              "id": "ecd-m1-q07",
+              "difficulty": "application",
+              "text": "A father notices his 18-month-old daughter says only a few words, but she walks well and plays actively. What is the best first step?",
+              "options": [
+                {
+                  "id": "A",
+                  "text": "Immediately assume there is a serious problem"
+                },
+                {
+                  "id": "B",
+                  "text": "Compare her to her older brother at the same age"
+                },
+                {
+                  "id": "C",
+                  "text": "Observe her progress over the next few months, talk and play with her daily, and seek advice if there is no new progress or other concerns"
+                },
+                {
+                  "id": "D",
+                  "text": "Stop talking to her because she is not talking much"
+                }
+              ],
+              "correctOptionId": "C",
+              "explanation": "Individual differences are normal. Observe progress, support with interaction, and seek advice if concerns persist or worsen."
+            },
+            {
+              "id": "ecd-m1-q08",
+              "difficulty": "application",
+              "text": "A caregiver believes expensive toys are needed for a child to learn well. What is a better approach?",
+              "options": [
+                {
+                  "id": "A",
+                  "text": "Buy only the most expensive toys available"
+                },
+                {
+                  "id": "B",
+                  "text": "Use everyday objects (cups, spoons, leaves) and focus on talking, playing, and responding to the child"
+                },
+                {
+                  "id": "C",
+                  "text": "Let the child play alone without interaction"
+                },
+                {
+                  "id": "D",
+                  "text": "Avoid play and only teach letters"
+                }
+              ],
+              "correctOptionId": "B",
+              "explanation": "Everyday interactions and simple objects support learning more than expensive toys."
+            }
+          ]
+        },
+        "glossary": [
+          {
+            "term": "Early Childhood Development (ECD)",
+            "definition": "How children grow and learn in body, mind, feelings, and relationships from birth to about age 5."
+          },
+          {
+            "term": "Developmental milestone",
+            "definition": "A skill or ability that many children develop around a certain age (for example, sitting, walking, first words). Used as a guide, not a strict deadline."
+          },
+          {
+            "term": "Serve and return",
+            "definition": "Warm, back-and-forth interactions between a child and a caring adult (smiling, talking, responding) that help build healthy brain connections."
+          },
+          {
+            "term": "Cognitive development",
+            "definition": "How a child learns, thinks, remembers, solves problems, and understands the world."
+          },
+          {
+            "term": "Social and emotional development",
+            "definition": "How a child understands feelings, relates to others, develops confidence, and learns to manage emotions."
+          }
+        ],
+        "references": [
+          {
+            "title": "World Health Organization (WHO) & UNICEF. (2023). New report calls for greater attention to children's vital first years.",
+            "url": "https://www.who.int/news/item/29-06-2023-new-report-calls-for-greater-attention-to-children-s-vital-first-years"
+          },
+          {
+            "title": "WHO. (2010). Promoting Early Childhood Development in South-East Asia.",
+            "url": "https://iris.who.int/bitstream/handle/10665/205669/B4590.pdf"
+          },
+          {
+            "title": "WHO & UNICEF. Guidance note for integrating ECD activities into nutrition programmes in emergencies.",
+            "url": "https://www.who.int/docs/default-source/documents/publications/integrating-early-childhood-development-emergencies.pdf"
+          },
+          {
+            "title": "Harvard Center on the Developing Child. Key Concepts in Early Childhood Development.",
+            "url": "https://developingchild.harvard.edu/key-concepts/"
+          },
+          {
+            "title": "Harvard University. Early Development.",
+            "url": "https://www.harvard.edu/in-focus/early-development/"
+          },
+          {
+            "title": "Harvard Center on the Developing Child. Celebrating 20 Years of Impact in Early Childhood.",
+            "url": "https://developingchild.harvard.edu/20th-anniversary/"
+          },
+          {
+            "title": "National Scientific Council on the Developing Child. (2007). The Science of Early Childhood Development.",
+            "url": "https://developingchild.harvard.edu/wp-content/uploads/2024/10/Science_Early_Childhood_Development.pdf"
+          },
+          {
+            "title": "UNICEF. (2024). Early Childhood Development – UNICEF Vision for Every Child.",
+            "url": "https://www.unicef.org/media/145336/file/Early_Childhood_Development_-_UNICEF_Vision_for_Every_Child.pdf"
+          },
+          {
+            "title": "National Scientific Council on the Developing Child. (2007). The Science of Early Childhood Development (PDF).",
+            "url": "https://developingchild.harvard.edu/wp-content/uploads/2015/05/Science_Early_Childhood_Development.pdf"
+          },
+          {
+            "title": "Harvard Center on the Developing Child. (2025). What Surrounds Us Shapes Us: An Expanded Story of Early Childhood Development.",
+            "url": "https://developingchild.harvard.edu/key-concepts/what-surrounds-us-shapes-us/"
+          },
+          {
+            "title": "Harvard T.H. Chan School of Public Health. (2023). Ensuring kids start life with solid foundations.",
+            "url": "https://hsph.harvard.edu/news/center-developing-child/"
+          },
+          {
+            "title": "UNICEF Australia. (2022). Five ways to give your children the best start in life.",
+            "url": "https://www.unicef.org.au/stories/five-ways-to-give-your-children-the-best-start-in-life"
+          },
+          {
+            "title": "Harvard Center on the Developing Child. (2025). Mattering in Early Childhood: Building a Strong Foundation for Life.",
+            "url": "https://developingchild.harvard.edu/wp-content/uploads/2025/10/Mattering-Paper-center-on-the-developing-child.pdf"
+          },
+          {
+            "title": "Harvard Center on the Developing Child. (2017). Three Principles to Improve Outcomes for Children and Families.",
+            "url": "https://developingchild.harvard.edu/resources/report/three-principles-to-improve-outcomes-for-children-and-families/"
+          }
+        ]
+      }
+    ],
+    "finalAssessment": null
+  }
+}

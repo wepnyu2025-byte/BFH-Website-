@@ -1,0 +1,280 @@
+{
+  "entities": {
+    "Student": {
+      "title": "Student",
+      "description": "Registered learner on the Baby First Health platform",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string", "description": "e.g. BFH-ECD-ABC234XY" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "whatsappNumber": { "type": "string" },
+        "countryOfResidence": { "type": "string" },
+        "stateRegion": { "type": "string" },
+        "placeOfBirth": { "type": "string" },
+        "profession": { "type": "string" },
+        "academicLevel": { "type": "string" },
+        "englishProficiency": { "type": "string" },
+        "profilePhotoUrl": { "type": "string" },
+        "isEmailVerified": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["REGISTERED", "ACTIVE", "SUSPENDED"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "studentId", "fullName", "email", "whatsappNumber", "status"]
+    },
+    "Program": {
+      "title": "Program",
+      "description": "Certification program curriculum",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string", "description": "e.g. ECD" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "priceXAF": { "type": "number" },
+        "priceNGN": { "type": "number" },
+        "priceUSD": { "type": "number" },
+        "passingScore": { "type": "number" },
+        "maxQuizAttempts": { "type": "number" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["id", "code", "title", "isActive"]
+    },
+    "Enrollment": {
+      "title": "Enrollment",
+      "description": "Student enrollment record for a specific program",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string" },
+        "programId": { "type": "string" },
+        "status": { "type": "string", "enum": ["REGISTERED", "ACTIVE", "SUSPENDED", "COMPLETED"] },
+        "enrolledAt": { "type": "string", "format": "date-time" },
+        "activatedAt": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "studentId", "programId", "status"]
+    },
+    "PaymentClaim": {
+      "title": "PaymentClaim",
+      "description": "Payment claim submitted by student or webhook",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "claimToken": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentIdCode": { "type": "string" },
+        "studentName": { "type": "string" },
+        "programId": { "type": "string" },
+        "payerPhone": { "type": "string" },
+        "currency": { "type": "string", "enum": ["XAF", "NGN", "USD"] },
+        "amount": { "type": "number" },
+        "transactionIdHint": { "type": "string" },
+        "receiptUrl": { "type": "string" },
+        "status": { "type": "string", "enum": ["PENDING_VERIFICATION", "APPROVED", "REJECTED"] },
+        "verifiedTxId": { "type": "string" },
+        "rejectReason": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "reviewedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "studentId", "programId", "currency", "status"]
+    },
+    "TransactionRecord": {
+      "title": "TransactionRecord",
+      "description": "Immutable approved ConnectPaye transaction record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "sha256(txId)" },
+        "originalTxId": { "type": "string" },
+        "claimId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "currency": { "type": "string" },
+        "amount": { "type": "number" },
+        "approvedBy": { "type": "string" },
+        "approvedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "originalTxId", "claimId", "studentId", "approvedAt"]
+    },
+    "Module": {
+      "title": "Module",
+      "description": "Course module grouping lessons",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "programId": { "type": "string" },
+        "title": { "type": "string" },
+        "order": { "type": "number" },
+        "description": { "type": "string" }
+      },
+      "required": ["id", "programId", "title", "order"]
+    },
+    "Lesson": {
+      "title": "Lesson",
+      "description": "Course lesson content and video",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "moduleId": { "type": "string" },
+        "programId": { "type": "string" },
+        "title": { "type": "string" },
+        "order": { "type": "number" },
+        "content": { "type": "string" },
+        "hasVideo": { "type": "boolean" },
+        "videoUrl": { "type": "string" },
+        "coachNotes": { "type": "string" }
+      },
+      "required": ["id", "moduleId", "programId", "title", "order"]
+    },
+    "LessonProgress": {
+      "title": "LessonProgress",
+      "description": "Tracks student completion of a lesson",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string" },
+        "programId": { "type": "string" },
+        "lessonId": { "type": "string" },
+        "isCompleted": { "type": "boolean" },
+        "completedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "studentId", "lessonId", "isCompleted"]
+    },
+    "Quiz": {
+      "title": "Quiz",
+      "description": "Assessment for a lesson or module",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "lessonId": { "type": "string" },
+        "programId": { "type": "string" },
+        "passingScore": { "type": "number" },
+        "maxAttempts": { "type": "number" }
+      },
+      "required": ["id", "programId", "passingScore"]
+    },
+    "Certificate": {
+      "title": "Certificate",
+      "description": "Accredited completion certificate",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "e.g. CERT-BFH-ECD-987654" },
+        "verificationToken": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "programTitle": { "type": "string" },
+        "programCode": { "type": "string" },
+        "issueDate": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["VALID", "REVOKED"] },
+        "issuer": { "type": "string" }
+      },
+      "required": ["id", "verificationToken", "studentName", "programTitle", "issueDate", "status"]
+    },
+    "ConsentRecord": {
+      "title": "ConsentRecord",
+      "description": "Immutable log of policy acceptance",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string" },
+        "policyType": { "type": "string" },
+        "policyVersion": { "type": "string" },
+        "consentedAt": { "type": "string", "format": "date-time" },
+        "ipHash": { "type": "string" }
+      },
+      "required": ["id", "studentId", "policyType", "policyVersion", "consentedAt"]
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "Global application configuration",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "paymentVerificationMode": { "type": "string", "enum": ["MANUAL", "API_ASSISTED", "API_AUTO"] },
+        "connectPayeLinkXAF": { "type": "string" },
+        "connectPayeLinkNGN": { "type": "string" },
+        "connectPayeLinkUSD": { "type": "string" },
+        "businessWhatsApp": { "type": "string" },
+        "allowedVideoHosts": { "type": "string" },
+        "pediaEnabled": { "type": "boolean" },
+        "pediaDailyLimit": { "type": "number" },
+        "autoIssueCertificates": { "type": "boolean" }
+      },
+      "required": ["id", "paymentVerificationMode", "businessWhatsApp"]
+    },
+    "AccessCode": {
+      "title": "AccessCode",
+      "description": "Single-use access code purchased via Selar digital receipt",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "e.g. BFH-ECD-7892-4105" },
+        "code": { "type": "string" },
+        "programId": { "type": "string" },
+        "programTitle": { "type": "string" },
+        "status": { "type": "string", "enum": ["AVAILABLE", "REDEEMED", "REVOKED"] },
+        "currency": { "type": "string" },
+        "amount": { "type": "number" },
+        "redeemedByStudentId": { "type": "string" },
+        "redeemedByStudentName": { "type": "string" },
+        "redeemedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "code", "programId", "status"]
+    }
+  },
+  "firestore": {
+    "/accessCodes/{code}": {
+      "schema": "AccessCode",
+      "description": "Pre-generated single-use Selar product access codes"
+    },
+    "/students/{studentId}": {
+      "schema": "Student",
+      "description": "Learner profile records"
+    },
+    "/programs/{programId}": {
+      "schema": "Program",
+      "description": "Programs and curricula"
+    },
+    "/enrollments/{enrollmentId}": {
+      "schema": "Enrollment",
+      "description": "Program enrollments"
+    },
+    "/paymentClaims/{claimId}": {
+      "schema": "PaymentClaim",
+      "description": "Payment verification claims queue"
+    },
+    "/transactionRecords/{txHash}": {
+      "schema": "TransactionRecord",
+      "description": "Immutable ConnectPaye transaction hash records"
+    },
+    "/modules/{moduleId}": {
+      "schema": "Module",
+      "description": "Course modules"
+    },
+    "/lessons/{lessonId}": {
+      "schema": "Lesson",
+      "description": "Course lessons"
+    },
+    "/lessonProgress/{progressId}": {
+      "schema": "LessonProgress",
+      "description": "Student lesson completions"
+    },
+    "/quizzes/{quizId}": {
+      "schema": "Quiz",
+      "description": "Lesson and module assessments"
+    },
+    "/certificates/{certId}": {
+      "schema": "Certificate",
+      "description": "Accredited completion certificates"
+    },
+    "/consentRecords/{consentId}": {
+      "schema": "ConsentRecord",
+      "description": "Policy acceptance records"
+    },
+    "/settings/{settingsId}": {
+      "schema": "Settings",
+      "description": "Platform global configuration"
+    }
+  }
+}

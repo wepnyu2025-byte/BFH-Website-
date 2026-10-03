@@ -17,6 +17,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   </head>
   <body class="bg-white text-teal-950 antialiased font-body selection:bg-teal-200 selection:text-teal-950">
+    <!-- Netlify Forms static detection declarations for React SPA -->
+    <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="tel" name="phone" />
+      <textarea name="message"></textarea>
+    </form>
+
+    <form name="certification-application" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="text" name="courseId" />
+      <input type="text" name="courseTitle" />
+      <input type="text" name="nameAsOnId" />
+      <input type="text" name="country" />
+      <input type="text" name="placeOfBirth" />
+      <input type="text" name="profession" />
+      <input type="text" name="academicLevel" />
+      <input type="email" name="email" />
+      <input type="tel" name="contactNumber" />
+      <input type="text" name="sessionPreference" />
+      <textarea name="learningGoals"></textarea>
+      <input type="text" name="referralSource" />
+    </form>
+
+    <form name="faq-inquiry" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="text" name="fullName" />
+      <input type="email" name="email" />
+      <input type="tel" name="phone" />
+      <input type="text" name="topic" />
+      <textarea name="question"></textarea>
+    </form>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
