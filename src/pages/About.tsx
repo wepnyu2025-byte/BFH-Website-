@@ -210,8 +210,8 @@ export const About: React.FC = () => {
               </Headline>
             </div>
 
-            {/* Founder Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-4xl mx-auto">
+            {/* Team / Founder Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {ABOUT_CONTENT.founders.members.map((founder, idx) => (
                 <Reveal key={founder.name} type="up" delay={idx * 150} className="h-full">
                   <div className="bg-white rounded-[32px] p-6 md:p-8 space-y-6 flex flex-col h-full justify-between">
@@ -254,7 +254,7 @@ export const About: React.FC = () => {
             </Headline>
 
             <p className="font-body text-lg text-white/90 leading-relaxed [text-wrap:pretty]">
-              Join Dolly, Laurence, and a vibrant community of African parents learning together every week.
+              Join Dolly, Laurence, Louisa, and a vibrant community of African parents learning together every week.
             </p>
 
             <div className="pt-4 flex justify-start md:justify-center">

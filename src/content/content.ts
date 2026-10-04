@@ -195,6 +195,12 @@ export const ABOUT_CONTENT = {
         image: '/images/founder-dolly.jpg',
       },
       {
+        name: 'Louisa Ngek Belefeyin',
+        role: 'Nurse, Midwife & Educator',
+        bio: 'Louisa is a registered nurse and practicing midwife who serves as one of our dedicated educators, teaching practical childcare, maternal wellness, and newborn safety.',
+        image: '/images/louisa-ngek-belefeyin.jpg',
+      },
+      {
         name: 'Wepnyu Laurence',
         role: 'Co-Founder & Digital Lead',
         bio: 'Laurence brings over 10 years of experience in digital marketing, technology and digital product development, helping build the platform and its digital education ecosystem.',
