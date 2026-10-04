@@ -7,6 +7,7 @@ import {
   query,
   where,
   updateDoc,
+  deleteDoc,
   orderBy,
   limit
 } from 'firebase/firestore';
@@ -681,6 +682,15 @@ export async function saveAdminGeneratedStudent(student: StudentProfile): Promis
     await setDoc(doc(db, 'students', student.id), student);
   } catch (err) {
     console.warn('Firestore saveAdminGeneratedStudent fallback:', err);
+  }
+}
+
+// Admin: Delete/Dismiss student profile from Firestore
+export async function deleteStudentProfileRecord(studentUid: string): Promise<void> {
+  try {
+    await deleteDoc(doc(db, 'students', studentUid));
+  } catch (err) {
+    console.warn('Firestore deleteStudentProfileRecord fallback:', err);
   }
 }
 

@@ -54,7 +54,8 @@ import {
   getAllStudents,
   getStoredOrInitialCodes,
   generateSecureStudentId,
-  saveAdminGeneratedStudent
+  saveAdminGeneratedStudent,
+  deleteStudentProfileRecord
 } from '../services/portalService';
 import {
   PaymentClaimData,
@@ -137,6 +138,12 @@ export const AdminDashboard: React.FC = () => {
   const [isGeneratingStudentId, setIsGeneratingStudentId] = useState(false);
   const [generatedStudentResult, setGeneratedStudentResult] = useState<StudentProfile | null>(null);
   const [copiedGeneratedStudentId, setCopiedGeneratedStudentId] = useState(false);
+  const [isExistingStudentRetrieved, setIsExistingStudentRetrieved] = useState(false);
+
+  // Dismiss Student State
+  const [studentToDelete, setStudentToDelete] = useState<StudentProfile | null>(null);
+  const [deleteConfirmInput, setDeleteConfirmInput] = useState('');
+  const [isDeletingStudent, setIsDeletingStudent] = useState(false);
 
   // Courses state (Multi-Course Support, defaulting to ECD)
   const [courses, setCourses] = useState<AdminCourseItem[]>(() => {
@@ -646,12 +653,29 @@ export const AdminDashboard: React.FC = () => {
         updatedAt: new Date().toISOString(),
       };
       fetchedStudents.unshift(legendTestProfile);
-      try {
-        localStorage.setItem('bfh_all_students', JSON.stringify(fetchedStudents));
-      } catch {}
     }
 
-    setStudents(fetchedStudents);
+    // Deduplicate profiles by normalized full name & email so only ONE profile exists per student
+    const deduplicatedStudents: StudentProfile[] = [];
+    const seenNames = new Set<string>();
+    const seenEmails = new Set<string>();
+
+    for (const st of fetchedStudents) {
+      const normName = st.fullName ? st.fullName.trim().toLowerCase() : '';
+      const normEmail = st.email ? st.email.trim().toLowerCase() : '';
+      const isDuplicate = (normEmail && seenEmails.has(normEmail)) || (normName && seenNames.has(normName));
+      if (!isDuplicate) {
+        if (normName) seenNames.add(normName);
+        if (normEmail) seenEmails.add(normEmail);
+        deduplicatedStudents.push(st);
+      }
+    }
+
+    try {
+      localStorage.setItem('bfh_all_students', JSON.stringify(deduplicatedStudents));
+    } catch {}
+
+    setStudents(deduplicatedStudents);
   };
 
   const handleLaunchTestProfile = () => {
@@ -856,9 +880,85 @@ export const AdminDashboard: React.FC = () => {
 
     setIsGeneratingStudentId(true);
     const parsed = parsePastedStudentInfo(studentInfoInput);
+    const now = new Date().toISOString();
+
+    const normalizedInputEmail = parsed.email ? parsed.email.trim().toLowerCase() : '';
+    const normalizedInputName = parsed.fullName ? parsed.fullName.trim().toLowerCase() : '';
+    const normalizedInputPhone = parsed.whatsappNumber ? parsed.whatsappNumber.replace(/[^0-9]/g, '') : '';
+
+    // Collect all existing student profiles from state and local storage
+    const localSaved: StudentProfile[] = [];
+    try {
+      const raw = localStorage.getItem('bfh_all_students');
+      if (raw) {
+        const parsedAll = JSON.parse(raw);
+        if (Array.isArray(parsedAll)) localSaved.push(...parsedAll);
+      }
+    } catch {}
+
+    const allProfiles = [...students, ...localSaved];
+
+    // Check if this student already exists (one unique ID per student)
+    const existing = allProfiles.find((s) => {
+      const sEmail = s.email ? s.email.trim().toLowerCase() : '';
+      const sName = s.fullName ? s.fullName.trim().toLowerCase() : '';
+      const sPhone = s.whatsappNumber ? s.whatsappNumber.replace(/[^0-9]/g, '') : '';
+
+      // Match by email if both have an email
+      if (normalizedInputEmail && sEmail && normalizedInputEmail === sEmail) return true;
+      // Match by legal full name (at least 3 characters)
+      if (normalizedInputName.length >= 3 && sName === normalizedInputName) return true;
+      // Match by phone number if both have at least 8 digits
+      if (normalizedInputPhone.length >= 8 && sPhone.length >= 8 && sPhone === normalizedInputPhone) return true;
+      return false;
+    });
+
+    if (existing) {
+      // Existing student found: keep their original ID, update profile info, and avoid duplicates
+      const updatedProfile: StudentProfile = {
+        ...existing,
+        email: existing.email || parsed.email,
+        whatsappNumber: existing.whatsappNumber || parsed.whatsappNumber,
+        countryOfResidence: existing.countryOfResidence || parsed.countryOfResidence,
+        profession: existing.profession || parsed.profession,
+        academicLevel: existing.academicLevel || parsed.academicLevel,
+        updatedAt: now,
+      };
+
+      // Save locally
+      localStorage.setItem(`bfh_student_${updatedProfile.studentId}`, JSON.stringify(updatedProfile));
+      try {
+        const raw = localStorage.getItem('bfh_all_students');
+        const list: StudentProfile[] = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex((item) => item.studentId === updatedProfile.studentId);
+        if (idx >= 0) {
+          list[idx] = updatedProfile;
+        } else {
+          list.unshift(updatedProfile);
+        }
+        localStorage.setItem('bfh_all_students', JSON.stringify(list));
+      } catch {}
+
+      // Update state without duplicating
+      setStudents((prev) => {
+        const idx = prev.findIndex((item) => item.studentId === updatedProfile.studentId);
+        if (idx >= 0) {
+          const next = [...prev];
+          next[idx] = updatedProfile;
+          return next;
+        }
+        return [updatedProfile, ...prev];
+      });
+
+      setGeneratedStudentResult(updatedProfile);
+      setIsExistingStudentRetrieved(true);
+      setIsGeneratingStudentId(false);
+      return;
+    }
+
+    // Truly new student: generate a single unique student ID
     const newStudentId = generateSecureStudentId('ECD');
     const uid = `usr_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
-    const now = new Date().toISOString();
 
     const newStudent: StudentProfile = {
       id: uid,
@@ -895,10 +995,62 @@ export const AdminDashboard: React.FC = () => {
       console.warn('Firestore student save error:', err);
     }
 
-    // Update dashboard state so they appear immediately in Ledger
+    // Update dashboard state so they appear in Ledger
     setStudents((prev) => [newStudent, ...prev.filter((s) => s.studentId !== newStudent.studentId)]);
     setGeneratedStudentResult(newStudent);
+    setIsExistingStudentRetrieved(false);
     setIsGeneratingStudentId(false);
+  };
+
+  const handleInitiateDeleteStudent = (student: StudentProfile) => {
+    setStudentToDelete(student);
+    setDeleteConfirmInput('');
+  };
+
+  const handleConfirmDismissStudent = async () => {
+    if (!studentToDelete) return;
+    if (deleteConfirmInput.trim().toLowerCase() !== 'delete') return;
+
+    setIsDeletingStudent(true);
+    const target = studentToDelete;
+
+    // 1. Remove from state
+    setStudents((prev) => prev.filter((s) => s.id !== target.id && s.studentId !== target.studentId));
+
+    // 2. Remove from localStorage
+    try {
+      const raw = localStorage.getItem('bfh_all_students');
+      if (raw) {
+        const list: StudentProfile[] = JSON.parse(raw);
+        const filtered = list.filter((s) => s.id !== target.id && s.studentId !== target.studentId);
+        localStorage.setItem('bfh_all_students', JSON.stringify(filtered));
+      }
+    } catch {}
+
+    localStorage.removeItem(`bfh_student_${target.studentId}`);
+
+    // If active session is this student, clear it
+    try {
+      const curr = JSON.parse(localStorage.getItem('bfh_current_student') || '{}');
+      if (curr.studentId === target.studentId || curr.id === target.id) {
+        localStorage.removeItem('bfh_current_student');
+      }
+    } catch {}
+
+    // 3. Remove from Firestore
+    try {
+      await deleteStudentProfileRecord(target.id);
+    } catch (err) {
+      console.warn('Delete student Firestore error:', err);
+    }
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('storage'));
+    }
+
+    setIsDeletingStudent(false);
+    setStudentToDelete(null);
+    setDeleteConfirmInput('');
   };
 
   const handleOpenApprove = (claim: PaymentClaimData) => {
@@ -1516,10 +1668,16 @@ export const AdminDashboard: React.FC = () => {
                   <div className="p-5 rounded-[24px] bg-teal-50 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-teal-900">
-                        Generated Student ID
+                        {isExistingStudentRetrieved
+                          ? 'Student ID (Existing Student)'
+                          : 'Generated Student ID'}
                       </span>
-                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800">
-                        Saved & Active
+                      <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
+                        isExistingStudentRetrieved
+                          ? 'bg-teal-100 text-teal-800'
+                          : 'bg-emerald-100 text-emerald-800'
+                      }`}>
+                        {isExistingStudentRetrieved ? 'Profile Retained • No Duplicate' : 'Saved & Active'}
                       </span>
                     </div>
 
@@ -1844,11 +2002,26 @@ export const AdminDashboard: React.FC = () => {
                               </div>
                             </div>
 
-                            <ChevronDown
-                              className={`w-5 h-5 text-teal-700 transition-transform shrink-0 ${
-                                isExpanded ? 'rotate-180' : ''
-                              }`}
-                            />
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleInitiateDeleteStudent(st);
+                                }}
+                                className="p-2 rounded-full hover:bg-red-50 text-teal-700 hover:text-red-600 transition-colors cursor-pointer"
+                                title={`Dismiss ${st.fullName}`}
+                                aria-label={`Dismiss ${st.fullName}`}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+
+                              <ChevronDown
+                                className={`w-5 h-5 text-teal-700 transition-transform ${
+                                  isExpanded ? 'rotate-180' : ''
+                                }`}
+                              />
+                            </div>
                           </div>
 
                           {/* Collapsible / drop down details */}
@@ -2813,6 +2986,73 @@ export const AdminDashboard: React.FC = () => {
                 type="button"
                 onClick={() => setSelectedClaim(null)}
                 className="px-5 py-3.5 rounded-full bg-teal-50 text-teal-800 text-xs font-semibold hover:bg-teal-100"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Dismiss Student Confirmation Modal */}
+      {studentToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-teal-950/60 backdrop-blur-sm">
+          <div className="bg-white rounded-[32px] p-6 sm:p-8 max-w-[480px] w-full space-y-5">
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                <Trash2 className="w-5 h-5" />
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setStudentToDelete(null);
+                  setDeleteConfirmInput('');
+                }}
+                className="p-2 rounded-full hover:bg-teal-50 text-teal-950/60 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-1.5">
+              <h3 className="font-body font-bold text-teal-900 text-xl">
+                Are you sure you want to dismiss student?
+              </h3>
+              <p className="text-xs text-teal-950/70 leading-relaxed">
+                This will permanently dismiss <strong className="text-teal-950">{studentToDelete.fullName}</strong> ({studentToDelete.studentId}) and remove their profile and records from the ledger.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold text-teal-950">
+                Please type <span className="font-mono text-red-600 font-bold">delete</span> to confirm:
+              </label>
+              <input
+                type="text"
+                value={deleteConfirmInput}
+                onChange={(e) => setDeleteConfirmInput(e.target.value)}
+                placeholder="delete"
+                autoFocus
+                className="w-full px-4 py-3 rounded-full bg-teal-50 text-xs sm:text-sm font-mono text-teal-950 outline-none"
+              />
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={handleConfirmDismissStudent}
+                disabled={isDeletingStudent || deleteConfirmInput.trim().toLowerCase() !== 'delete'}
+                className="flex-1 py-3.5 rounded-full bg-red-600 hover:bg-red-700 disabled:opacity-40 text-white font-body font-bold text-xs sm:text-sm transition-colors cursor-pointer"
+              >
+                {isDeletingStudent ? 'Dismissing...' : 'Dismiss Student'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setStudentToDelete(null);
+                  setDeleteConfirmInput('');
+                }}
+                className="px-5 py-3.5 rounded-full bg-teal-50 hover:bg-teal-100 text-teal-900 font-body font-semibold text-xs transition-colors cursor-pointer"
               >
                 Cancel
               </button>
