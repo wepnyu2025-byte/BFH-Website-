@@ -134,7 +134,16 @@ export const StudentPortal: React.FC = () => {
 
   // Course & Curriculum data
   const [settings, setSettings] = useState<PortalSettings>(DEFAULT_SETTINGS);
-  const [program] = useState(DEFAULT_PROGRAM);
+  const [program, setProgram] = useState(() => {
+    try {
+      const saved = localStorage.getItem('bfh_active_program');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.title) return parsed;
+      }
+    } catch {}
+    return DEFAULT_PROGRAM;
+  });
   const [modules, setModules] = useState<CourseModule[]>(() => {
     try {
       const saved = localStorage.getItem('bfh_course_modules');
@@ -151,23 +160,33 @@ export const StudentPortal: React.FC = () => {
     getPortalSettings().then(setSettings);
   }, []);
 
-  // Sync course modules when admin saves or window gains focus
+  // Sync course modules and program when admin saves or window gains focus
   useEffect(() => {
-    const syncModules = () => {
+    const syncModulesAndProgram = () => {
       try {
         const saved = localStorage.getItem('bfh_course_modules');
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) setModules(parsed);
         }
+        const savedProg = localStorage.getItem('bfh_active_program');
+        if (savedProg) {
+          const parsedProg = JSON.parse(savedProg);
+          if (parsedProg.title) setProgram(parsedProg);
+        }
+        const savedStudent = localStorage.getItem('bfh_current_student');
+        if (savedStudent) {
+          const parsedStudent = JSON.parse(savedStudent);
+          if (parsedStudent && parsedStudent.studentId) setStudent(parsedStudent);
+        }
       } catch {}
     };
-    syncModules();
-    window.addEventListener('focus', syncModules);
-    window.addEventListener('storage', syncModules);
+    syncModulesAndProgram();
+    window.addEventListener('focus', syncModulesAndProgram);
+    window.addEventListener('storage', syncModulesAndProgram);
     return () => {
-      window.removeEventListener('focus', syncModules);
-      window.removeEventListener('storage', syncModules);
+      window.removeEventListener('focus', syncModulesAndProgram);
+      window.removeEventListener('storage', syncModulesAndProgram);
     };
   }, []);
 
@@ -312,7 +331,12 @@ export const StudentPortal: React.FC = () => {
   // Download Module Study Document
   const handleDownloadModuleDoc = (mod: CourseModule) => {
     if (mod.docUrl) {
-      window.open(mod.docUrl, '_blank');
+      const a = document.createElement('a');
+      a.href = mod.docUrl;
+      a.download = mod.docName || `Module_${mod.order}_Document`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
       return;
     }
     const cleanTitle = `${mod.order}. ${mod.title.replace(/^Module\s*\d*[:.-]?\s*/i, '').replace(/^\d+\.\s*/, '')}`;
@@ -554,6 +578,16 @@ Baby First Health Educational Program
     setStudent(activeStudent);
     localStorage.setItem('bfh_current_student', JSON.stringify(activeStudent));
     localStorage.setItem(`bfh_student_${activeStudent.studentId}`, JSON.stringify(activeStudent));
+    try {
+      const allSaved = JSON.parse(localStorage.getItem('bfh_all_students') || '[]');
+      const existsIdx = allSaved.findIndex((s: any) => s.studentId === activeStudent.studentId);
+      if (existsIdx >= 0) {
+        allSaved[existsIdx] = activeStudent;
+      } else {
+        allSaved.unshift(activeStudent);
+      }
+      localStorage.setItem('bfh_all_students', JSON.stringify(allSaved));
+    } catch {}
     setLoginError(null);
   };
 
@@ -778,6 +812,17 @@ Baby First Health Educational Program
         </div>
 
         <div className="flex items-center gap-3">
+          {(student?.fullName === 'Legend Laurence' || localStorage.getItem('bfh_admin_authenticated') === 'true') && (
+            <Link
+              to="/admin"
+              className="px-3.5 py-1.5 rounded-full bg-teal-900 hover:bg-teal-800 text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+              title="Return to BFH Admin Console"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Admin Panel</span>
+            </Link>
+          )}
+
           <span className="px-3 py-1 rounded-full bg-teal-50 text-teal-900 text-xs font-semibold">
             {currentView === 'HOME'
               ? 'Student Home'
@@ -1234,6 +1279,17 @@ Baby First Health Educational Program
                   {activeLesson.title}
                 </h2>
               </div>
+
+              {/* Lesson Image (if set) */}
+              {activeLesson.imageUrl && (
+                <div className="rounded-[24px] overflow-hidden w-full max-h-[460px] bg-teal-50">
+                  <img
+                    src={activeLesson.imageUrl}
+                    alt={activeLesson.title}
+                    className="w-full h-full object-cover rounded-[24px]"
+                  />
+                </div>
+              )}
 
               {/* Video Player (if set) */}
               {activeLesson.videoUrl && (

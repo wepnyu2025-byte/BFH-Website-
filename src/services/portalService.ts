@@ -472,74 +472,20 @@ export async function generateBatchAccessCodes(
   return generated;
 }
 
-// Verified Seed Test Codes (Unused & Already Used) with updated pricing
-export const INITIAL_TEST_CODES: AccessCode[] = [
-  {
-    id: 'BFH-ECD-9182-4401',
-    code: 'BFH-ECD-9182-4401',
-    programId: DEFAULT_PROGRAM.id,
-    programTitle: DEFAULT_PROGRAM.title,
-    status: 'AVAILABLE',
-    currency: 'XAF',
-    amount: 30000,
-    createdAt: '2026-10-01T08:00:00.000Z',
-    notes: 'Active Unused Access Code for Testing (30,000 XAF)',
-  },
-  {
-    id: 'BFH-ECD-3329-8812',
-    code: 'BFH-ECD-3329-8812',
-    programId: DEFAULT_PROGRAM.id,
-    programTitle: DEFAULT_PROGRAM.title,
-    status: 'AVAILABLE',
-    currency: 'NGN',
-    amount: 75000,
-    createdAt: '2026-10-01T08:00:00.000Z',
-    notes: 'Active Unused Access Code for Testing (75,000 NGN)',
-  },
-  {
-    id: 'BFH-ECD-5541-7720',
-    code: 'BFH-ECD-5541-7720',
-    programId: DEFAULT_PROGRAM.id,
-    programTitle: DEFAULT_PROGRAM.title,
-    status: 'AVAILABLE',
-    currency: 'USD',
-    amount: 50,
-    createdAt: '2026-10-01T08:00:00.000Z',
-    notes: 'Active Unused Access Code for Testing ($50 USD)',
-  },
-  {
-    id: 'BFH-ECD-7892-4105',
-    code: 'BFH-ECD-7892-4105',
-    programId: DEFAULT_PROGRAM.id,
-    programTitle: DEFAULT_PROGRAM.title,
-    status: 'REDEEMED',
-    currency: 'XAF',
-    amount: 30000,
-    redeemedByStudentId: 'usr_marie_claire',
-    redeemedByStudentIdCode: 'BFH-ECD-88129034',
-    redeemedByStudentName: 'Marie Claire Fotso',
-    redeemedAt: '2026-10-02T14:30:00.000Z',
-    createdAt: '2026-10-01T08:00:00.000Z',
-    notes: 'Already Used / Redeemed Code for Testing Error State',
-  },
-];
+// Verified Seed Test Codes (Empty by default for a clean, fresh state)
+export const INITIAL_TEST_CODES: AccessCode[] = [];
 
 export function getStoredOrInitialCodes(): AccessCode[] {
   try {
     const raw = localStorage.getItem('bfh_access_codes');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         return parsed;
       }
     }
   } catch {}
-
-  try {
-    localStorage.setItem('bfh_access_codes', JSON.stringify(INITIAL_TEST_CODES));
-  } catch {}
-
-  return [...INITIAL_TEST_CODES];
+  return [];
 }
 
 // Admin: Get all access codes
@@ -554,6 +500,41 @@ export async function getAllAccessCodes(): Promise<AccessCode[]> {
   }
 
   return getStoredOrInitialCodes();
+}
+
+// Admin: Get all registered student profiles for Ledger
+export async function getAllStudents(): Promise<StudentProfile[]> {
+  try {
+    const q = query(collection(db, 'students'), orderBy('createdAt', 'desc'), limit(200));
+    const snap = await getDocs(q);
+    const list = snap.docs.map((d) => d.data() as StudentProfile);
+    if (list.length > 0) return list;
+  } catch (e) {
+    console.warn('Firestore students read fallback:', e);
+  }
+
+  // Also check local storage for registered students
+  const localStudents: StudentProfile[] = [];
+  try {
+    const current = localStorage.getItem('bfh_current_student');
+    if (current) {
+      const parsed = JSON.parse(current);
+      if (parsed && parsed.studentId) localStudents.push(parsed);
+    }
+    const allSaved = localStorage.getItem('bfh_all_students');
+    if (allSaved) {
+      const parsed = JSON.parse(allSaved);
+      if (Array.isArray(parsed)) {
+        parsed.forEach((s) => {
+          if (!localStudents.some((ex) => ex.studentId === s.studentId)) {
+            localStudents.push(s);
+          }
+        });
+      }
+    }
+  } catch {}
+
+  return localStudents;
 }
 
 // Student: Redeem access code from Selar receipt
