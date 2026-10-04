@@ -472,8 +472,22 @@ export async function generateBatchAccessCodes(
   return generated;
 }
 
-// Verified Seed Test Codes (Empty by default for a clean, fresh state)
-export const INITIAL_TEST_CODES: AccessCode[] = [];
+// Verified Seed Access Codes (Includes official code BFH-ECD-6TZE-9YNS)
+export const INITIAL_OFFICIAL_CODES: AccessCode[] = [
+  {
+    id: 'code_6tze_9yns',
+    code: 'BFH-ECD-6TZE-9YNS',
+    programId: DEFAULT_PROGRAM.id,
+    programTitle: DEFAULT_PROGRAM.title,
+    currency: 'XAF',
+    amount: 30000,
+    status: 'AVAILABLE',
+    notes: 'Official Access Code (30,000 CFA • 75,000 NGN • $50 USD)',
+    createdAt: '2026-10-04T03:55:00.000Z',
+  },
+];
+
+export const INITIAL_TEST_CODES: AccessCode[] = INITIAL_OFFICIAL_CODES;
 
 export function getStoredOrInitialCodes(): AccessCode[] {
   try {
@@ -481,11 +495,23 @@ export function getStoredOrInitialCodes(): AccessCode[] {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
+        // Ensure BFH-ECD-6TZE-9YNS is present if not already added
+        const hasCode = parsed.some(
+          (c: AccessCode) => c.code.toUpperCase().replace(/[^A-Z0-9]/g, '') === 'BFHECD6TZE9YNS'
+        );
+        if (!hasCode) {
+          parsed.unshift(INITIAL_OFFICIAL_CODES[0]);
+          localStorage.setItem('bfh_access_codes', JSON.stringify(parsed));
+        }
         return parsed;
       }
     }
   } catch {}
-  return [];
+
+  try {
+    localStorage.setItem('bfh_access_codes', JSON.stringify(INITIAL_OFFICIAL_CODES));
+  } catch {}
+  return [...INITIAL_OFFICIAL_CODES];
 }
 
 // Admin: Get all access codes
@@ -608,14 +634,21 @@ export async function redeemAccessCode(
   };
 
   try {
-    await updateDoc(doc(db, 'accessCodes', codeData.code), {
-      status: 'REDEEMED',
-      redeemedByStudentId: studentUid,
-      redeemedByStudentIdCode: studentIdCode,
-      redeemedByStudentName: studentName,
-      redeemedAt: now,
-    });
-  } catch {}
+    await setDoc(
+      doc(db, 'accessCodes', codeData.code),
+      {
+        ...updatedCode,
+        status: 'REDEEMED',
+        redeemedByStudentId: studentUid,
+        redeemedByStudentIdCode: studentIdCode,
+        redeemedByStudentName: studentName,
+        redeemedAt: now,
+      },
+      { merge: true }
+    );
+  } catch (err) {
+    console.warn('Firestore code redeem fallback:', err);
+  }
 
   // Update in local storage
   try {
@@ -631,9 +664,23 @@ export async function redeemAccessCode(
     localStorage.setItem('bfh_access_codes', JSON.stringify(currentList));
   } catch {}
 
+  // Broadcast storage change so Admin Dashboard updates instantly
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('storage'));
+  }
+
   return {
     success: true,
     programTitle: codeData.programTitle || DEFAULT_PROGRAM.title,
   };
+}
+
+// Admin: Save generated student profile to Firestore
+export async function saveAdminGeneratedStudent(student: StudentProfile): Promise<void> {
+  try {
+    await setDoc(doc(db, 'students', student.id), student);
+  } catch (err) {
+    console.warn('Firestore saveAdminGeneratedStudent fallback:', err);
+  }
 }
 

@@ -515,6 +515,18 @@ Baby First Health Educational Program
       if (local) existingStudent = JSON.parse(local);
     }
 
+    if (!existingStudent && cleanId) {
+      try {
+        const allStudents = JSON.parse(localStorage.getItem('bfh_all_students') || '[]');
+        const found = allStudents.find(
+          (s: any) =>
+            s.studentId?.toUpperCase() === cleanId ||
+            s.fullName?.toLowerCase() === cleanName.toLowerCase()
+        );
+        if (found) existingStudent = found;
+      } catch {}
+    }
+
     if (!existingStudent) {
       const cached = localStorage.getItem('bfh_current_student');
       if (cached) {

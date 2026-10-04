@@ -52,7 +52,9 @@ import {
   getAllAccessCodes,
   generateBatchAccessCodes,
   getAllStudents,
-  getStoredOrInitialCodes
+  getStoredOrInitialCodes,
+  generateSecureStudentId,
+  saveAdminGeneratedStudent
 } from '../services/portalService';
 import {
   PaymentClaimData,
@@ -129,6 +131,12 @@ export const AdminDashboard: React.FC = () => {
   const [isAvailableExpanded, setIsAvailableExpanded] = useState(false);
   const [isRedeemedExpanded, setIsRedeemedExpanded] = useState(false);
   const [copiedCodeId, setCopiedCodeId] = useState<string | null>(null);
+
+  // Generate Student ID State
+  const [studentInfoInput, setStudentInfoInput] = useState('');
+  const [isGeneratingStudentId, setIsGeneratingStudentId] = useState(false);
+  const [generatedStudentResult, setGeneratedStudentResult] = useState<StudentProfile | null>(null);
+  const [copiedGeneratedStudentId, setCopiedGeneratedStudentId] = useState(false);
 
   // Courses state (Multi-Course Support, defaulting to ECD)
   const [courses, setCourses] = useState<AdminCourseItem[]>(() => {
@@ -592,12 +600,12 @@ export const AdminDashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    // Explicitly set available codes and redeemed codes to zero on load as requested
-    try {
-      localStorage.setItem('bfh_access_codes', '[]');
-    } catch {}
-    setAccessCodes([]);
     loadData();
+    const handleStorageUpdate = () => {
+      loadData();
+    };
+    window.addEventListener('storage', handleStorageUpdate);
+    return () => window.removeEventListener('storage', handleStorageUpdate);
   }, []);
 
   const loadData = async () => {
@@ -739,6 +747,158 @@ export const AdminDashboard: React.FC = () => {
     navigator.clipboard.writeText(code);
     setCopiedCodeId(code);
     setTimeout(() => setCopiedCodeId(null), 2000);
+  };
+
+  const parsePastedStudentInfo = (text: string) => {
+    const lines = text
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0);
+
+    let fullName = '';
+    let email = '';
+    let whatsappNumber = '';
+    let countryOfResidence = 'Cameroon';
+    let stateRegion = 'Centre';
+    let placeOfBirth = '';
+    let profession = 'Childcare Health Educator';
+    let academicLevel = "Bachelor's Degree";
+
+    // Email regex match
+    const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+    if (emailMatch) {
+      email = emailMatch[0];
+    }
+
+    // Phone / WhatsApp regex match
+    const phoneMatch = text.match(/(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{3,5}/);
+    if (phoneMatch) {
+      whatsappNumber = phoneMatch[0].trim();
+    }
+
+    for (const line of lines) {
+      const lower = line.toLowerCase();
+
+      // Full Name detection
+      if (!fullName && (lower.startsWith('name:') || lower.startsWith('full name:') || lower.startsWith('student name:') || lower.startsWith('nom:'))) {
+        fullName = line.split(':')[1]?.trim() || '';
+      } else if (!fullName && lower.includes('name') && line.includes(':')) {
+        fullName = line.split(':')[1]?.trim() || '';
+      }
+
+      // Email line
+      if (!email && (lower.startsWith('email:') || lower.startsWith('e-mail:') || lower.startsWith('courriel:'))) {
+        email = line.split(':')[1]?.trim() || '';
+      }
+
+      // WhatsApp / Phone line
+      if (!whatsappNumber && (lower.startsWith('phone:') || lower.startsWith('whatsapp:') || lower.startsWith('tel:') || lower.startsWith('mobile:'))) {
+        whatsappNumber = line.split(':')[1]?.trim() || '';
+      }
+
+      // Country line
+      if (lower.startsWith('country:') || lower.startsWith('pays:') || lower.startsWith('residence:') || lower.startsWith('nationality:')) {
+        countryOfResidence = line.split(':')[1]?.trim() || 'Cameroon';
+      } else if (lower.includes('cameroon') || lower.includes('nigeria') || lower.includes('ghana') || lower.includes('kenya') || lower.includes('united states') || lower.includes('uk')) {
+        if (lower.includes('cameroon')) countryOfResidence = 'Cameroon';
+        else if (lower.includes('nigeria')) countryOfResidence = 'Nigeria';
+        else if (lower.includes('ghana')) countryOfResidence = 'Ghana';
+        else if (lower.includes('kenya')) countryOfResidence = 'Kenya';
+        else if (lower.includes('united states') || lower.includes('usa')) countryOfResidence = 'United States';
+        else if (lower.includes('uk') || lower.includes('united kingdom')) countryOfResidence = 'United Kingdom';
+      }
+
+      // Region / State / City
+      if (lower.startsWith('region:') || lower.startsWith('state:') || lower.startsWith('city:') || lower.startsWith('ville:')) {
+        stateRegion = line.split(':')[1]?.trim() || 'Centre';
+      }
+
+      // Profession
+      if (lower.startsWith('profession:') || lower.startsWith('job:') || lower.startsWith('occupation:') || lower.startsWith('metier:')) {
+        profession = line.split(':')[1]?.trim() || profession;
+      }
+
+      // Academic level
+      if (lower.startsWith('academic:') || lower.startsWith('education:') || lower.startsWith('level:') || lower.startsWith('degree:')) {
+        academicLevel = line.split(':')[1]?.trim() || academicLevel;
+      }
+    }
+
+    // Fallback for fullName: take first line that isn't email, phone, or field prefix
+    if (!fullName && lines.length > 0) {
+      for (const line of lines) {
+        if (!line.includes('@') && !line.match(/\d{5,}/) && !line.includes(':')) {
+          fullName = line;
+          break;
+        }
+      }
+    }
+
+    if (!fullName) {
+      fullName = 'Registered Student';
+    }
+
+    return {
+      fullName,
+      email,
+      whatsappNumber,
+      countryOfResidence,
+      stateRegion,
+      placeOfBirth,
+      profession,
+      academicLevel,
+    };
+  };
+
+  const handleGenerateStudentId = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!studentInfoInput.trim()) return;
+
+    setIsGeneratingStudentId(true);
+    const parsed = parsePastedStudentInfo(studentInfoInput);
+    const newStudentId = generateSecureStudentId('ECD');
+    const uid = `usr_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    const now = new Date().toISOString();
+
+    const newStudent: StudentProfile = {
+      id: uid,
+      studentId: newStudentId,
+      fullName: parsed.fullName,
+      email: parsed.email || `${parsed.fullName.toLowerCase().replace(/[^a-z0-9]/g, '.')}@learner.babyfirsthealth.com`,
+      whatsappNumber: parsed.whatsappNumber || '',
+      countryOfResidence: parsed.countryOfResidence,
+      stateRegion: parsed.stateRegion,
+      placeOfBirth: parsed.placeOfBirth || '',
+      profession: parsed.profession,
+      academicLevel: parsed.academicLevel,
+      englishProficiency: 'Fluent / Professional',
+      profilePhotoUrl: undefined,
+      isEmailVerified: true,
+      status: 'ACTIVE',
+      programId: DEFAULT_PROGRAM.id,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    // Save locally for instant availability and test portal
+    localStorage.setItem(`bfh_student_${newStudent.studentId}`, JSON.stringify(newStudent));
+    try {
+      const all = JSON.parse(localStorage.getItem('bfh_all_students') || '[]');
+      all.unshift(newStudent);
+      localStorage.setItem('bfh_all_students', JSON.stringify(all));
+    } catch {}
+
+    // Save to Firestore
+    try {
+      await saveAdminGeneratedStudent(newStudent);
+    } catch (err) {
+      console.warn('Firestore student save error:', err);
+    }
+
+    // Update dashboard state so they appear immediately in Ledger
+    setStudents((prev) => [newStudent, ...prev.filter((s) => s.studentId !== newStudent.studentId)]);
+    setGeneratedStudentResult(newStudent);
+    setIsGeneratingStudentId(false);
   };
 
   const handleOpenApprove = (claim: PaymentClaimData) => {
@@ -1318,7 +1478,106 @@ export const AdminDashboard: React.FC = () => {
                 </form>
               </div>
 
-              {/* 2. Three Simple Cards Under Generate Access Codes */}
+              {/* 2. Generate Student ID Card */}
+              <div className="bg-white rounded-[32px] p-6 sm:p-8 space-y-6">
+                <div>
+                  <h2 className="font-body font-bold text-teal-900 text-2xl">
+                    Generate Student ID
+                  </h2>
+                </div>
+
+                <form onSubmit={handleGenerateStudentId} className="space-y-4">
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-semibold text-teal-950">
+                      Student Information
+                    </label>
+                    <textarea
+                      rows={5}
+                      value={studentInfoInput}
+                      onChange={(e) => setStudentInfoInput(e.target.value)}
+                      placeholder="Paste student details here (e.g. Full Name, Email, WhatsApp/Phone, Country, Profession, etc.)..."
+                      className="w-full p-4 rounded-[20px] bg-teal-50 text-xs font-normal text-teal-950 outline-none resize-y min-h-[120px]"
+                    />
+                  </div>
+
+                  <div>
+                    <button
+                      type="submit"
+                      disabled={isGeneratingStudentId || !studentInfoInput.trim()}
+                      className="py-3.5 px-8 rounded-full bg-teal-900 hover:bg-teal-800 disabled:opacity-50 text-white font-body font-bold text-sm transition-colors cursor-pointer"
+                    >
+                      {isGeneratingStudentId ? 'Generating...' : 'Generate Student ID'}
+                    </button>
+                  </div>
+                </form>
+
+                {/* Newly Generated Student ID Result Card */}
+                {generatedStudentResult && (
+                  <div className="p-5 rounded-[24px] bg-teal-50 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-teal-900">
+                        Generated Student ID
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800">
+                        Saved & Active
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-3 bg-white p-3.5 rounded-[18px]">
+                      <div className="min-w-0">
+                        <span className="font-mono text-sm sm:text-base font-bold text-teal-950 block truncate">
+                          {generatedStudentResult.studentId}
+                        </span>
+                        <span className="text-xs font-normal text-teal-900 block truncate">
+                          {generatedStudentResult.fullName}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(generatedStudentResult.studentId);
+                          setCopiedGeneratedStudentId(true);
+                          setTimeout(() => setCopiedGeneratedStudentId(false), 2000);
+                        }}
+                        className="px-3.5 py-2 rounded-full bg-teal-50 hover:bg-teal-100 text-teal-800 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                      >
+                        {copiedGeneratedStudentId ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-orange-500" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Copy ID</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-normal text-teal-950/80 pt-1">
+                      <div>
+                        <span className="text-teal-950/50">Email:</span>{' '}
+                        <span className="font-medium text-teal-900">{generatedStudentResult.email}</span>
+                      </div>
+                      <div>
+                        <span className="text-teal-950/50">WhatsApp / Phone:</span>{' '}
+                        <span className="font-medium text-teal-900">{generatedStudentResult.whatsappNumber || 'Not provided'}</span>
+                      </div>
+                      <div>
+                        <span className="text-teal-950/50">Country:</span>{' '}
+                        <span className="font-medium text-teal-900">{generatedStudentResult.countryOfResidence}</span>
+                      </div>
+                      <div>
+                        <span className="text-teal-950/50">Profession:</span>{' '}
+                        <span className="font-medium text-teal-900">{generatedStudentResult.profession}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* 3. Three Simple Cards Under Generate Access Codes */}
               {/* On mobile: stacked on each other. When Available expands, pops down directly on that card and pushes down Redeemed */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
                 {/* Card 1: Available */}
