@@ -3,6 +3,10 @@ import { CourseLesson, CourseModule } from '../types/studentPortal';
 /**
  * Pedia AI Early Childhood Learning Coach
  * Grounded in WHO Nurturing Care Framework, AAP Guidelines, and Baby First Health Curriculum
+ * Supports:
+ * 1. Server-side API endpoint (/api/pedia-coach, /.netlify/functions/pedia-coach)
+ * 2. Client-side direct Gemini fallback (if VITE_GEMINI_API_KEY is supplied on GitHub Pages)
+ * 3. Deep Offline/Static Clinical Pediatric Knowledge Base (Zero repetitive loops)
  */
 
 export interface PediaMessage {
@@ -158,8 +162,20 @@ export function getPediaWelcomeMessage(lesson: CourseLesson, module?: CourseModu
 }
 
 /**
+ * Strips all Unicode emoji ranges to maintain clean, professional clinical text
+ */
+function stripEmojis(text: string): string {
+  return (text || '')
+    .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1FA00}-\u{1FAFF}]/gu, '')
+    .trim();
+}
+
+/**
  * Core Pedia Coach Response Generator
- * Evaluates student questions against active lesson context and clinical pediatric curriculum
+ * Evaluates student questions with three-tier resilience:
+ * 1. Server-side proxy (/api/pedia-coach or /.netlify/functions/pedia-coach)
+ * 2. Client-side Gemini REST API (if VITE_GEMINI_API_KEY is configured on static hosts like GitHub Pages)
+ * 3. Deep Evidence-Based Pediatric Curriculum Intelligence (No repetitive hardcoded loops)
  */
 export async function generatePediaCoachResponse(
   query: string,
@@ -170,9 +186,9 @@ export async function generatePediaCoachResponse(
   const lessonTitle = lesson.title || '';
   const lessonContent = lesson.content || '';
   const moduleTitle = module?.title || '';
+  const q = sanitizedQuery.toLowerCase();
 
   // 1. Guardrail against direct quiz answers
-  const q = sanitizedQuery.toLowerCase();
   if (
     q.includes('quiz answer') ||
     q.includes('correct answer') ||
@@ -183,10 +199,10 @@ export async function generatePediaCoachResponse(
     q.includes('is it a or b') ||
     q.includes('is it option')
   ) {
-    return `As your Baby First Health learning coach, I cannot give out direct quiz answers or letter options. My role is to help you understand the evidence-based principles so you can answer with genuine clinical mastery!\n\nFor this lesson, focus on the core takeaways:\n- Review the foundational concepts in "${lessonTitle}"\n- Reflect on how responsive caregiving and child observation apply\n- Read through the key guidance sections above\n\nWhich specific concept or term from this lesson would you like me to explain further?`;
+    return `As your Baby First Health learning coach, I cannot give out direct quiz answers or letter choices. My role is to help you master the evidence-based principles so you can answer with genuine clinical confidence!\n\nFor this lesson, focus on the core clinical concepts:\n- Review the foundational takeaways in "${lessonTitle}"\n- Reflect on how responsive caregiving and child observation apply\n- Check the developmental guidelines highlighted above\n\nWhich specific concept or term from this lesson would you like me to clarify with you?`;
   }
 
-  // 2. Call real server-side Gemini 3.8 Flash model
+  // 2. Attempt 1: Call server-side backend endpoint (works in local dev, Netlify, Vercel, and Node servers)
   try {
     const endpoints = ['/api/pedia-coach', '/.netlify/functions/pedia-coach'];
     for (const endpoint of endpoints) {
@@ -201,108 +217,144 @@ export async function generatePediaCoachResponse(
             moduleTitle,
           }),
         });
-        if (res.ok) {
+
+        // Ensure we received valid JSON and not an HTML 404 or SPA fallback
+        const contentType = res.headers.get('content-type') || '';
+        if (res.ok && contentType.includes('application/json')) {
           const data = await res.json();
           if (data.success && data.reply) {
-            // Strip any accidental emojis to ensure professional vector aesthetic
-            return data.reply
-              .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1FA00}-\u{1FAFF}]/gu, '')
-              .trim();
+            return stripEmojis(data.reply);
           }
         }
       } catch {}
     }
   } catch {}
 
-  // 3. High-quality offline / local curriculum fallback if network is interrupted
-  if (q.includes('gross') && q.includes('fine')) {
-    return `**Gross Motor vs. Fine Motor Skills:**\n\n- **Gross Motor Skills:** Involve large muscle groups of the arms, legs, and torso. Examples include rolling over, sitting upright without support, crawling, standing, walking, and running.\n- **Fine Motor Skills:** Involve precise, coordinated movements of the small muscles in the hands, fingers, and wrists, guided by vision. Examples include the palmar grasp, picking up small objects with a pincer grasp, stacking blocks, holding a spoon, and scribbling with a crayon.\n\nBoth progress together, but gross motor control often provides the stable posture required for precise fine motor tasks!`;
+  // 3. Attempt 2: Direct Gemini REST Call (Ideal for static deployments like GitHub Pages if VITE_GEMINI_API_KEY is supplied)
+  try {
+    const clientApiKey = (import.meta.env.VITE_GEMINI_API_KEY as string | undefined)?.trim();
+    if (clientApiKey) {
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${clientApiKey}`;
+      const directRes = await fetch(geminiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: 'user',
+              parts: [
+                {
+                  text: `Student Question: "${sanitizedQuery}"\n\nCurrent Context:\n- Course Module: ${moduleTitle || 'Early Childhood Development'}\n- Active Lesson: ${lessonTitle || 'Core Lesson'}\n- Lesson Content Excerpt:\n${lessonContent.slice(0, 1800)}\n\nInstructions:\n1. Provide an authoritative, clear, encouraging explanation as Pedia, the Baby First Health learning coach.\n2. ABSOLUTELY NO EMOJIS under any circumstances.\n3. If the student asks for quiz answers or direct test options, do NOT give answers; instead guide them to understand the clinical concepts.\n4. Format using clean markdown (paragraphs and bullet points).`,
+                },
+              ],
+            },
+          ],
+          systemInstruction: {
+            parts: [
+              {
+                text: 'You are Pedia, the official Early Childhood Development (ECD) learning coach for Baby First Health. You assist healthcare, caregiver, and early childhood students. Keep all answers professional, encouraging, evidence-based (WHO/AAP/UNICEF), and concise. ABSOLUTELY FORBIDDEN: Do not use emojis anywhere in your response.',
+              },
+            ],
+          },
+        }),
+      });
+
+      if (directRes.ok) {
+        const gData = await directRes.json();
+        const reply = gData?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (reply) {
+          return stripEmojis(reply);
+        }
+      }
+    }
+  } catch {}
+
+  // 4. Attempt 3: Deep Comprehensive Clinical Curriculum Knowledge Engine (Deterministic, Highly Detailed, Zero Repetition)
+  
+  // Topic: Nutrition, Feeding & Solids
+  if (q.includes('feed') || q.includes('food') || q.includes('breastfeed') || q.includes('solid') || q.includes('formula') || q.includes('month') && (q.includes('eat') || q.includes('diet'))) {
+    return `**Infant Nutrition & Feeding Guidelines (WHO & AAP):**\n\n- **First 6 Months (0–6 Months):** Exclusive breastfeeding is recommended as the gold standard. Breast milk (or iron-fortified infant formula) provides complete nutrition and immune factors.\n- **Introducing Solids (Around 6 Months):** Introduce nutrient-dense complementary foods when the infant shows signs of readiness (holding head steady, sitting with minimal support, opening mouth when food approaches, tongue-thrust reflex diminishing).\n- **Key First Foods:** Iron-rich purees (single-grain cereals, soft mashed beans, meat purees, mashed avocado, or pureed vegetables).\n- **Safety Guidance:** Avoid cow's milk as a primary beverage before 12 months. Never give honey to infants under 12 months due to the risk of infant botulism. Always supervise feeding to prevent choking.`;
   }
 
+  // Topic: Gross vs Fine Motor
+  if (q.includes('gross') || q.includes('fine motor') || q.includes('motor skill')) {
+    return `**Gross Motor vs. Fine Motor Development:**\n\n- **Gross Motor Skills:** Involve large muscle groups controlling the torso, legs, and arms. Milestones include head balance, rolling over, sitting independently, crawling, cruising, standing, and walking.\n- **Fine Motor Skills:** Involve precise, coordinated movements of the small muscles of the hands, wrists, and fingers, synchronized with vision. Milestones include palmar grasp, raking grasp, pincer grasp (thumb and forefinger), holding utensils, and manipulating objects.\n\nGross motor stability of the trunk and shoulders provides the physical anchor necessary for fine motor precision in the hands!`;
+  }
+
+  // Topic: Cephalocaudal Principle
   if (q.includes('cephalocaudal') || (q.includes('head') && q.includes('toe'))) {
-    return `**The Cephalocaudal Principle (Head-to-Toe Development):**\n\nMotor development progresses systematically from the head downward:\n1. An infant first gains control of their eye movements, neck, and head.\n2. Next, control extends to the shoulders, upper chest, and torso (enabling sitting).\n3. Finally, control reaches the lower legs and feet (enabling crawling, standing, and walking).\n\nThis is why head and neck control is the critical prerequisite before a baby can sit or stand securely.`;
+    return `**The Cephalocaudal Principle (Head-to-Toe Progression):**\n\nIn human physical development, neuromuscular control matures from the head downward:\n1. **Head & Neck Control:** First mastered between 2 and 4 months.\n2. **Torso & Arms:** Upper body and trunk stability mature next, enabling independent sitting around 6 to 8 months.\n3. **Pelvis & Legs:** Lower extremity control develops last, allowing crawling, pulling to stand, and walking between 9 and 15 months.\n\nThis physiological sequence explains why adequate head and neck strength is mandatory before seated or upright activities can occur safely.`;
   }
 
-  if (q.includes('proximodistal') || (q.includes('center') && q.includes('periphery'))) {
-    return `**The Proximodistal Principle (Center-Outward Development):**\n\nMotor control develops from the center of the body outward toward the extremities:\n1. Trunk and core stability develop first.\n2. Arm and shoulder control develop next.\n3. Precise wrist and finger control (such as the pincer grasp) develop last.\n\nA child must have solid core and shoulder stability before they can execute precise fine-motor hand movements!`;
+  // Topic: Proximodistal Principle
+  if (q.includes('proximodistal') || (q.includes('center') && q.includes('outward'))) {
+    return `**The Proximodistal Principle (Center-to-Periphery Progression):**\n\nMotor control proceeds from the center midline of the body outward to the extremities:\n1. Core trunk, spinal, and shoulder girdle muscles develop first.\n2. Forearms, wrists, and palm grasping develop next.\n3. Finger dexterity (such as the fine pincer grasp) develops last.\n\nA child must develop core posture and shoulder stability before they can execute precise fine-motor manipulations like stacking blocks or holding spoons.`;
   }
 
-  if (q.includes('tummy time')) {
-    return `**Tummy Time Clinical Guidance:**\n\n- **Purpose:** Supervised awake tummy time strengthens the neck, back, shoulder, and arm muscles needed for rolling, sitting, and crawling. It also prevents positional plagiocephaly (flat head syndrome).\n- **When to start:** Right from birth on the caregiver's chest, then on a firm, safe blanket on the floor.\n- **Guidance:** Always ensure the baby is **awake and closely supervised**. Remember the pediatric rule: *Back to sleep, tummy to play*.\n- **If the baby fusses:** Keep sessions short (2–3 minutes, several times a day) and get down to eye level, talking, singing, and offering colorful toys.`;
+  // Topic: Tummy Time
+  if (q.includes('tummy time') || q.includes('prone')) {
+    return `**Clinical Guidance on Tummy Time:**\n\n- **Clinical Purpose:** Supervised awake tummy time builds critical extensor strength in the cervical spine (neck), shoulder girdle, back, and core. It also prevents positional plagiocephaly (flat head syndrome).\n- **When to Begin:** Can start during the first week of life on the caregiver's chest, progressing to a firm, clean floor surface.\n- **Golden Safety Rule:** *Back to sleep, tummy to play*. Tummy time must **only** occur when the infant is awake and under constant adult supervision.\n- **Overcoming Fusiness:** Start with short intervals of 2–3 minutes, 2–3 times daily. Get down to eye level, sing, talk, or place a baby-safe mirror in front of the child.`;
   }
 
-  if (q.includes('pincer') || q.includes('palmar grasp')) {
-    return `**Grasp Development:**\n\n- **Palmar Grasp:** In early infancy (around 4–6 months), the baby grasps objects using their whole palm and all fingers closed together.\n- **Pincer Grasp:** Between 9 and 12 months, infants develop the coordinated ability to hold small items between the pad of the thumb and the index finger.\n\nThe pincer grasp is a major milestone for self-feeding (like picking up pieces of soft food) and later tool use!`;
+  // Topic: Grasping (Pincer vs Palmar)
+  if (q.includes('pincer') || q.includes('palmar') || q.includes('grasp')) {
+    return `**Development of Grasp Patterns:**\n\n- **Palmar Grasp Reflex (Newborn):** Involuntary curling of fingers around an object placed in the palm.\n- **Voluntary Palmar Grasp (4–6 Months):** Infant intentionally clutches items using the entire palm and curled fingers.\n- **Radial Palmar / Raking Grasp (6–8 Months):** Uses the thumb side of the palm and fingers to rake objects inward.\n- **Pincer Grasp (9–12 Months):** Coordinates the pad or tip of the index finger and thumb to pick up small objects. This milestone is essential for self-feeding and future tool use.`;
   }
 
-  if (q.includes('safe sleep') || q.includes('sleep hours') || q.includes('sleep')) {
-    return `**Sleep Guidelines & Recommendations:**\n\n- **AAP Safe Sleep Guidelines:** Infants should sleep on their backs on a firm, flat, separate surface without soft bedding, pillows, bumpers, or loose blankets to minimize SIDS risk.\n- **Recommended Sleep in 24 Hours:**\n  • **Infants (4–12 months):** 12–16 hours (including naps)\n  • **Toddlers (1–2 years):** 11–14 hours (including naps)\n  • **Preschoolers (3–5 years):** 10–13 hours\n\nAdequate sleep is vital for growth hormone release, physical recovery, brain plasticity, and emotional regulation.`;
+  // Topic: Sleep Guidelines
+  if (q.includes('sleep') || q.includes('bedtime') || q.includes('nap') || q.includes('sids')) {
+    return `**AAP Pediatric Safe Sleep Guidelines:**\n\n- **Safe Sleep ABCs:** **A**lone, on their **B**ack, in a **C**rib on a firm, flat mattress.\n- **Sleep Environment:** Keep the crib free of pillows, quilts, stuffed animals, bumpers, or loose blankets to minimize the risk of SIDS.\n- **Room-Sharing:** Keep the infant's crib in the parents' room close to the bed for at least the first 6 months, but avoid bed-sharing.\n- **Daily Sleep Recommendations:**\n  • **Infants (4–12 months):** 12–16 hours (including naps)\n  • **Toddlers (1–2 years):** 11–14 hours (including naps)\n  • **Preschoolers (3–5 years):** 10–13 hours`;
   }
 
-  if (q.includes('red flag') || q.includes('concern') || q.includes('delay') || q.includes('seek help')) {
-    return `**When to Seek Professional Medical Advice:**\n\nConsult a pediatrician, nurse, or qualified healthcare professional if a child displays:\n1. **Loss of skills** previously mastered (any developmental regression).\n2. **Persistent asymmetry** (favoring one side of the body exclusively while ignoring the other).\n3. **Extreme muscle tone issues** (appearing excessively floppy/limp or unusually rigid/stiff).\n4. Not sitting unsupported by 9 months, or not walking independently by 18 months.\n5. Lack of eye contact, social response, or engagement with caregivers.\n\n*Note:* Milestones represent general ranges. Early assessment provides reassurance and timely support if needed.`;
+  // Topic: Developmental Red Flags
+  if (q.includes('red flag') || q.includes('delay') || q.includes('concern') || q.includes('worry') || q.includes('doctor')) {
+    return `**Developmental Red Flags Requiring Professional Medical Evaluation:**\n\nConsult a pediatrician or child healthcare professional if a child demonstrates:\n1. **Loss of skills** previously mastered (developmental regression in speech, movement, or social interaction).\n2. **Persistent asymmetry** (exclusively using one arm/leg while ignoring the other side).\n3. **Muscle tone abnormalities** (appearing excessively floppy/limp or unusually rigid/stiff).\n4. **Motor milestones not reached:** Not holding head steady by 4 months, not sitting unsupported by 9 months, or not walking independently by 18 months.\n5. **Lack of social responsiveness:** No eye contact, not smiling back by 3 months, or not responding to their name by 12 months.`;
   }
 
-  // 3. Module 3: Cognitive Development Topics
-  if (q.includes('what is cognitive') || q.includes('cognitive development')) {
-    return `**What Is Cognitive Development?**\n\nCognitive development refers to the growth of a child's ability to think, reason, understand, remember, and solve problems. It encompasses:\n- **Attention:** Focusing on people, objects, and tasks.\n- **Memory:** Storing and recalling information over time.\n- **Curiosity & Exploration:** Investigating the environment.\n- **Problem-Solving:** Figuring out how things work and trying alternative strategies.\n- **Pretend Play & Imagination:** Using symbols and abstract thought.\n\nCognitive growth thrives through warm, responsive back-and-forth interactions with caring adults!`;
+  // Topic: Cognitive Development & Piaget
+  if (q.includes('what is cognitive') || q.includes('cognitive development') || q.includes('thinking') || q.includes('intellectual')) {
+    return `**Understanding Cognitive Development in Early Childhood:**\n\nCognitive development encompasses how a child thinks, explores, reasons, remembers, and figures out how the world works. Core components include:\n- **Attention:** Focusing on relevant visual, auditory, and social stimuli.\n- **Memory:** Encoding and retrieving routines, experiences, and concepts.\n- **Problem-Solving:** Experimenting with trial and error to overcome obstacles.\n- **Object Permanence:** Understanding that objects continue to exist even when hidden from view (emerges around 8 months).\n- **Symbolic Thought:** Representing objects and actions through words and pretend play.\n\nCognitive development does not happen in isolation—it is driven by warm, back-and-forth communication with responsive caregivers!`;
   }
 
-  if (q.includes('spoon') || q.includes('dropping') || q.includes('cause and effect')) {
-    return `**Why Babies Repeatedly Drop Objects (Cause & Effect):**\n\nWhen a baby repeatedly drops a spoon or toy from a high chair, they are acting as a "little scientist":\n- *“When I open my hand, gravity pulls the spoon down.”*\n- *“It hits the floor and makes a sharp clattering sound.”*\n- *“An adult picks it up and returns it to me. Will the same thing happen if I do it again?”*\n\nThrough repetition, the infant discovers **cause and effect**, physical properties of matter, and social responsiveness. Caregivers can calmly hand it back or redirect after several tries without scolding!`;
+  // Topic: Dropped Spoon & Cause and Effect
+  if (q.includes('spoon') || q.includes('drop') || q.includes('cause and effect')) {
+    return `**The Clinical Significance of Repeatedly Dropping Objects:**\n\nWhen an infant repeatedly drops a spoon or cup from a high chair, they are conducting an intuitive physics and social experiment:\n- **Physical Cause and Effect:** *"When I open my fingers, gravity pulls the object down, making a loud noise on impact."*\n- **Object Permanence:** *"Even though it fell out of my hands, it still exists on the floor."*\n- **Social Responsiveness:** *"When it drops, my caregiver notices, picks it up, and talks to me."*\n\nRather than defiance, this is foundational scientific exploration. Caregivers can calmly retrieve it a few times, describe what happened, and then gently redirect the child's hands to another exploratory activity!`;
   }
 
-  if (q.includes('screen') || q.includes('technology') || q.includes('television') || q.includes('tablet')) {
-    return `**AAP Screen Time Guidelines for Young Children:**\n\n- **Under 18 Months:** Avoid screen media entirely, except for interactive video-chatting with family.\n- **18 to 24 Months:** If introducing digital media, choose high-quality programming and **co-view with the child** to help them understand what they are seeing.\n- **2 to 5 Years:** Limit screen use to **1 hour or less per day** of high-quality educational content, accompanied by an adult.\n- **Healthy Screen Habits:** Avoid screens during meals and for at least 1 hour before bedtime. Keep bedrooms screen-free.\n\nYoung children learn through real-world, hands-on exploration and interpersonal communication, which passive screens cannot replace!`;
+  // Topic: Screen Time Guidelines
+  if (q.includes('screen') || q.includes('tv') || q.includes('phone') || q.includes('tablet') || q.includes('technology')) {
+    return `**American Academy of Pediatrics (AAP) Screen Time Recommendations:**\n\n- **Under 18 Months:** Avoid all digital screen media, except for interactive video-chatting with family members.\n- **18 to 24 Months:** If introducing digital media, select high-quality educational programming and **co-view with an adult** to explain what is happening.\n- **2 to 5 Years:** Limit screen use to **1 hour or less per day** of high-quality programming, always accompanied by adult discussion.\n- **Healthy Habits:** Keep bedrooms screen-free and turn off screens during meals and at least 1 hour before bedtime.\n\nYoung children learn through three-dimensional, sensory exploration and responsive human conversation—experiences that passive screens cannot replicate!`;
   }
 
-  if (q.includes('nurturing care') || q.includes('framework') || q.includes('who framework')) {
-    return `**The WHO/UNICEF Nurturing Care Framework:**\n\nThis evidence-based global framework identifies 5 interdependent components that children need to reach their developmental potential:\n1. **Good Health:** Preventing illness, immunization, prompt treatment, and hygiene.\n2. **Adequate Nutrition:** Exclusive breastfeeding, nutritious foods, and micro-nutrients.\n3. **Responsive Caregiving:** Tuning into the child’s cues, talking, comforting, and responding warmly.\n4. **Opportunities for Early Learning:** Play, songs, storytelling, exploration, and problem-solving.\n5. **Security and Safety:** Protecting the child from danger, violence, neglect, and environmental hazards.`;
+  // Topic: WHO Nurturing Care Framework
+  if (q.includes('nurturing care') || q.includes('framework') || q.includes('who framework') || q.includes('unicef')) {
+    return `**The WHO/UNICEF Nurturing Care Framework (5 Pillars):**\n\n1. **Good Health:** Immunizations, hygiene, clean water, and prompt healthcare treatment.\n2. **Adequate Nutrition:** Exclusive breastfeeding, nutritious foods, and essential micro-nutrients.\n3. **Responsive Caregiving:** Tuning into the child’s cues, maintaining eye contact, and offering warm, comforting support.\n4. **Opportunities for Early Learning:** Interactive play, reading, storytelling, and hands-on exploration.\n5. **Security and Safety:** Protecting the child from environmental hazards, violence, emotional stress, and neglect.\n\nThese five components act synergistically to safeguard healthy physical and neurological growth in early childhood.`;
   }
 
-  if (q.includes('pretend play') || q.includes('symbolic play') || q.includes('imagination')) {
-    return `**The Power of Pretend (Symbolic) Play:**\n\nPretend play emerges around 18–24 months (e.g., pretending a wooden block is a telephone, feeding a doll, or driving a box as a bus):\n- **Cognitive Significance:** Demonstrates symbolic thinking—understanding that one object or action can represent something else.\n- **Skills Developed:** Language, perspective-taking (theory of mind), abstract reasoning, emotional processing, and planning.\n- **Caregiver Role:** Join in the play, ask open questions ("Who are you calling?"), and supply simple props like cardboard boxes, cloths, and bowls.`;
+  // Topic: Serve and Return / Brain Architecture
+  if (q.includes('serve and return') || q.includes('brain') || q.includes('neural') || q.includes('synapse')) {
+    return `**"Serve and Return" & Brain Architecture:**\n\nDuring the first few years of life, the brain forms more than 1 million new neural connections every second. "Serve and Return" interactions are the primary driver of this wiring:\n- **The Serve:** The baby vocalizes, gestures, points, or makes a facial expression.\n- **The Return:** The caregiver responds with eye contact, words, a warm smile, or a comforting touch.\n\nWhen caregivers reliably return serves, neural circuits supporting communication, emotional security, and reasoning are reinforced. Absence of these exchanges can disrupt healthy brain architecture.`;
   }
 
-  if (q.includes('repetition') || q.includes('repeat')) {
-    return `**Why Repetition Is Crucial for Young Children:**\n\nYoung children thrive on repetition—whether reading the same picture book ten times, singing the same song, or building and knocking down blocks:\n- Each repeated experience strengthens the specific neural synapses in the brain.\n- It builds memory consolidation, predictability, and emotional security.\n- What seems repetitive to adults is actively mastering the world for a young child!`;
+  // Topic: Stress in Early Childhood
+  if (q.includes('stress') || q.includes('toxic stress') || q.includes('trauma')) {
+    return `**Stress Responses in Early Childhood:**\n\n- **Positive Stress:** Brief, mild elevations in heart rate and stress hormone levels (e.g., meeting someone new). It is normal and builds coping mechanisms when supported by a caring adult.\n- **Tolerable Stress:** More intense adversity (e.g., illness, temporary family disruption). Supportive caregivers buffer the child's stress response, allowing the brain to recover without lasting damage.\n- **Toxic Stress:** Prolonged, severe adversity (e.g., chronic neglect, abuse, violence) *without* protective adult buffering. This can impair brain development, immune function, and long-term health.`;
   }
 
-  if (q.includes('why') && (q.includes('question') || q.includes('three-year-old') || q.includes('child asks'))) {
-    return `**Responding to a Child's "Why?" Questions:**\n\nAround age 3, children enter a rapid conceptual growth phase and ask frequent "why" questions:\n- **Why they ask:** They are genuinely curious, seeking explanations, and practicing conversation.\n- **Best response:** Answer simply and honestly without frustration. Use it as a collaborative learning moment: *"That is a great question! What do you think happens when the sun goes down?"*\n- Encouraging their questions builds curiosity, language mastery, and confidence in thinking.`;
-  }
-
-  if (q.includes('ngozi') || q.includes('chiamaka') || q.includes('enugu')) {
-    return `**Ngozi and Chiamaka Case Study Insights:**\n\nIn this Nigerian case study, 3-year-old Chiamaka explored seeds, leaves, and clay pots with her aunt Ngozi:\n- **Key Takeaways:** Ngozi did not need expensive commercial toys. She used safe, familiar household and natural materials.\n- **Coaching Style:** Ngozi asked open-ended questions (*"What happens if we sort the leaves by size?"*), allowed Chiamaka time to try, and celebrated her curiosity.\n- This demonstrates that rich cognitive learning happens in any caring home environment through responsive dialogue and everyday materials.`;
-  }
-
-  if (q.includes('mistake') || q.includes('pitfall') || q.includes('over-helping')) {
-    return `**Common Adult Pitfalls to Avoid:**\n\n1. **Doing everything for the child:** Rushing to solve the puzzle or tie shoes robs the child of problem-solving practice. Instead: Wait, offer gentle hints, and let them try.\n2. **Discouraging questions:** Calling questions annoying dampens curiosity. Instead: Answer warmly in simple terms.\n3. **Comparing siblings or peers:** Every child has an individual developmental timeline. Focus on the child's own progress.\n4. **Over-reliance on screens:** Using tablets to pacify children deprives them of active physical and communicative play.\n5. **Assuming expensive toys are required:** Safe everyday objects (cups, cloths, stones, leaves) offer equal or superior cognitive stimulation when paired with adult interaction.`;
-  }
-
-  // 4. Module 1: Foundations of Early Childhood Topics
-  if (q.includes('serve and return') || q.includes('serve') || q.includes('return')) {
-    return `**"Serve and Return" Interactions:**\n\nServe and return describes warm, reciprocal exchanges between a child and an adult:\n- The child "serves" by babbling, pointing, smiling, or making a sound.\n- The adult "returns" by making eye contact, smiling back, naming what the child pointed to, or answering the vocalization.\n\nNeuroscience shows that serve-and-return interactions literally construct the neural architecture of the brain, creating pathways for language, emotional security, and reasoning!`;
-  }
-
-  if (q.includes('toxic stress') || q.includes('stress')) {
-    return `**Stress in Early Childhood Development:**\n\n- **Positive Stress:** Brief, mild stress (like meeting someone new or getting an immunization) with a supportive adult helps the child develop coping mechanisms.\n- **Tolerable Stress:** More serious adversity (loss of a relative, natural disruption) that is buffered by loving, stable caregivers, allowing the brain to recover.\n- **Toxic Stress:** Prolonged, severe adversity (chronic neglect, abuse, severe household dysfunction) *without* protective adult buffering. This can disrupt developing brain architecture and long-term health.`;
-  }
-
-  if (q.includes('growth') && q.includes('development')) {
-    return `**Growth vs. Development:**\n\n- **Growth:** Refers to measurable physical increases in body size (weight in kilograms, height in centimeters, head circumference).\n- **Development:** Refers to the progressive mastery of complex skills and functional capacities across motor, cognitive, language, and socio-emotional domains.\n\nA child might be growing well physically while showing delays in developmental milestones, or vice versa, which is why holistic monitoring is essential!`;
+  // Topic: Speech and Language
+  if (q.includes('speech') || q.includes('talk') || q.includes('language') || q.includes('word') || q.includes('babble')) {
+    return `**Key Milestones in Speech and Language:**\n\n- **2–4 Months:** Cooing, gurgling vowel sounds ('ooo', 'aah').\n- **6–9 Months:** Babbling consonant-vowel combinations ('ba-ba', 'da-da').\n- **12 Months:** First intentional word used in context; understands simple commands like "come here".\n- **18–24 Months:** Vocabulary of 20–50+ words, begins combining two words ("more milk", "big truck").\n- **Supporting Language:** Narrate your daily activities out loud, read picture books together daily, sing songs, and wait patiently for the child to respond!`;
   }
 
   // 5. Intelligent contextual search in the active lesson's content
   if (lessonContent && lessonContent.length > 50) {
     const paragraphs = lessonContent.split('\n\n').filter(p => p.trim().length > 30);
-    const keywords = q.split(' ').filter(w => w.length > 3 && !['what', 'when', 'where', 'which', 'about', 'explain', 'could', 'should', 'would', 'does'].includes(w));
+    const keywords = q.split(' ').filter(w => w.length > 3 && !['what', 'when', 'where', 'which', 'about', 'explain', 'could', 'should', 'would', 'does', 'with', 'this', 'that', 'from', 'have', 'been'].includes(w));
 
     for (const para of paragraphs) {
       const paraLower = para.toLowerCase();
       const matchCount = keywords.filter(kw => paraLower.includes(kw)).length;
       if (matchCount >= 2 || (keywords.length === 1 && matchCount === 1)) {
-        // Clean out markdown formatting
         const cleanPara = para
           .replace(/^###\s+/gm, '')
           .replace(/^####\s+/gm, '')
@@ -310,11 +362,11 @@ export async function generatePediaCoachResponse(
           .replace(/\*\*/g, '')
           .trim();
 
-        return `In **${lessonTitle}**, this clinical guidance applies directly to your question:\n\n"${cleanPara}"\n\n**Coaching Takeaway:** When applying this with infants or young children, remember that responsive, patient care and safe environments are the bedrock of healthy early development. Would you like to explore how this applies in everyday home or clinical settings?`;
+        return `In **${lessonTitle}**, here is the evidence-based guidance directly addressing your question:\n\n"${cleanPara}"\n\n**Clinical Takeaway:** When applying this in childcare, home, or clinic settings, remember that young children thrive when caregivers offer predictable routines, warm encouragement, and safe opportunities for hands-on discovery.`;
       }
     }
   }
 
-  // 6. Supportive fallback grounded in active lesson
-  return `Regarding **"${lessonTitle}"** in **${moduleTitle || 'Early Childhood Development'}**:\n\nThe core evidence-based principle here is that young children learn best through warm, responsive caregiving, predictable routines, safe exploration, and rich communicative interaction.\n\nCould you specify which aspect of "${lessonTitle}" you'd like us to focus on? For example:\n- Age-specific expectations or milestones\n- Practical daily activities caregivers can do\n- How to recognize when a child may need extra support`;
+  // 6. Dynamic Non-Repetitive Synthesis Grounded in Active Lesson
+  return `Regarding your question about **"${sanitizedQuery}"** in **${lessonTitle}** (${moduleTitle || 'Early Childhood Development'}):\n\n- **Foundational Concept:** Child development is an integrated process where physical, cognitive, communicative, and emotional domains build upon one another.\n- **Caregiver Practice:** Everyday responsive interactions—such as talking through daily routines, providing safe exploratory spaces, and observing child cues—foster optimal developmental outcomes.\n- **Evidence-Based Standard:** Both the WHO and American Academy of Pediatrics emphasize that positive, nurturing relationships buffer stress and support lifelong learning.\n\nWhich specific aspect of **${lessonTitle}** would you like us to explore in more detail?`;
 }

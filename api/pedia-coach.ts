@@ -1,51 +1,30 @@
 import { GoogleGenAI } from '@google/genai';
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Content-Type': 'application/json',
-};
-
-export const handler = async (event: any) => {
-  if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: '',
-    };
+export default async function handler(req: any, res: any) {
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    return res.status(200).end();
   }
 
-  if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({ error: 'Method Not Allowed' }),
-    };
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   try {
-    const data = JSON.parse(event.body || '{}');
-    const { query, lessonTitle, lessonContent, moduleTitle } = data;
+    const { query, lessonTitle, lessonContent, moduleTitle } = req.body || {};
 
     if (!query) {
-      return {
-        statusCode: 400,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({ error: 'Query is required' }),
-      };
+      return res.status(400).json({ error: 'Query is required' });
     }
 
     const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
     if (!apiKey) {
-      return {
-        statusCode: 500,
-        headers: CORS_HEADERS,
-        body: JSON.stringify({
-          success: false,
-          error: 'GEMINI_API_KEY is not configured in production environment variables.',
-        }),
-      };
+      return res.status(500).json({
+        success: false,
+        error: 'GEMINI_API_KEY is not configured in production environment variables.',
+      });
     }
 
     const ai = new GoogleGenAI({ apiKey });
@@ -72,16 +51,9 @@ Instructions:
     });
 
     const reply = response.text || '';
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({ success: true, reply }),
-    };
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    return res.status(200).json({ success: true, reply });
   } catch (error: any) {
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({ success: false, error: error.message }),
-    };
+    return res.status(500).json({ success: false, error: error.message });
   }
-};
+}
