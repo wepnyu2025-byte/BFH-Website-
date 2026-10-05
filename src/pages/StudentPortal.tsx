@@ -41,6 +41,7 @@ import { DEFAULT_PROGRAM, DEFAULT_MODULES, DEFAULT_SETTINGS } from '../data/port
 import { CourseLesson, CourseModule, StudentProfile, PortalSettings } from '../types/studentPortal';
 import { getPortalSettings, redeemAccessCode } from '../services/portalService';
 import { getSuggestedQuestions, getPediaWelcomeMessage, generatePediaCoachResponse } from '../services/pediaCoachService';
+import { getLessonGoogleTtsAudio, getBestNaturalBrowserVoice, cleanMarkdownForSpeech } from '../services/lessonTtsService';
 
 type PortalView = 'HOME' | 'COURSE' | 'LESSON' | 'QUIZ' | 'CONGRATULATIONS';
 
@@ -107,6 +108,7 @@ export const StudentPortal: React.FC = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
+  const lessonAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Active view state
   const [currentView, setCurrentView] = useState<PortalView>('HOME');
@@ -146,9 +148,10 @@ export const StudentPortal: React.FC = () => {
   // Audio Play state for module audio guide
   const [playingModuleAudioId, setPlayingModuleAudioId] = useState<string | null>(null);
 
-  // Lesson Read Aloud state
+  // Lesson Read Aloud state (Powered by Google Cloud & Google GenAI TTS)
   const [isReadingAloud, setIsReadingAloud] = useState(false);
   const [isReadingPaused, setIsReadingPaused] = useState(false);
+  const [isTtsLoading, setIsTtsLoading] = useState(false);
 
   // AI Coach Flip Animation state
   const [isCoachFlipped, setIsCoachFlipped] = useState(false);
@@ -167,6 +170,9 @@ export const StudentPortal: React.FC = () => {
       }
       if (audioPlayerRef.current) {
         audioPlayerRef.current.pause();
+      }
+      if (lessonAudioRef.current) {
+        lessonAudioRef.current.pause();
       }
     };
   }, []);
@@ -562,39 +568,34 @@ export const StudentPortal: React.FC = () => {
       .trim();
   };
 
-  // Cancel read aloud speech synthesis whenever lesson or view changes
+  // Cancel read aloud audio/speech whenever lesson or view changes
   useEffect(() => {
+    if (lessonAudioRef.current) {
+      lessonAudioRef.current.pause();
+      lessonAudioRef.current = null;
+    }
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       window.speechSynthesis.cancel();
-      setIsReadingAloud(false);
-      setIsReadingPaused(false);
     }
+    setIsReadingAloud(false);
+    setIsReadingPaused(false);
+    setIsTtsLoading(false);
   }, [activeLesson?.id, currentView]);
 
-  // Read Aloud Play / Pause handler for lesson
-  const handleToggleReadAloud = () => {
+  // Fallback to high-fidelity Natural Browser Voice if network/API is unavailable
+  const fallbackToBrowserSpeech = () => {
+    setIsTtsLoading(false);
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
-
-    if (isReadingAloud) {
-      if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-        window.speechSynthesis.pause();
-        setIsReadingAloud(false);
-        setIsReadingPaused(true);
-        return;
-      }
-    }
-
-    if (isReadingPaused && window.speechSynthesis.paused) {
-      window.speechSynthesis.resume();
-      setIsReadingAloud(true);
-      setIsReadingPaused(false);
-      return;
-    }
 
     window.speechSynthesis.cancel();
     const cleanContent = cleanMarkdownForSpeech(activeLesson.content);
     const textToRead = `${activeLesson.title}. ${cleanContent}`;
     const utterance = new SpeechSynthesisUtterance(textToRead);
+
+    const naturalVoice = getBestNaturalBrowserVoice();
+    if (naturalVoice) {
+      utterance.voice = naturalVoice;
+    }
     utterance.rate = 0.95;
     utterance.onend = () => {
       setIsReadingAloud(false);
@@ -607,6 +608,85 @@ export const StudentPortal: React.FC = () => {
     window.speechSynthesis.speak(utterance);
     setIsReadingAloud(true);
     setIsReadingPaused(false);
+  };
+
+  // Read Aloud Play / Pause handler for lesson (Powered by Google Cloud TTS with Natural Fallback)
+  const handleToggleReadAloud = async () => {
+    // 1. If Google audio element exists and is playing: pause it
+    if (lessonAudioRef.current) {
+      if (!lessonAudioRef.current.paused) {
+        lessonAudioRef.current.pause();
+        setIsReadingAloud(false);
+        setIsReadingPaused(true);
+        return;
+      }
+      // If paused, resume
+      if (isReadingPaused) {
+        lessonAudioRef.current.play().catch(() => {});
+        setIsReadingAloud(true);
+        setIsReadingPaused(false);
+        return;
+      }
+    }
+
+    // 2. If browser speech synthesis was playing: pause or resume
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      if (isReadingAloud && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+        window.speechSynthesis.pause();
+        setIsReadingAloud(false);
+        setIsReadingPaused(true);
+        return;
+      }
+      if (isReadingPaused && window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+        setIsReadingAloud(true);
+        setIsReadingPaused(false);
+        return;
+      }
+    }
+
+    // 3. Start fresh playback: stop any existing speech/audio
+    if (lessonAudioRef.current) {
+      lessonAudioRef.current.pause();
+      lessonAudioRef.current = null;
+    }
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+
+    setIsTtsLoading(true);
+    setIsReadingAloud(false);
+    setIsReadingPaused(false);
+
+    try {
+      // Fetch studio-quality Google Cloud TTS neural audio
+      const googleAudioUrl = await getLessonGoogleTtsAudio(
+        activeLesson.id,
+        activeLesson.title,
+        activeLesson.content
+      );
+
+      if (googleAudioUrl) {
+        const audio = new Audio(googleAudioUrl);
+        lessonAudioRef.current = audio;
+        audio.onended = () => {
+          setIsReadingAloud(false);
+          setIsReadingPaused(false);
+        };
+        audio.onerror = () => {
+          fallbackToBrowserSpeech();
+        };
+        await audio.play();
+        setIsTtsLoading(false);
+        setIsReadingAloud(true);
+        setIsReadingPaused(false);
+        return;
+      }
+    } catch {
+      // Fall through to browser natural voice
+    }
+
+    fallbackToBrowserSpeech();
   };
 
   // Cryptographic SHA-256 helper for client-side password verification
@@ -1472,19 +1552,30 @@ export const StudentPortal: React.FC = () => {
                   </h2>
                 </div>
 
-                {/* Round Play / Pause Button for Read Aloud */}
+                {/* Round Play / Pause Button for Read Aloud (Google Cloud TTS) */}
                 <button
                   type="button"
                   onClick={handleToggleReadAloud}
+                  disabled={isTtsLoading}
                   className={`w-12 h-12 rounded-full flex items-center justify-center transition-all cursor-pointer shrink-0 ${
-                    isReadingAloud
+                    isTtsLoading
+                      ? 'bg-teal-700 text-white cursor-wait opacity-90'
+                      : isReadingAloud
                       ? 'bg-orange-500 hover:bg-orange-600 text-white animate-pulse'
                       : 'bg-teal-800 hover:bg-teal-900 text-white'
                   }`}
-                  title={isReadingAloud ? 'Pause reading' : 'Read lesson aloud'}
+                  title={
+                    isTtsLoading
+                      ? 'Generating Google neural audio...'
+                      : isReadingAloud
+                      ? 'Pause reading'
+                      : 'Read lesson aloud (Google Neural Audio)'
+                  }
                   aria-label={isReadingAloud ? 'Pause' : 'Play'}
                 >
-                  {isReadingAloud ? (
+                  {isTtsLoading ? (
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : isReadingAloud ? (
                     <Pause className="w-5 h-5 fill-current" />
                   ) : (
                     <Play className="w-5 h-5 fill-current ml-0.5" />

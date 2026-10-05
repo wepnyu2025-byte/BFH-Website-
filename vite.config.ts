@@ -67,6 +67,67 @@ ABSOLUTELY FORBIDDEN:
               return;
             }
 
+            if (
+              (req.url?.startsWith('/api/lesson-tts') || req.url?.startsWith('/.netlify/functions/lesson-tts')) &&
+              req.method === 'POST'
+            ) {
+              let body = '';
+              req.on('data', (chunk) => {
+                body += chunk;
+              });
+              req.on('end', async () => {
+                try {
+                  const data = JSON.parse(body || '{}');
+                  const { title, text } = data;
+                  const { GoogleGenAI } = await import('@google/genai');
+                  const ai = new GoogleGenAI({});
+
+                  const cleanExcerpt = (text || '').slice(0, 1600);
+                  const textToSpeak = `${title ? `${title}. ` : ''}${cleanExcerpt}`;
+
+                  const response = await ai.models.generateContent({
+                    model: 'gemini-3.8-flash-lite-tts',
+                    contents: textToSpeak,
+                    config: {
+                      responseModalities: ['AUDIO'],
+                      speechConfig: {
+                        voiceConfig: {
+                          prebuiltVoiceConfig: {
+                            voiceName: 'Kore',
+                          },
+                        },
+                      },
+                    },
+                  });
+
+                  const audioPart = response.candidates?.[0]?.content?.parts?.find(
+                    (p: any) => p.inlineData?.data
+                  );
+
+                  if (!audioPart?.inlineData?.data) {
+                    res.setHeader('Content-Type', 'application/json');
+                    res.statusCode = 502;
+                    res.end(JSON.stringify({ success: false, error: 'No audio generated' }));
+                    return;
+                  }
+
+                  res.setHeader('Content-Type', 'application/json');
+                  res.end(
+                    JSON.stringify({
+                      success: true,
+                      audioBase64: audioPart.inlineData.data,
+                      mimeType: audioPart.inlineData.mimeType || 'audio/wav',
+                    })
+                  );
+                } catch (err: any) {
+                  res.setHeader('Content-Type', 'application/json');
+                  res.statusCode = 500;
+                  res.end(JSON.stringify({ success: false, error: err.message }));
+                }
+              });
+              return;
+            }
+
             if (req.url?.startsWith('/.netlify/functions/send-broadcast') && req.method === 'POST') {
               let body = '';
               req.on('data', (chunk) => {
