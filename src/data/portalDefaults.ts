@@ -1,4 +1,6 @@
 import { ProgramData, CourseModule, PortalSettings } from '../types/studentPortal';
+import { MODULE_2_PHYSICAL_DEVELOPMENT } from './module2Data';
+import { MODULE_3_COGNITIVE_DEVELOPMENT } from './module3Data';
 
 export const DEFAULT_PROGRAM: ProgramData = {
   id: 'ecd-cert',
@@ -674,6 +676,8 @@ Complete the comprehensive assessment below to demonstrate your mastery of Modul
       },
     ],
   },
+  MODULE_2_PHYSICAL_DEVELOPMENT,
+  MODULE_3_COGNITIVE_DEVELOPMENT,
 ];
 
 export const DEFAULT_SETTINGS: PortalSettings = {

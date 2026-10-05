@@ -27,7 +27,10 @@ import {
   Download,
   Play,
   Key,
-  Video
+  Video,
+  Home,
+  ShieldCheck,
+  LogOut
 } from 'lucide-react';
 import { marked } from 'marked';
 import { DEFAULT_PROGRAM, DEFAULT_MODULES, DEFAULT_SETTINGS } from '../data/portalDefaults';
@@ -36,10 +39,14 @@ import { getPortalSettings, redeemAccessCode } from '../services/portalService';
 
 type PortalView = 'HOME' | 'COURSE' | 'LESSON' | 'QUIZ' | 'CONGRATULATIONS';
 
-// Formatted Markdown renderer to eliminate raw #, **, | symbols and style tables & text
+// Formatted Markdown renderer to eliminate raw #, **, | symbols and style tables & text (emojis stripped for vector-icon clinical aesthetic)
 const renderFormattedLessonContent = (markdownText: string) => {
   try {
-    const rawHtml = marked.parse(markdownText, { gfm: true, breaks: true }) as string;
+    const sanitizedText = (markdownText || '')
+      .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1FA00}-\u{1FAFF}]/gu, '')
+      .trim();
+
+    const rawHtml = marked.parse(sanitizedText, { gfm: true, breaks: true }) as string;
     return (
       <div
         className="font-body text-sm sm:text-base text-teal-950/90 leading-relaxed space-y-4
@@ -48,12 +55,14 @@ const renderFormattedLessonContent = (markdownText: string) => {
           [&_p]:mb-3
           [&_strong]:font-bold [&_strong]:text-teal-950
           [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5 [&_ul]:mb-3
+          [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:space-y-1.5 [&_ol]:mb-3
           [&_li]:text-teal-950/85
-          [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_table]:rounded-[18px] [&_table]:overflow-hidden
+          [&_blockquote]:relative [&_blockquote]:pl-4 [&_blockquote]:pr-4 [&_blockquote]:py-3.5 [&_blockquote]:my-4 [&_blockquote]:rounded-r-2xl [&_blockquote]:border-l-4 [&_blockquote]:border-teal-600 [&_blockquote]:bg-teal-50/80 [&_blockquote]:text-teal-950 [&_blockquote]:shadow-2xs
+          [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_table]:rounded-[18px] [&_table]:overflow-hidden [&_table]:border [&_table]:border-teal-200/70
           [&_thead]:bg-teal-100/90
           [&_th]:p-3 [&_th]:text-left [&_th]:font-bold [&_th]:text-teal-950 [&_th]:text-xs [&_th]:sm:text-sm
-          [&_tbody]:bg-teal-50/50
-          [&_td]:p-3 [&_td]:text-xs [&_td]:sm:text-sm [&_td]:text-teal-950/80 [&_tr:nth-child(even)]:bg-teal-100/30"
+          [&_tbody]:bg-white
+          [&_td]:p-3 [&_td]:text-xs [&_td]:sm:text-sm [&_td]:text-teal-950/85 [&_tr:nth-child(even)]:bg-teal-50/40 [&_tr]:border-b [&_tr]:border-teal-100/60"
         dangerouslySetInnerHTML={{ __html: rawHtml }}
       />
     );
@@ -148,8 +157,22 @@ export const StudentPortal: React.FC = () => {
     try {
       const saved = localStorage.getItem('bfh_course_modules');
       if (saved) {
+        // Automatically purge any old cached module copies containing emojis
+        if (/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]/u.test(saved)) {
+          try { localStorage.setItem('bfh_course_modules', JSON.stringify(DEFAULT_MODULES)); } catch {}
+          return DEFAULT_MODULES;
+        }
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const existingIds = new Set(parsed.map((m: any) => m.id));
+          const missingDefaults = DEFAULT_MODULES.filter((m) => !existingIds.has(m.id));
+          if (missingDefaults.length > 0) {
+            const merged = [...parsed, ...missingDefaults].sort((a, b) => (a.order || 0) - (b.order || 0));
+            try { localStorage.setItem('bfh_course_modules', JSON.stringify(merged)); } catch {}
+            return merged;
+          }
+          return parsed;
+        }
       }
     } catch {}
     return DEFAULT_MODULES;
@@ -166,8 +189,23 @@ export const StudentPortal: React.FC = () => {
       try {
         const saved = localStorage.getItem('bfh_course_modules');
         if (saved) {
+          if (/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]/u.test(saved)) {
+            try { localStorage.setItem('bfh_course_modules', JSON.stringify(DEFAULT_MODULES)); } catch {}
+            setModules(DEFAULT_MODULES);
+            return;
+          }
           const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) setModules(parsed);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const existingIds = new Set(parsed.map((m: any) => m.id));
+            const missingDefaults = DEFAULT_MODULES.filter((m) => !existingIds.has(m.id));
+            if (missingDefaults.length > 0) {
+              const merged = [...parsed, ...missingDefaults].sort((a, b) => (a.order || 0) - (b.order || 0));
+              try { localStorage.setItem('bfh_course_modules', JSON.stringify(merged)); } catch {}
+              setModules(merged);
+              return;
+            }
+            setModules(parsed);
+          }
         }
         const savedProg = localStorage.getItem('bfh_active_program');
         if (savedProg) {
@@ -823,29 +861,43 @@ Baby First Health Educational Program
           </Link>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {(student?.fullName === 'Legend Laurence' || localStorage.getItem('bfh_admin_authenticated') === 'true') && (
             <Link
               to="/admin"
-              className="px-3.5 py-1.5 rounded-full bg-teal-900 hover:bg-teal-800 text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
-              title="Return to BFH Admin Console"
+              className="p-2 sm:px-3 sm:py-1.5 rounded-full bg-teal-900 hover:bg-teal-800 text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+              title="Admin Dashboard"
+              aria-label="Admin Dashboard"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Admin Panel</span>
+              <ShieldCheck className="w-4 h-4 text-white" />
+              <span className="hidden sm:inline">Admin</span>
             </Link>
           )}
 
-          <span className="px-3 py-1 rounded-full bg-teal-50 text-teal-900 text-xs font-semibold">
-            {currentView === 'HOME'
-              ? 'Student Home'
-              : currentView === 'COURSE'
-              ? 'Curriculum'
-              : currentView === 'LESSON'
-              ? 'Lesson Content'
-              : currentView === 'QUIZ'
-              ? 'Checkpoint Quiz'
-              : 'Assessment Results'}
-          </span>
+          <button
+            type="button"
+            onClick={() => setCurrentView('HOME')}
+            className={`p-2 sm:px-3 sm:py-1 rounded-full text-xs font-semibold transition-colors inline-flex items-center gap-1.5 cursor-pointer ${
+              currentView === 'HOME'
+                ? 'bg-teal-100 text-teal-900'
+                : 'bg-teal-50 hover:bg-teal-100 text-teal-800'
+            }`}
+            title="Student Home"
+            aria-label="Student Home"
+          >
+            <Home className="w-4 h-4 text-teal-800" />
+            <span className="hidden sm:inline">
+              {currentView === 'HOME'
+                ? 'Student Home'
+                : currentView === 'COURSE'
+                ? 'Curriculum'
+                : currentView === 'LESSON'
+                ? 'Lesson'
+                : currentView === 'QUIZ'
+                ? 'Quiz'
+                : 'Results'}
+            </span>
+          </button>
 
           <button
             type="button"
@@ -855,9 +907,12 @@ Baby First Health Educational Program
                 setStudent(null);
               }
             }}
-            className="text-xs text-teal-950/60 hover:text-teal-900 font-semibold"
+            className="p-2 sm:px-2.5 sm:py-1 rounded-full hover:bg-red-50 text-teal-950/60 hover:text-red-600 transition-colors inline-flex items-center gap-1 cursor-pointer"
+            title="Sign Out"
+            aria-label="Sign Out"
           >
-            Sign Out
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline text-xs font-semibold">Sign Out</span>
           </button>
         </div>
       </header>

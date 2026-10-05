@@ -1,0 +1,2037 @@
+{
+  "schema_version": "1.0",
+  "course": {
+    "title": "Baby First Health Early Childhood Development Certificate",
+    "publisher": "Baby First Health"
+  },
+  "module": {
+    "id": "m3",
+    "number": 3,
+    "title": "Cognitive Development",
+    "estimated_teaching_time": {
+      "min": 30,
+      "max": 35,
+      "unit": "minutes"
+    },
+    "target_learners": {
+      "raw": "Parents, caregivers, childcare workers, teachers, health practitioners, and anyone working with children aged 0–5.",
+      "list": [
+        "Parents",
+        "Caregivers",
+        "Childcare workers",
+        "Teachers",
+        "Health practitioners",
+        "Anyone working with children aged 0–5"
+      ]
+    },
+    "age_range": {
+      "min_years": 0,
+      "max_years": 5
+    },
+    "stats": {
+      "lessons": 16,
+      "lessons_with_content": 16,
+      "quiz_questions": 10,
+      "glossary_terms": 10,
+      "references": 9
+    },
+    "learning_objectives": [
+      "Understand how children aged 0–5 think and learn",
+      "Understand how everyday interactions, play, language, routines and safe exploration support learning"
+    ],
+    "outline": [
+      {
+        "order": 1,
+        "id": "m3-l01",
+        "kind": "lesson",
+        "title": "Welcome to the Module",
+        "type": "introduction"
+      },
+      {
+        "order": 2,
+        "id": "m3-l02",
+        "kind": "lesson",
+        "title": "What Is Cognitive Development?",
+        "type": "concept"
+      },
+      {
+        "order": 3,
+        "id": "m3-l03",
+        "kind": "lesson",
+        "title": "How Babies Learn",
+        "type": "concept"
+      },
+      {
+        "order": 4,
+        "id": "m3-l04",
+        "kind": "lesson",
+        "title": "Cognitive Development From 0–5",
+        "type": "reference_guide"
+      },
+      {
+        "order": 5,
+        "id": "m3-l05",
+        "kind": "lesson",
+        "title": "Attention and Memory",
+        "type": "concept"
+      },
+      {
+        "order": 6,
+        "id": "m3-l06",
+        "kind": "lesson",
+        "title": "Curiosity and Exploration",
+        "type": "practical_guidance"
+      },
+      {
+        "order": 7,
+        "id": "m3-l07",
+        "kind": "lesson",
+        "title": "Problem-Solving",
+        "type": "concept"
+      },
+      {
+        "order": 8,
+        "id": "m3-l08",
+        "kind": "lesson",
+        "title": "Play and Cognitive Development",
+        "type": "practical_guidance"
+      },
+      {
+        "order": 9,
+        "id": "m3-l09",
+        "kind": "lesson",
+        "title": "The Role of Language and Interaction",
+        "type": "practical_guidance"
+      },
+      {
+        "order": 10,
+        "id": "m3-l10",
+        "kind": "lesson",
+        "title": "The Home Environment and Learning",
+        "type": "concept"
+      },
+      {
+        "order": 11,
+        "id": "m3-l11",
+        "kind": "lesson",
+        "title": "Technology and Screen Time",
+        "type": "practical_guidance"
+      },
+      {
+        "order": 12,
+        "id": "m3-l12",
+        "kind": "lesson",
+        "title": "Every Child Develops Differently",
+        "type": "concept"
+      },
+      {
+        "order": 13,
+        "id": "m3-l13",
+        "kind": "lesson",
+        "title": "Recognizing Possible Concerns",
+        "type": "safety_guidance"
+      },
+      {
+        "order": 14,
+        "id": "m3-l14",
+        "kind": "lesson",
+        "title": "African Family Case Study",
+        "type": "case_study"
+      },
+      {
+        "order": 15,
+        "id": "m3-l15",
+        "kind": "lesson",
+        "title": "Common Mistakes Adults Make",
+        "type": "guidance"
+      },
+      {
+        "order": 16,
+        "id": "m3-l16",
+        "kind": "lesson",
+        "title": "Practical Activity: “Think Like a Child”",
+        "type": "activity"
+      },
+      {
+        "order": 17,
+        "id": "m3-key-takeaways",
+        "kind": "key_takeaways",
+        "title": "Key Takeaways"
+      },
+      {
+        "order": 18,
+        "id": "m3-knowledge-check",
+        "kind": "knowledge_check",
+        "title": "Knowledge Check"
+      },
+      {
+        "order": 19,
+        "id": "m3-glossary",
+        "kind": "glossary",
+        "title": "Short Glossary"
+      },
+      {
+        "order": 20,
+        "id": "m3-professional-note",
+        "kind": "professional_note",
+        "title": "Professional Note"
+      },
+      {
+        "order": 21,
+        "id": "m3-references",
+        "kind": "references",
+        "title": "References"
+      }
+    ],
+    "lessons": [
+      {
+        "id": "m3-l01",
+        "order": 1,
+        "title": "Welcome to the Module",
+        "slug": "welcome-to-the-module",
+        "type": "introduction",
+        "priority": "high",
+        "blocks": [
+          {
+            "type": "scenario",
+            "text": "A baby repeatedly drops a spoon from a high chair. An adult may feel tired of picking it up, but the baby may be learning something important: “When I let go, the spoon falls. It makes a sound. Someone picks it up. If I do it again, will the same thing happen?”"
+          },
+          {
+            "type": "paragraph",
+            "text": "This is cognitive development in action. Young children are not empty containers waiting to be filled with information. From birth, they observe, listen, touch, repeat, test ideas, and try to understand the world around them."
+          },
+          {
+            "type": "learning_objectives",
+            "text": "By the end of this module, you will understand how children aged 0–5 think and learn, and how everyday interactions, play, language, routines, and safe exploration can support their learning.",
+            "items": [
+              "Understand how children aged 0–5 think and learn",
+              "Understand how everyday interactions, play, language, routines and safe exploration support learning"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m3-l02",
+        "order": 2,
+        "title": "What Is Cognitive Development?",
+        "slug": "what-is-cognitive-development",
+        "type": "concept",
+        "key_terms": [
+          "Cognitive development"
+        ],
+        "priority": "high",
+        "blocks": [
+          {
+            "type": "definition",
+            "term": "Cognitive development",
+            "text": "Cognitive development means the way a child learns to think, understand, remember, pay attention, solve problems, and make sense of the world."
+          },
+          {
+            "type": "list",
+            "purpose": "skills",
+            "intro": "It includes skills such as:",
+            "items": [
+              "Noticing and focusing on something",
+              "Remembering people, places, objects, and routines",
+              "Understanding cause and effect",
+              "Sorting, matching, counting, and comparing",
+              "Following simple instructions",
+              "Solving everyday problems",
+              "Using imagination and pretend play",
+              "Learning from experience"
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "key_point",
+            "text": "Cognitive development is closely connected with physical development, language, emotions, and relationships. A child who feels safe, loved, healthy, and well nourished is better able to explore, concentrate, and learn."
+          },
+          {
+            "type": "callout",
+            "variant": "evidence",
+            "text": "WHO describes early learning as any opportunity for a child to interact with a person, place, or object in their environment. Every interaction contributes to brain development and lays a foundation for later learning.",
+            "citations": [
+              1
+            ],
+            "sources_named": [
+              "WHO"
+            ]
+          },
+          {
+            "type": "example",
+            "title": "Growth and thinking",
+            "text": "A child may grow taller, but cognitive development is seen when the child:",
+            "items": [
+              "Recognizes their mother’s face",
+              "Looks for a toy hidden under a cloth",
+              "Understands that a cup is for drinking",
+              "Puts blocks into a container",
+              "Follows the instruction “Bring your shoes”",
+              "Asks, “Why is the sky blue?”",
+              "Pretends a banana is a telephone"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m3-l03",
+        "order": 3,
+        "title": "How Babies Learn",
+        "slug": "how-babies-learn",
+        "type": "concept",
+        "key_terms": [
+          "Responsive caregiving"
+        ],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "Babies are active learners from birth. They learn through their senses—seeing, hearing, touching, tasting, smelling, and moving."
+          },
+          {
+            "type": "list",
+            "purpose": "adult_behaviors",
+            "intro": "Babies learn when adults:",
+            "items": [
+              "Talk, sing, and make eye contact",
+              "Respond to cries, smiles, gestures, and sounds",
+              "Allow safe touching and exploration",
+              "Repeat familiar songs, names, and routines",
+              "Play simple games such as peek-a-boo",
+              "Name everyday objects and actions"
+            ]
+          },
+          {
+            "type": "definition",
+            "term": "Responsive caregiving",
+            "text": "WHO calls this responsive caregiving: noticing, understanding, and responding to a child’s signals in a timely and appropriate way. Responsive care supports health, nutrition, safety, learning, and emotional security.",
+            "citations": [
+              2,
+              1
+            ],
+            "sources_named": [
+              "WHO"
+            ]
+          },
+          {
+            "type": "example",
+            "title": "Everyday examples",
+            "items": [
+              "During feeding, a mother looks into her baby’s eyes, smiles, and says, “You are drinking your milk.”",
+              "A father shakes a plastic bottle filled with dry beans, and the baby listens, watches, and reaches for it.",
+              "A grandmother repeatedly calls the baby’s name during bathing, and the baby begins to turn toward the familiar voice.",
+              "A baby drops a spoon again and again. The caregiver calmly says, “The spoon fell down,” then gives it back. The baby is learning about falling, sound, and repetition."
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "evidence",
+            "text": "CDC guidance notes that babies learn through play and interaction, including talking, reading, singing, peek-a-boo, and safe exploration.",
+            "citations": [
+              3
+            ],
+            "sources_named": [
+              "CDC"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m3-l04",
+        "order": 4,
+        "title": "Cognitive Development From 0–5",
+        "slug": "cognitive-development-from-0-5",
+        "type": "reference_guide",
+        "key_terms": [
+          "Developmental milestone"
+        ],
+        "priority": "high",
+        "blocks": [
+          {
+            "type": "callout",
+            "variant": "important_note",
+            "text": "Children develop cognitive skills at different rates. The patterns below are general guides, not deadlines or examinations."
+          },
+          {
+            "type": "age_stage",
+            "label": "0–12 months",
+            "age_min_months": 0,
+            "age_max_months": 12,
+            "summary": "Babies learn mainly through their senses, movement, and relationships.",
+            "learning_experiences_intro": "Common learning experiences include:",
+            "learning_experiences": [
+              "Looking at faces and following moving objects",
+              "Recognizing familiar people and voices",
+              "Reaching for and grasping objects",
+              "Putting safe objects in the mouth to explore them",
+              "Learning cause and effect, such as shaking a rattle to make a sound",
+              "Looking for a partly hidden toy",
+              "Enjoying repetition and simple games"
+            ],
+            "notes": [
+              {
+                "type": "paragraph",
+                "text": "By around one year, many children explore objects by shaking, banging, throwing, putting things into containers, and taking them out. They may also copy gestures and follow simple directions.",
+                "citations": [
+                  3
+                ]
+              }
+            ]
+          },
+          {
+            "type": "age_stage",
+            "label": "1–2 years",
+            "age_min_months": 12,
+            "age_max_months": 24,
+            "summary": "Toddlers become curious explorers and begin to solve simple problems.",
+            "learning_experiences_intro": "Common learning experiences include:",
+            "learning_experiences": [
+              "Imitating adults and older children",
+              "Understanding what familiar objects are used for",
+              "Following simple instructions",
+              "Finding hidden objects",
+              "Sorting objects by simple features",
+              "Beginning pretend play, such as feeding a doll",
+              "Testing how things work"
+            ],
+            "notes": [
+              {
+                "type": "paragraph",
+                "text": "At around 18 months, many children know what ordinary objects are for, such as a spoon, brush, or telephone, and begin simple pretend play.",
+                "citations": [
+                  3
+                ]
+              }
+            ]
+          },
+          {
+            "type": "age_stage",
+            "label": "2–3 years",
+            "age_min_months": 24,
+            "age_max_months": 36,
+            "summary": "Children’s memory, language, and imagination grow quickly.",
+            "learning_experiences_intro": "Common learning experiences include:",
+            "learning_experiences": [
+              "Asking many questions",
+              "Sorting shapes and colours",
+              "Matching objects",
+              "Building towers",
+              "Completing simple puzzles",
+              "Following two-step instructions",
+              "Playing simple pretend games",
+              "Understanding ideas such as “in,” “on,” and “under”"
+            ],
+            "notes": [
+              {
+                "type": "paragraph",
+                "text": "By age two, many children can find objects hidden under two or three covers, begin sorting shapes and colours, and play simple make-believe games.",
+                "citations": [
+                  3
+                ]
+              }
+            ]
+          },
+          {
+            "type": "age_stage",
+            "label": "3–5 years",
+            "age_min_months": 36,
+            "age_max_months": 60,
+            "summary": "Preschool children become more thoughtful, imaginative, and independent.",
+            "learning_experiences_intro": "Common learning experiences include:",
+            "learning_experiences": [
+              "Asking “why” questions",
+              "Remembering parts of stories",
+              "Counting and beginning to understand numbers",
+              "Understanding “same” and “different”",
+              "Following rules in games",
+              "Planning simple activities",
+              "Playing more complex pretend games",
+              "Solving simple problems with growing independence"
+            ],
+            "notes": [
+              {
+                "type": "paragraph",
+                "text": "By age four, many children understand the idea of counting, remember parts of a story, and understand “same” and “different.” By age five, many can count objects, draw a person with several body parts, and tell a simple story.",
+                "citations": [
+                  3
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m3-l05",
+        "order": 5,
+        "title": "Attention and Memory",
+        "slug": "attention-and-memory",
+        "type": "concept",
+        "key_terms": [
+          "Attention",
+          "Memory"
+        ],
+        "blocks": [
+          {
+            "type": "definition_set",
+            "items": [
+              {
+                "term": "Attention",
+                "text": "Attention means the ability to focus on something."
+              },
+              {
+                "term": "Memory",
+                "text": "Memory means the ability to keep and recall information."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "Young children naturally have short attention spans. This is normal. A toddler may focus on a puzzle for a short time, then move to another activity. This does not mean the child is lazy or badly behaved."
+          },
+          {
+            "type": "paragraph",
+            "text": "Attention improves gradually as children grow, especially when activities are interesting, playful, and suited to their age."
+          },
+          {
+            "type": "subsection",
+            "title": "What helps attention and memory?",
+            "blocks": [
+              {
+                "type": "list",
+                "purpose": "strategies",
+                "items": [
+                  {
+                    "label": "Repetition",
+                    "text": "Singing the same song, reading the same story, or repeating a child’s name helps learning."
+                  },
+                  {
+                    "label": "Routines",
+                    "text": "Regular meal, bath, play, and sleep routines help children predict what comes next."
+                  },
+                  {
+                    "label": "Conversation",
+                    "text": "Talking about what happened during the day helps children remember events."
+                  },
+                  {
+                    "label": "Songs and rhymes",
+                    "text": "Rhythm and repetition make information easier to remember."
+                  },
+                  {
+                    "label": "Stories",
+                    "text": "Stories build listening, memory, imagination, and language."
+                  },
+                  {
+                    "label": "Hands-on play",
+                    "text": "Children remember more when they can touch, move, build, sort, and explore."
+                  }
+                ]
+              },
+              {
+                "type": "example",
+                "text": "A caregiver can sing the same simple hand-washing song each day. Over time, the child begins to remember the steps: wet hands, use soap, rub hands, rinse."
+              }
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "important_note",
+            "text": "Do not expect every child to concentrate for the same length of time. Follow the child’s interest and keep learning activities short, enjoyable, and practical."
+          }
+        ]
+      },
+      {
+        "id": "m3-l06",
+        "order": 6,
+        "title": "Curiosity and Exploration",
+        "slug": "curiosity-and-exploration",
+        "type": "practical_guidance",
+        "key_terms": [
+          "Curiosity",
+          "Exploration"
+        ],
+        "tags": [
+          "safety"
+        ],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "Young children ask questions, touch things, open containers, take objects apart, and repeat actions because they are learning."
+          },
+          {
+            "type": "definition_set",
+            "items": [
+              {
+                "term": "Curiosity",
+                "text": "Curiosity is the desire to know, see, try, or understand something."
+              },
+              {
+                "term": "Exploration",
+                "text": "Exploration is the child’s active effort to investigate the world."
+              }
+            ]
+          },
+          {
+            "type": "list",
+            "purpose": "what_the_child_may_be_learning",
+            "intro": "A child who opens every cupboard is not necessarily being naughty. The child may be learning:",
+            "items": [
+              "What is inside",
+              "How doors open and close",
+              "What objects look like",
+              "What happens when something falls",
+              "What adults allow and what adults stop"
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "Safe exploration is essential for learning. WHO emphasizes that early learning happens when children use their senses, move, hear and use language, experience different places, interact with people, and explore objects.",
+            "citations": [
+              4,
+              1
+            ],
+            "sources_named": [
+              "WHO"
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Encouraging safe curiosity",
+            "blocks": [
+              {
+                "type": "callout",
+                "variant": "safety_warning",
+                "text": "Keep dangerous items out of reach: medicines, chemicals, sharp objects, matches, small objects that can cause choking, and hot items."
+              },
+              {
+                "type": "list",
+                "purpose": "practices",
+                "items": [
+                  "Create a safe play area with safe household objects.",
+                  "Allow the child to touch, stack, pour, sort, and investigate.",
+                  "Answer questions simply and honestly.",
+                  "Turn questions into learning moments."
+                ]
+              },
+              {
+                "type": "example",
+                "text": "If a child asks, “Why does water spill?” the caregiver can say, “Water moves and flows. Let us pour a little water from this cup into the bowl and watch.”"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m3-l07",
+        "order": 7,
+        "title": "Problem-Solving",
+        "slug": "problem-solving",
+        "type": "concept",
+        "key_terms": [
+          "Problem-solving"
+        ],
+        "blocks": [
+          {
+            "type": "definition",
+            "term": "Problem-solving",
+            "text": "Problem-solving means finding a way to reach a goal or deal with a challenge."
+          },
+          {
+            "type": "list",
+            "purpose": "process",
+            "intro": "Children learn to solve problems gradually. They may:",
+            "items": [
+              "Try something",
+              "Observe what happens",
+              "Try again",
+              "Change their approach",
+              "Ask for help",
+              "Find a solution"
+            ]
+          },
+          {
+            "type": "example",
+            "title": "Everyday examples",
+            "items": [
+              "A baby reaches for a toy that is slightly out of reach and rolls closer to it.",
+              "A toddler tries to fit a round object into a square hole, then tries another hole.",
+              "A preschool child builds a tower, watches it fall, and tries a wider base the next time.",
+              "A child looks for a missing shoe under the bed, behind a chair, and inside a basket."
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "Adults should not solve every problem immediately. Give the child a little time to try. Offer encouragement and small hints rather than taking over."
+          },
+          {
+            "type": "example",
+            "text": "Instead of saying, “Give it to me, I will do it,” a caregiver can say, “Try turning the lid this way. You are working hard. Do you want help now?”"
+          },
+          {
+            "type": "paragraph",
+            "text": "This builds confidence, patience, persistence, and thinking skills."
+          }
+        ]
+      },
+      {
+        "id": "m3-l08",
+        "order": 8,
+        "title": "Play and Cognitive Development",
+        "slug": "play-and-cognitive-development",
+        "type": "practical_guidance",
+        "key_terms": [
+          "Pretend play"
+        ],
+        "blocks": [
+          {
+            "type": "definition",
+            "term": "Play",
+            "text": "Play is one of the most important ways young children learn. WHO defines play as voluntary, enjoyable activity that may be imaginative, social, or solitary, and may involve objects. Young children build and strengthen developmental skills through playful interactions with people and objects.",
+            "citations": [
+              1
+            ],
+            "sources_named": [
+              "WHO"
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Types of play",
+            "blocks": [
+              {
+                "type": "play_types",
+                "title": "Types of play",
+                "columns": [
+                  "Type of play",
+                  "What it supports",
+                  "Low-cost examples"
+                ],
+                "items": [
+                  {
+                    "type_of_play": "Building and construction",
+                    "what_it_supports": "Planning, problem-solving, hand control",
+                    "low_cost_examples": "Blocks, plastic cups, empty cartons, small stones"
+                  },
+                  {
+                    "type_of_play": "Pretend play",
+                    "what_it_supports": "Imagination, memory, language, understanding daily life",
+                    "low_cost_examples": "Feeding a doll, cooking with empty pots, pretending to go to market"
+                  },
+                  {
+                    "type_of_play": "Sorting and matching",
+                    "what_it_supports": "Thinking, comparing, early mathematics",
+                    "low_cost_examples": "Sorting bottle caps by colour, matching socks, grouping leaves"
+                  },
+                  {
+                    "type_of_play": "Puzzles",
+                    "what_it_supports": "Attention, problem-solving, visual thinking",
+                    "low_cost_examples": "Homemade picture puzzles from old cards or magazines"
+                  },
+                  {
+                    "type_of_play": "Drawing",
+                    "what_it_supports": "Creativity, memory, hand control",
+                    "low_cost_examples": "Paper, charcoal, pencil, crayons, sand drawing"
+                  },
+                  {
+                    "type_of_play": "Storytelling",
+                    "what_it_supports": "Language, memory, imagination",
+                    "low_cost_examples": "Family stories, picture books, local folktales"
+                  },
+                  {
+                    "type_of_play": "Songs and rhymes",
+                    "what_it_supports": "Memory, attention, rhythm, language",
+                    "low_cost_examples": "Local songs, counting songs, action rhymes"
+                  },
+                  {
+                    "type_of_play": "Outdoor exploration",
+                    "what_it_supports": "Observation, curiosity, problem-solving",
+                    "low_cost_examples": "Looking at leaves, insects, clouds, shapes, and sounds"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "text": "Children do not need expensive toys. Safe household objects and homemade materials can provide rich learning opportunities. WHO/UNICEF guidance encourages caregivers to use common household objects and homemade toys, along with talking, singing, and book sharing.",
+                "citations": [
+                  5,
+                  4
+                ],
+                "sources_named": [
+                  "WHO",
+                  "UNICEF"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m3-l09",
+        "order": 9,
+        "title": "The Role of Language and Interaction",
+        "slug": "the-role-of-language-and-interaction",
+        "type": "practical_guidance",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "Talking with children is one of the most powerful ways to support cognitive development. Language gives children words for objects, feelings, actions, and ideas."
+          },
+          {
+            "type": "list",
+            "purpose": "adult_actions",
+            "intro": "Adults can support thinking by:",
+            "items": [
+              "Talking during daily activities",
+              "Naming objects and actions",
+              "Asking simple questions",
+              "Listening to the child’s answers",
+              "Reading or telling stories",
+              "Singing songs and rhymes",
+              "Describing what is happening",
+              "Encouraging children to explain their ideas"
+            ]
+          },
+          {
+            "type": "example",
+            "text": "While cooking, a caregiver can say, “I am washing the tomatoes. The tomato is red. Now I am cutting it. What colour is this one?”"
+          },
+          {
+            "type": "paragraph",
+            "text": "This does not require special materials or a formal classroom. Everyday activities such as feeding, bathing, walking, cooking, farming, shopping, and travelling can become learning moments. WHO notes that early learning opportunities are present in daily life, including at home, childcare, worship places, health facilities, and markets.",
+            "citations": [
+              4,
+              1
+            ],
+            "sources_named": [
+              "WHO"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m3-l10",
+        "order": 10,
+        "title": "The Home Environment and Learning",
+        "slug": "the-home-environment-and-learning",
+        "type": "concept",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "A child’s environment strongly influences learning opportunities. This does not mean a family needs wealth or many toys. It means creating safe, warm, responsive, and stimulating daily experiences."
+          },
+          {
+            "type": "list",
+            "purpose": "helpful_elements",
+            "intro": "Helpful elements include:",
+            "items": [
+              {
+                "label": "Safe exploration",
+                "text": "A clean, safe space where the child can move, touch, and play."
+              },
+              {
+                "label": "Responsive adults",
+                "text": "Adults who notice and respond to the child’s sounds, questions, and interests."
+              },
+              {
+                "label": "Books and stories",
+                "text": "Reading, picture sharing, storytelling, and local stories."
+              },
+              {
+                "label": "Conversation",
+                "text": "Talking with the child in the family language."
+              },
+              {
+                "label": "Play opportunities",
+                "text": "Time for free play, pretend play, and active play."
+              },
+              {
+                "label": "Predictable routines",
+                "text": "Regular meals, sleep, hygiene, and play routines."
+              },
+              {
+                "label": "Sleep",
+                "text": "Enough sleep supports attention, memory, mood, and learning."
+              },
+              {
+                "label": "Nutrition",
+                "text": "Good nutrition supports brain development, energy, and concentration."
+              },
+              {
+                "label": "Physical activity",
+                "text": "Movement supports overall development and helps children learn through the body."
+              },
+              {
+                "label": "Reduced unnecessary screen exposure",
+                "text": "Screens should not replace play, conversation, sleep, or physical activity."
+              },
+              {
+                "label": "Emotional security",
+                "text": "A child who feels safe and loved is more able to explore and learn."
+              }
+            ]
+          },
+          {
+            "type": "framework",
+            "name": "Nurturing Care Framework",
+            "source_org": "WHO",
+            "components": [
+              "Good health",
+              "Adequate nutrition",
+              "Responsive caregiving",
+              "Opportunities for early learning",
+              "Safety and security"
+            ],
+            "citations": [
+              6,
+              5
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "evidence",
+            "text": "WHO’s Nurturing Care Framework identifies good health, adequate nutrition, responsive caregiving, opportunities for early learning, and safety and security as essential conditions for children to thrive.",
+            "citations": [
+              6,
+              5
+            ],
+            "sources_named": [
+              "WHO"
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "key_point",
+            "text": "Families with limited resources can still support learning through talking, singing, storytelling, household play materials, routines, affection, and safe exploration."
+          }
+        ]
+      },
+      {
+        "id": "m3-l11",
+        "order": 11,
+        "title": "Technology and Screen Time",
+        "slug": "technology-and-screen-time",
+        "type": "practical_guidance",
+        "tags": [
+          "screen_time"
+        ],
+        "priority": "high",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "Screens are part of modern life, but they should not replace the real-world experiences that young children need most: play, movement, conversation, relationships, and exploration."
+          },
+          {
+            "type": "callout",
+            "variant": "evidence",
+            "text": "The American Academy of Pediatrics recommends avoiding screen media other than video-chatting for children younger than 18 months. For children aged 18–24 months, if families choose to introduce media, it should be high-quality and used together with an adult. For children aged 2–5 years, the AAP recommends limiting screen use to one hour or less per day of high-quality programming, with adult involvement.",
+            "citations": [
+              7
+            ],
+            "sources_named": [
+              "AAP"
+            ]
+          },
+          {
+            "type": "guideline_table",
+            "title": "AAP screen media recommendations by age",
+            "source_org": "AAP",
+            "citations": [
+              7
+            ],
+            "rows": [
+              {
+                "age": "Under 18 months",
+                "recommendation": "Avoid screen media other than video-chatting"
+              },
+              {
+                "age": "18–24 months",
+                "recommendation": "If families choose to introduce media, it should be high-quality and used together with an adult"
+              },
+              {
+                "age": "2–5 years",
+                "recommendation": "One hour or less per day of high-quality programming, with adult involvement",
+                "max_hours_per_day": 1
+              }
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Practical guidance",
+            "blocks": [
+              {
+                "type": "list",
+                "purpose": "practices",
+                "items": [
+                  "Choose calm, age-appropriate, high-quality content.",
+                  "Watch or use screens with the child when possible.",
+                  "Talk about what the child is seeing.",
+                  "Avoid screens during meals and for about one hour before bedtime.",
+                  "Keep bedrooms screen-free.",
+                  "Do not use screens as the main way to calm a child.",
+                  "Make sure screens do not replace sleep, active play, reading, or family interaction."
+                ]
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "Screens are not automatically harmful, but passive or excessive use can reduce time for the interactions and activities that best support learning. The AAP emphasizes that young children learn best through hands-on exploration and social interaction with trusted caregivers.",
+            "citations": [
+              7
+            ],
+            "sources_named": [
+              "AAP"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m3-l12",
+        "order": 12,
+        "title": "Every Child Develops Differently",
+        "slug": "every-child-develops-differently",
+        "type": "concept",
+        "tags": [
+          "when_to_seek_help"
+        ],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "Children develop cognitive skills at different rates. One child may start talking early, while another may become skilled at building, sorting, remembering, or solving problems earlier."
+          },
+          {
+            "type": "paragraph",
+            "text": "This variation is normal. Children also have different strengths. One child may love stories, another may enjoy building, and another may be very observant outdoors."
+          },
+          {
+            "type": "paragraph",
+            "text": "Avoid constantly comparing children with siblings, cousins, classmates, or neighbours’ children. Comparison can create unnecessary pressure and may make adults miss the child’s individual strengths."
+          },
+          {
+            "type": "callout",
+            "variant": "when_to_seek_help",
+            "text": "However, normal variation does not mean every concern should be ignored. If a child is not making progress over time, has significant difficulty in everyday activities, or loses skills they previously had, a qualified professional should assess the child."
+          }
+        ]
+      },
+      {
+        "id": "m3-l13",
+        "order": 13,
+        "title": "Recognizing Possible Concerns",
+        "slug": "recognizing-possible-concerns",
+        "type": "safety_guidance",
+        "key_terms": [
+          "Developmental screening"
+        ],
+        "tags": [
+          "safety",
+          "when_to_seek_help"
+        ],
+        "priority": "critical",
+        "blocks": [
+          {
+            "type": "callout",
+            "variant": "important_note",
+            "text": "A developmental concern does not automatically mean something is wrong. One behaviour alone does not diagnose a condition."
+          },
+          {
+            "type": "list",
+            "purpose": "red_flags",
+            "intro": "Speak with a doctor, nurse, or other qualified child-health or developmental professional if you notice:",
+            "items": [
+              "The child is not making expected progress in learning, attention, or problem-solving over time.",
+              "The child has significant difficulty understanding simple instructions or participating in age-appropriate play.",
+              "The child does not respond to their name, familiar people, or everyday sounds.",
+              "The child has persistent difficulty paying attention, remembering, or learning through play.",
+              "The child loses skills they previously had.",
+              "The child seems unusually disconnected from people, objects, or play.",
+              "The parent or caregiver has a concern that continues or seems unusual."
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "evidence",
+            "text": "CDC advises caregivers to act early if a child is missing milestones, has lost previously acquired skills, or if the caregiver has any concern, and to ask for developmental screening.",
+            "citations": [
+              3
+            ],
+            "sources_named": [
+              "CDC"
+            ]
+          },
+          {
+            "type": "definition",
+            "term": "Developmental screening",
+            "text": "Developmental screening is a short, structured check used by trained professionals to decide whether a child may need a fuller assessment. It is not a diagnosis."
+          }
+        ]
+      },
+      {
+        "id": "m3-l14",
+        "order": 14,
+        "title": "African Family Case Study",
+        "slug": "african-family-case-study",
+        "type": "case_study",
+        "priority": "high",
+        "blocks": [
+          {
+            "type": "case_study",
+            "title": "Case: Ngozi and her three-year-old daughter, Chiamaka",
+            "setting": "Enugu, Nigeria",
+            "characters": [
+              {
+                "name": "Ngozi",
+                "role": "Parent"
+              },
+              {
+                "name": "Chiamaka",
+                "role": "Child",
+                "age": "3 years"
+              }
+            ],
+            "narrative": [
+              {
+                "type": "paragraph",
+                "text": "Ngozi lives in Enugu, Nigeria, with her three-year-old daughter, Chiamaka. Chiamaka asks many questions: “Why is the pot hot?” “Where does rain come from?” “Why does the fan turn?”"
+              },
+              {
+                "type": "paragraph",
+                "text": "She also opens plastic containers, takes lids off bottles, empties baskets, and repeatedly tries to fit objects into other objects. Ngozi sometimes feels Chiamaka is being troublesome, especially when she is busy cooking."
+              },
+              {
+                "type": "list",
+                "purpose": "observations",
+                "intro": "One afternoon, Ngozi decides to observe Chiamaka more closely. She notices that Chiamaka is not simply making a mess. She is:",
+                "items": [
+                  "Trying different lids on different containers",
+                  "Sorting bottle caps by colour",
+                  "Asking what will happen when she pours water from one cup to another",
+                  "Pretending to cook after watching Ngozi in the kitchen",
+                  "Remembering the steps of a song she learned at church"
+                ]
+              },
+              {
+                "type": "paragraph",
+                "text": "Ngozi creates a safer learning space. She gives Chiamaka clean plastic containers, safe lids, cups, and a bowl of dry beans. She sits nearby and asks, “Which lid fits this container? What do you think will happen if we pour the beans into the cup?”"
+              },
+              {
+                "type": "paragraph",
+                "text": "Chiamaka tries, spills a few beans, laughs, and tries again. Ngozi says, “You are finding the right lid. Well done for trying again.”"
+              },
+              {
+                "type": "paragraph",
+                "text": "Ngozi still keeps dangerous items locked away and supervises closely. She also answers Chiamaka’s questions in simple words and encourages her to explain her ideas."
+              }
+            ],
+            "what_this_case_teaches": {
+              "heading": "What this case teaches",
+              "items": [
+                "Curiosity and exploration are important parts of learning.",
+                "A child’s “messy” behaviour can be an opportunity for problem-solving.",
+                "Adults can turn everyday household objects into learning materials.",
+                "Questions should be welcomed, not discouraged.",
+                "Safety and supervision remain essential."
+              ]
+            },
+            "discussion_questions": {
+              "heading": "Discussion questions and model answers",
+              "items": [
+                {
+                  "order": 1,
+                  "question": "Why might Chiamaka keep opening containers and fitting objects together?",
+                  "model_answer": "She may be exploring size, shape, cause and effect, and problem-solving. She is learning through repetition and hands-on play."
+                },
+                {
+                  "order": 2,
+                  "question": "How did Ngozi turn a challenging behaviour into a learning opportunity?",
+                  "model_answer": "She observed Chiamaka, provided safe materials, asked open questions, and encouraged her to try again without shaming her."
+                },
+                {
+                  "order": 3,
+                  "question": "What cognitive skills was Chiamaka practising?",
+                  "model_answer": "She was practising problem-solving, sorting, matching, memory, curiosity, language, and pretend play."
+                },
+                {
+                  "order": 4,
+                  "question": "What should Ngozi do to keep the activity safe?",
+                  "model_answer": "She should supervise closely, remove choking hazards and sharp or harmful objects, and keep medicines, chemicals, and hot items out of reach."
+                },
+                {
+                  "order": 5,
+                  "question": "When should Ngozi seek professional advice?",
+                  "model_answer": "If Chiamaka’s concerns persist, if she stops making progress, or if she loses skills she previously had, Ngozi should discuss this with a qualified health or developmental professional."
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "m3-l15",
+        "order": 15,
+        "title": "Common Mistakes Adults Make",
+        "slug": "common-mistakes-adults-make",
+        "type": "guidance",
+        "priority": "high",
+        "blocks": [
+          {
+            "type": "mistakes_table",
+            "title": "Common Mistakes Adults Make",
+            "columns": [
+              "Mistake",
+              "Better approach"
+            ],
+            "items": [
+              {
+                "mistake": "Doing everything for the child",
+                "better_approach": "Give the child time to try, then offer help only when needed"
+              },
+              {
+                "mistake": "Discouraging questions",
+                "better_approach": "Answer simply and use questions as learning moments"
+              },
+              {
+                "mistake": "Calling a child “slow” or “stubborn” when exploring",
+                "better_approach": "Describe the behaviour positively: “You are curious” or “You are trying to understand how it works”"
+              },
+              {
+                "mistake": "Comparing siblings or other children",
+                "better_approach": "Focus on each child’s own progress and strengths"
+              },
+              {
+                "mistake": "Expecting adult-level attention",
+                "better_approach": "Keep activities short, playful, and suited to the child’s age"
+              },
+              {
+                "mistake": "Using punishment instead of teaching",
+                "better_approach": "Calmly redirect, explain, and give safe alternatives"
+              },
+              {
+                "mistake": "Giving no opportunity for simple choices",
+                "better_approach": "Offer limited choices, such as “red cup or blue cup?”"
+              },
+              {
+                "mistake": "Relying entirely on screens for entertainment or learning",
+                "better_approach": "Balance any screen use with play, conversation, movement, and stories"
+              },
+              {
+                "mistake": "Assuming expensive toys are necessary",
+                "better_approach": "Use safe household objects, stories, songs, and everyday activities"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m3-l16",
+        "order": 16,
+        "title": "Practical Activity: “Think Like a Child”",
+        "slug": "practical-activity-think-like-a-child",
+        "type": "activity",
+        "priority": "high",
+        "blocks": [
+          {
+            "type": "activity",
+            "title": "Think Like a Child",
+            "instructions": "Choose a safe everyday object, such as a plastic cup, spoon, lid, empty container, leaf, stone, or piece of cloth.",
+            "open_questions_intro": "Sit with the child and explore the object together. Ask open questions such as:",
+            "open_questions": [
+              "What do you think this is?",
+              "What do you think it does?",
+              "What happens if we put it inside this container?",
+              "Can you find another way to use it?",
+              "What do you think will happen next?",
+              "How are these two objects the same or different?"
+            ],
+            "guidance": "Let the child touch, try, and explain their ideas. Do not rush to give the correct answer.",
+            "skills_supported": {
+              "heading": "Skills supported",
+              "intro": "This activity supports:",
+              "items": [
+                "Attention and observation",
+                "Curiosity",
+                "Language and communication",
+                "Memory",
+                "Problem-solving",
+                "Comparison and classification",
+                "Confidence and independent thinking"
+              ]
+            },
+            "baby_adaptation": "For babies, simplify the activity: show a safe object, name it, let the baby touch it, and describe what the baby is doing."
+          }
+        ]
+      }
+    ],
+    "key_takeaways": {
+      "id": "m3-key-takeaways",
+      "order": 17,
+      "kind": "key_takeaways",
+      "title": "Key Takeaways",
+      "priority": "high",
+      "items": [
+        {
+          "order": 1,
+          "text": "Cognitive development is the way children learn to think, remember, understand, and solve problems."
+        },
+        {
+          "order": 2,
+          "text": "Babies are active learners from birth and learn through relationships, senses, movement, and repetition."
+        },
+        {
+          "order": 3,
+          "text": "Responsive caregiving means noticing and responding appropriately to a child’s signals."
+        },
+        {
+          "order": 4,
+          "text": "Attention and memory develop gradually; young children naturally have short attention spans."
+        },
+        {
+          "order": 5,
+          "text": "Curiosity, questions, touching, and exploration are important parts of learning."
+        },
+        {
+          "order": 6,
+          "text": "Children build problem-solving skills by trying, observing, repeating, and changing their approach."
+        },
+        {
+          "order": 7,
+          "text": "Play is a powerful way for children to develop thinking, language, imagination, and confidence."
+        },
+        {
+          "order": 8,
+          "text": "Talking, singing, storytelling, and reading support cognitive development in everyday life."
+        },
+        {
+          "order": 9,
+          "text": "Children do not need expensive toys; safe household and local materials can support learning."
+        },
+        {
+          "order": 10,
+          "text": "Persistent concerns, significant difficulties, or loss of previously learned skills should be discussed with a qualified professional."
+        }
+      ]
+    },
+    "assessment": {
+      "id": "m3-knowledge-check",
+      "order": 18,
+      "kind": "knowledge_check",
+      "title": "Knowledge Check",
+      "question_type": "multiple_choice",
+      "total_questions": 10,
+      "priority": "high",
+      "questions": [
+        {
+          "order": 1,
+          "id": "m3-q01",
+          "question": "What does cognitive development mean?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Only physical growth"
+            },
+            {
+              "id": "B",
+              "text": "How children learn to think, understand, remember, and solve problems"
+            },
+            {
+              "id": "C",
+              "text": "Only learning to speak"
+            },
+            {
+              "id": "D",
+              "text": "Only learning at school"
+            }
+          ],
+          "correct_option": "B",
+          "explanation": "Cognitive development includes attention, memory, understanding, problem-solving, and learning.",
+          "related_lessons": [
+            2
+          ]
+        },
+        {
+          "order": 2,
+          "id": "m3-q02",
+          "question": "A baby repeatedly drops a spoon from a high chair. What may the baby be learning?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nothing; the baby is only being difficult"
+            },
+            {
+              "id": "B",
+              "text": "Cause and effect, sound, and repetition"
+            },
+            {
+              "id": "C",
+              "text": "How to read"
+            },
+            {
+              "id": "D",
+              "text": "How to cook"
+            }
+          ],
+          "correct_option": "B",
+          "explanation": "Repeating an action helps babies learn what happens and test cause and effect.",
+          "related_lessons": [
+            1,
+            3
+          ]
+        },
+        {
+          "order": 3,
+          "id": "m3-q03",
+          "question": "Which activity best supports a toddler’s problem-solving skills?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Watching television alone for a long time"
+            },
+            {
+              "id": "B",
+              "text": "Trying to fit objects into containers"
+            },
+            {
+              "id": "C",
+              "text": "Being told to sit quietly all day"
+            },
+            {
+              "id": "D",
+              "text": "Avoiding all questions"
+            }
+          ],
+          "correct_option": "B",
+          "explanation": "Fitting objects into containers encourages trial, error, observation, and problem-solving.",
+          "related_lessons": [
+            7
+          ]
+        },
+        {
+          "order": 4,
+          "id": "m3-q04",
+          "question": "What is responsive caregiving?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Giving a child whatever they ask for immediately"
+            },
+            {
+              "id": "B",
+              "text": "Noticing, understanding, and responding appropriately to a child’s signals"
+            },
+            {
+              "id": "C",
+              "text": "Allowing a child to do anything without limits"
+            },
+            {
+              "id": "D",
+              "text": "Speaking only when a child cries"
+            }
+          ],
+          "correct_option": "B",
+          "explanation": "Responsive caregiving means responding in a timely and appropriate way to the child’s needs and signals.",
+          "related_lessons": [
+            3
+          ],
+          "citations": [
+            1
+          ]
+        },
+        {
+          "order": 5,
+          "id": "m3-q05",
+          "question": "Why is repetition helpful for young children?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It makes children tired"
+            },
+            {
+              "id": "B",
+              "text": "It helps them remember and understand through practice"
+            },
+            {
+              "id": "C",
+              "text": "It replaces the need for play"
+            },
+            {
+              "id": "D",
+              "text": "It guarantees a child will speak early"
+            }
+          ],
+          "correct_option": "B",
+          "explanation": "Songs, routines, stories, and repeated actions help children learn and remember.",
+          "related_lessons": [
+            5
+          ]
+        },
+        {
+          "order": 6,
+          "id": "m3-q06",
+          "question": "A three-year-old asks many “why” questions. What is the best caregiver response?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Tell the child to stop asking questions"
+            },
+            {
+              "id": "B",
+              "text": "Punish the child for being troublesome"
+            },
+            {
+              "id": "C",
+              "text": "Answer simply and turn the question into a learning moment"
+            },
+            {
+              "id": "D",
+              "text": "Give the child a screen to keep them quiet"
+            }
+          ],
+          "correct_option": "C",
+          "explanation": "Questions show curiosity. Simple answers and shared exploration support learning.",
+          "related_lessons": [
+            6,
+            14
+          ]
+        },
+        {
+          "order": 7,
+          "id": "m3-q07",
+          "question": "Which is an example of pretend play?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Sleeping"
+            },
+            {
+              "id": "B",
+              "text": "Feeding a doll with an empty spoon"
+            },
+            {
+              "id": "C",
+              "text": "Crying"
+            },
+            {
+              "id": "D",
+              "text": "Running"
+            }
+          ],
+          "correct_option": "B",
+          "explanation": "Pretend play uses imagination and helps children understand everyday life.",
+          "related_lessons": [
+            8
+          ]
+        },
+        {
+          "order": 8,
+          "id": "m3-q08",
+          "question": "For children aged 2–5 years, what does the American Academy of Pediatrics recommend for screen use?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Unlimited screen use"
+            },
+            {
+              "id": "B",
+              "text": "No screen use at all, including video calls"
+            },
+            {
+              "id": "C",
+              "text": "One hour or less per day of high-quality programming, ideally with an adult"
+            },
+            {
+              "id": "D",
+              "text": "Screens during every meal"
+            }
+          ],
+          "correct_option": "C",
+          "explanation": "The AAP recommends limiting screen use for ages 2–5 to one hour or less daily of high-quality content, with adult involvement where possible.",
+          "related_lessons": [
+            11
+          ],
+          "citations": [
+            7
+          ]
+        },
+        {
+          "order": 9,
+          "id": "m3-q09",
+          "question": "A parent notices that a child who previously could say several words has stopped using them. What should the parent do?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Wait several years without action"
+            },
+            {
+              "id": "B",
+              "text": "Assume it is definitely a specific disorder"
+            },
+            {
+              "id": "C",
+              "text": "Discuss the concern with a qualified healthcare professional and ask about developmental screening"
+            },
+            {
+              "id": "D",
+              "text": "Stop talking to the child"
+            }
+          ],
+          "correct_option": "C",
+          "explanation": "Loss of previously learned skills is an important concern that should be assessed by a qualified professional.",
+          "related_lessons": [
+            13
+          ],
+          "citations": [
+            3
+          ]
+        },
+        {
+          "order": 10,
+          "id": "m3-q10",
+          "question": "A family has few toys. What is the best way to support a child’s cognitive development?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Wait until the family can buy expensive educational toys"
+            },
+            {
+              "id": "B",
+              "text": "Use safe household objects, stories, songs, conversation, and everyday activities"
+            },
+            {
+              "id": "C",
+              "text": "Keep the child indoors and silent"
+            },
+            {
+              "id": "D",
+              "text": "Use television as the main teacher"
+            }
+          ],
+          "correct_option": "B",
+          "explanation": "Learning does not require expensive materials. Safe household objects and responsive interaction can strongly support development.",
+          "related_lessons": [
+            10
+          ],
+          "citations": [
+            5,
+            4
+          ]
+        }
+      ]
+    },
+    "glossary": {
+      "id": "m3-glossary",
+      "order": 19,
+      "kind": "glossary",
+      "title": "Short Glossary",
+      "priority": "standard",
+      "terms": [
+        {
+          "term": "Cognitive development",
+          "definition": "The way a child learns to think, understand, remember, and solve problems."
+        },
+        {
+          "term": "Attention",
+          "definition": "The ability to focus on a person, object, activity, or idea."
+        },
+        {
+          "term": "Memory",
+          "definition": "The ability to keep and recall information, people, events, and routines."
+        },
+        {
+          "term": "Problem-solving",
+          "definition": "Finding a way to deal with a challenge or reach a goal."
+        },
+        {
+          "term": "Exploration",
+          "definition": "Actively investigating people, objects, places, and experiences."
+        },
+        {
+          "term": "Curiosity",
+          "definition": "The desire to know, try, see, or understand something."
+        },
+        {
+          "term": "Executive function",
+          "definition": "Mental skills that help a child focus, remember, control impulses, and plan simple actions."
+        },
+        {
+          "term": "Pretend play",
+          "definition": "Play in which a child uses imagination, such as pretending a banana is a telephone."
+        },
+        {
+          "term": "Developmental milestone",
+          "definition": "A skill that most children can do by a certain age, used as a general guide rather than a strict deadline."
+        },
+        {
+          "term": "Developmental screening",
+          "definition": "A brief, structured check by a trained professional to identify whether a child may need further assessment."
+        }
+      ]
+    },
+    "professional_note": {
+      "id": "m3-professional-note",
+      "order": 20,
+      "kind": "professional_note",
+      "title": "Professional Note",
+      "priority": "critical",
+      "paragraphs": [
+        "This module provides educational information about cognitive development in early childhood. It does not diagnose developmental conditions, disabilities, or illnesses.",
+        "Children develop at different rates, and one difference from a milestone does not automatically mean something is wrong. However, parents and caregivers should speak with an appropriate qualified health or developmental professional if they have persistent concerns, notice significant difficulties in everyday functioning, or observe a child losing skills they previously had. Developmental screening and professional assessment are appropriate next steps when concerns exist.",
+        "Urgent medical concerns should receive appropriate medical attention without delay."
+      ]
+    },
+    "references": {
+      "id": "m3-references",
+      "order": 21,
+      "kind": "references",
+      "title": "References",
+      "priority": "standard",
+      "groups": [
+        {
+          "key": "official_guidance",
+          "title": "Official guidance",
+          "items": [
+            {
+              "id": "m3-ref-01",
+              "number": 1,
+              "citation": "World Health Organization. Improving early childhood development: WHO guideline—Summary. Geneva: WHO; 2020.",
+              "organizations": [
+                "WHO"
+              ],
+              "year": 2020,
+              "url": "https://cdn.who.int/media/docs/default-source/mca-documents/child/early-child-development/improving-early-childhood-development-who-guideline-summary.pdf",
+              "group": "official_guidance"
+            },
+            {
+              "id": "m3-ref-02",
+              "number": 2,
+              "citation": "World Health Organization. Improving early childhood development: WHO guideline—Frequently asked questions. Geneva: WHO; 2020.",
+              "organizations": [
+                "WHO"
+              ],
+              "year": 2020,
+              "url": "https://cdn.who.int/media/docs/default-source/mca-documents/child/q-a-on-child-care.pdf",
+              "group": "official_guidance"
+            },
+            {
+              "id": "m3-ref-05",
+              "number": 5,
+              "citation": "World Health Organization, United Nations Children’s Fund, World Bank Group. Nurturing care for early childhood development: A framework for helping children survive and thrive to transform health and human potential. Geneva: WHO; 2018.",
+              "organizations": [
+                "WHO",
+                "UNICEF",
+                "World Bank Group"
+              ],
+              "year": 2018,
+              "url": "https://iris.who.int/server/api/core/bitstreams/781de51d-4cef-482e-bb3b-c2b3becf3c9f/content",
+              "group": "official_guidance"
+            },
+            {
+              "id": "m3-ref-06",
+              "number": 6,
+              "citation": "World Health Organization. Nurturing care for early childhood development (full framework PDF).",
+              "organizations": [
+                "WHO"
+              ],
+              "url": "https://iris.who.int/bitstream/handle/10665/272603/9789241514064-eng.pdf",
+              "group": "official_guidance"
+            },
+            {
+              "id": "m3-ref-04",
+              "number": 4,
+              "citation": "World Health Organization. Toolkit to accompany the release of the WHO guideline on improving early childhood development. Geneva: WHO; 2020.",
+              "organizations": [
+                "WHO"
+              ],
+              "year": 2020,
+              "url": "https://cdn.who.int/media/docs/default-source/mca-documents/child/early-child-development/toolkit-improving-early-childhood-development-who-guideline-final81042a6927ea4080beae3ec33d6e4246.pdf",
+              "group": "official_guidance"
+            },
+            {
+              "id": "m3-ref-08",
+              "number": 8,
+              "citation": "World Health Organization. Child health and development: Early childhood development and nurturing care.",
+              "organizations": [
+                "WHO"
+              ],
+              "url": "https://www.who.int/teams/maternal-newborn-child-adolescent-health-and-ageing/handbooks/programme-manager-s-handbook-mncah/recommendations-on-interventions-along-life-course/child",
+              "group": "official_guidance"
+            },
+            {
+              "id": "m3-ref-03",
+              "number": 3,
+              "citation": "Centers for Disease Control and Prevention. Milestone Moments Booklet: Learn the Signs. Act Early.",
+              "organizations": [
+                "CDC"
+              ],
+              "url": "https://www.cdc.gov/ncbddd/actearly/pdf/booklets/Milestone-Moments-Booklet_Reader_508.pdf",
+              "group": "official_guidance"
+            }
+          ]
+        },
+        {
+          "key": "professional_clinical_guidance",
+          "title": "Professional clinical guidance",
+          "items": [
+            {
+              "id": "m3-ref-07",
+              "number": 7,
+              "citation": "American Academy of Pediatrics, Council on Communications and Media. Media and Young Minds. Pediatrics. 2016;138(5):e20162591. Reaffirmed July 2022.",
+              "organizations": [
+                "AAP"
+              ],
+              "year": 2016,
+              "url": "https://publications.aap.org/pediatrics/article/138/5/e20162591/60503/Media-and-Young-Minds",
+              "group": "professional_clinical_guidance"
+            },
+            {
+              "id": "m3-ref-09",
+              "number": 9,
+              "citation": "American Academy of Pediatrics. Screen time guidelines. Updated 2025.",
+              "organizations": [
+                "AAP"
+              ],
+              "year": 2025,
+              "url": "https://www.aap.org/en/patient-care/media-and-children/center-of-excellence-on-social-media-and-youth-mental-health/qa-portal/qa-portal-library/qa-portal-library-questions/screen-time-guidelines/",
+              "group": "professional_clinical_guidance"
+            }
+          ]
+        }
+      ],
+      "unlabeled_urls": {
+        "note": "A bare list of URLs appears after the numbered references with no citation text. Entries with matches_reference are alternate links to a listed reference; the others are not cited anywhere in the module.",
+        "items": [
+          {
+            "url": "https://cdn.who.int/media/docs/default-source/mca-documents/child/early-child-development/improving-early-childhood-development-who-guideline-summary.pdf?sfvrsn=a6af5c84_1",
+            "matches_reference": "m3-ref-01",
+            "cited_in_text": false
+          },
+          {
+            "url": "https://cdn.who.int/media/docs/default-source/mca-documents/child/q-a-on-child-care.pdf?sfvrsn=f27277c1_2",
+            "matches_reference": "m3-ref-02",
+            "cited_in_text": false
+          },
+          {
+            "url": "https://www.cdc.gov/ncbddd/actearly/pdf/booklets/Milestone-Moments-Booklet_Reader_508.pdf",
+            "matches_reference": "m3-ref-03",
+            "cited_in_text": false
+          },
+          {
+            "url": "https://cdn.who.int/media/docs/default-source/mca-documents/child/early-child-development/toolkit-improving-early-childhood-development-who-guideline-final81042a6927ea4080beae3ec33d6e4246.pdf?sfvrsn=98ee6aaf_2",
+            "matches_reference": "m3-ref-04",
+            "cited_in_text": false
+          },
+          {
+            "url": "https://iris.who.int/server/api/core/bitstreams/781de51d-4cef-482e-bb3b-c2b3becf3c9f/content",
+            "matches_reference": "m3-ref-05",
+            "cited_in_text": false
+          },
+          {
+            "url": "https://iris.who.int/bitstream/handle/10665/272603/9789241514064-eng.pdf",
+            "matches_reference": "m3-ref-06",
+            "cited_in_text": false
+          },
+          {
+            "url": "https://publications.aap.org/pediatrics/article/138/5/e20162591/60503/Media-and-Young-Minds",
+            "matches_reference": "m3-ref-07",
+            "cited_in_text": false
+          },
+          {
+            "url": "https://www.who.int/teams/maternal-newborn-child-adolescent-health-and-ageing/handbooks/programme-manager-s-handbook-mncah/recommendations-on-interventions-along-life-course/child",
+            "matches_reference": "m3-ref-08",
+            "cited_in_text": false
+          },
+          {
+            "url": "https://www.aap.org/en/patient-care/media-and-children/center-of-excellence-on-social-media-and-youth-mental-health/qa-portal/qa-portal-library/qa-portal-library-questions/screen-time-guidelines/",
+            "matches_reference": "m3-ref-09",
+            "cited_in_text": false
+          },
+          {
+            "url": "https://www.mayoclinic.org/healthy-lifestyle/childrens-health/in-depth/screen-time/art-20047952",
+            "matches_reference": null,
+            "cited_in_text": false
+          },
+          {
+            "url": "https://www.pbs.org/newshour/health/pediatricians-relax-guidelines-screen-time",
+            "matches_reference": null,
+            "cited_in_text": false
+          },
+          {
+            "url": "https://health.choc.org/updated-aap-recommendations-for-screen-time/",
+            "matches_reference": null,
+            "cited_in_text": false
+          },
+          {
+            "url": "https://www.cdc.gov/act-early/milestones/2-months.html",
+            "matches_reference": null,
+            "cited_in_text": false
+          },
+          {
+            "url": "https://www.cdc.gov/act-early/milestones/2-years.html",
+            "matches_reference": null,
+            "cited_in_text": false
+          },
+          {
+            "url": "https://www.cdc.gov/act-early/milestones/5-years.html",
+            "matches_reference": null,
+            "cited_in_text": false
+          }
+        ]
+      }
+    },
+    "important_sections": [
+      {
+        "category": "learning_objectives",
+        "priority": "high",
+        "title": "What learners will be able to do",
+        "location": "m3-l01",
+        "why": "States the module outcome."
+      },
+      {
+        "category": "key_definition",
+        "priority": "high",
+        "title": "Cognitive development",
+        "location": "m3-l02",
+        "why": "Core term for the whole module."
+      },
+      {
+        "category": "key_definition",
+        "priority": "high",
+        "title": "Responsive caregiving (WHO)",
+        "location": "m3-l03",
+        "why": "Central caregiving concept."
+      },
+      {
+        "category": "guideline_data",
+        "priority": "high",
+        "title": "Cognitive learning experiences by age, 0–5 years",
+        "location": "m3-l04",
+        "why": "Four age stages with common learning experiences."
+      },
+      {
+        "category": "key_definition",
+        "priority": "high",
+        "title": "Attention and memory",
+        "location": "m3-l05",
+        "why": "Core terms; short attention spans are normal."
+      },
+      {
+        "category": "safety_warning",
+        "priority": "critical",
+        "title": "Keep dangerous items out of reach",
+        "location": "m3-l06",
+        "why": "Medicines, chemicals, sharp objects, matches, choking hazards, hot items."
+      },
+      {
+        "category": "key_definition",
+        "priority": "high",
+        "title": "Problem-solving",
+        "location": "m3-l07",
+        "why": "Core term with the try, observe, retry process."
+      },
+      {
+        "category": "reference_table",
+        "priority": "high",
+        "title": "Types of play: what each supports and low-cost examples",
+        "location": "m3-l08",
+        "why": "Eight play types with supported skills."
+      },
+      {
+        "category": "framework",
+        "priority": "high",
+        "title": "WHO Nurturing Care Framework",
+        "location": "m3-l10",
+        "why": "Five essential conditions for children to thrive."
+      },
+      {
+        "category": "guideline_data",
+        "priority": "critical",
+        "title": "AAP screen time recommendations by age",
+        "location": "m3-l11",
+        "why": "Under 18 months, 18–24 months and 2–5 years."
+      },
+      {
+        "category": "when_to_seek_help",
+        "priority": "critical",
+        "title": "Variation is normal but concerns must not be ignored",
+        "location": "m3-l12",
+        "why": "Loss of skills or no progress needs professional assessment."
+      },
+      {
+        "category": "when_to_seek_help",
+        "priority": "critical",
+        "title": "Possible concerns: when to speak with a professional",
+        "location": "m3-l13",
+        "why": "Seven red-flag situations."
+      },
+      {
+        "category": "key_definition",
+        "priority": "high",
+        "title": "Developmental screening",
+        "location": "m3-l13",
+        "why": "A short check, not a diagnosis."
+      },
+      {
+        "category": "case_study",
+        "priority": "high",
+        "title": "Ngozi and Chiamaka",
+        "location": "m3-l14",
+        "why": "Applied example with lessons and five model-answer questions."
+      },
+      {
+        "category": "reference_table",
+        "priority": "high",
+        "title": "Common mistakes adults make and better approaches",
+        "location": "m3-l15",
+        "why": "Nine mistake and better-approach pairs."
+      },
+      {
+        "category": "practical_activity",
+        "priority": "high",
+        "title": "Think Like a Child",
+        "location": "m3-l16",
+        "why": "Open-question exploration activity with a baby adaptation."
+      },
+      {
+        "category": "key_takeaways",
+        "priority": "high",
+        "title": "Key Takeaways",
+        "location": "m3-key-takeaways",
+        "why": "Ten-point module summary."
+      },
+      {
+        "category": "assessment",
+        "priority": "high",
+        "title": "Knowledge Check",
+        "location": "m3-knowledge-check",
+        "why": "Ten multiple-choice questions with answers and explanations."
+      },
+      {
+        "category": "glossary",
+        "priority": "standard",
+        "title": "Short Glossary",
+        "location": "m3-glossary",
+        "why": "Ten key terms."
+      },
+      {
+        "category": "disclaimer",
+        "priority": "critical",
+        "title": "Professional Note",
+        "location": "m3-professional-note",
+        "why": "Not a diagnosis; seek professional help for persistent concerns."
+      },
+      {
+        "category": "references",
+        "priority": "standard",
+        "title": "References",
+        "location": "m3-references",
+        "why": "Nine numbered WHO, CDC and AAP references."
+      }
+    ],
+    "content_gaps": []
+  },
+  "source_notes": [
+    "Built from the full Word file. Numbered citation markers like [1] were removed from the text; blocks that had them carry citations: [numbers] that match the number field of the items in references.",
+    "sources_named is detected automatically from organisations named in the text (WHO, UNICEF, CDC, AAP).",
+    "Lesson type, priority, tags, key_terms, important_sections and quiz related_lessons are editorial classifications, not in the original text.",
+    "learning_objectives items are taken from the 'By the end...' sentence in lesson 1.",
+    "The Word file contained a stray 'perplexity' logo image and a separator mark; both were left out as export leftovers.",
+    "Two tables became structured blocks: types of play (lesson 8) and common mistakes (lesson 15)."
+  ]
+}

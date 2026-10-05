@@ -221,9 +221,48 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["id", "code", "programId", "status"]
+    },
+    "Subscriber": {
+      "title": "Subscriber",
+      "description": "Newsletter email subscriber",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "status": { "type": "string", "enum": ["ACTIVE", "UNSUBSCRIBED"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "source": { "type": "string" }
+      },
+      "required": ["id", "email", "status", "createdAt"]
+    },
+    "BroadcastRecord": {
+      "title": "BroadcastRecord",
+      "description": "Sent broadcast history record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "subject": { "type": "string" },
+        "recipientCount": { "type": "number" },
+        "status": { "type": "string", "enum": ["SENT", "TEST", "FAILED"] },
+        "sentAt": { "type": "string", "format": "date-time" },
+        "testRecipient": { "type": "string" }
+      },
+      "required": ["id", "subject", "recipientCount", "status", "sentAt"]
     }
   },
   "firestore": {
+    "/subscribers/{subscriberId}": {
+      "schema": "Subscriber",
+      "description": "Newsletter email subscribers list"
+    },
+    "/broadcasts/{broadcastId}": {
+      "schema": "BroadcastRecord",
+      "description": "Sent email broadcast logs"
+    },
+    "/test/{testId}": {
+      "schema": "Settings",
+      "description": "Connection health test documents"
+    },
     "/accessCodes/{code}": {
       "schema": "AccessCode",
       "description": "Pre-generated single-use Selar product access codes"

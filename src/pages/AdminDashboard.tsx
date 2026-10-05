@@ -67,6 +67,7 @@ import {
   StudentProfile
 } from '../types/studentPortal';
 import { DEFAULT_SETTINGS, DEFAULT_PROGRAM, DEFAULT_MODULES } from '../data/portalDefaults';
+import { EmailBroadcastStudio } from '../components/admin/EmailBroadcastStudio';
 
 export interface AdminCourseItem {
   id: string;
@@ -82,7 +83,7 @@ export interface AdminCourseItem {
 
 export const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'accessCodes' | 'courses' | 'ledger' | 'claims' | 'settings'>('accessCodes');
+  const [activeTab, setActiveTab] = useState<'accessCodes' | 'courses' | 'ledger' | 'broadcast' | 'claims' | 'settings'>('accessCodes');
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [claims, setClaims] = useState<PaymentClaimData[]>([]);
   const [accessCodes, setAccessCodes] = useState<AccessCode[]>([]);
@@ -158,10 +159,24 @@ export const AdminDashboard: React.FC = () => {
     const savedModules = localStorage.getItem('bfh_course_modules');
     let ecdModules = DEFAULT_MODULES;
     if (savedModules) {
-      try {
-        const parsedMod = JSON.parse(savedModules);
-        if (Array.isArray(parsedMod) && parsedMod.length > 0) ecdModules = parsedMod;
-      } catch {}
+      if (/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]/u.test(savedModules)) {
+        try { localStorage.setItem('bfh_course_modules', JSON.stringify(DEFAULT_MODULES)); } catch {}
+        ecdModules = DEFAULT_MODULES;
+      } else {
+        try {
+          const parsedMod = JSON.parse(savedModules);
+          if (Array.isArray(parsedMod) && parsedMod.length > 0) {
+            const existingIds = new Set(parsedMod.map((m: any) => m.id));
+            const missingDefaults = DEFAULT_MODULES.filter((m) => !existingIds.has(m.id));
+            if (missingDefaults.length > 0) {
+              ecdModules = [...parsedMod, ...missingDefaults].sort((a, b) => (a.order || 0) - (b.order || 0));
+              try { localStorage.setItem('bfh_course_modules', JSON.stringify(ecdModules)); } catch {}
+            } else {
+              ecdModules = parsedMod;
+            }
+          }
+        } catch {}
+      }
     }
 
     return [
@@ -1119,7 +1134,7 @@ export const AdminDashboard: React.FC = () => {
   if (!isAdminAuthenticated) {
     return (
       <div className="pt-28 md:pt-36 min-h-[85vh] bg-teal-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-[32px] p-6 sm:p-10 max-w-md w-full space-y-6 shadow-sm border border-teal-100">
+        <div className="bg-white rounded-[32px] p-6 sm:p-10 max-w-md w-full space-y-6">
           <div className="text-center space-y-2">
             <div className="w-14 h-14 rounded-full bg-teal-900 flex items-center justify-center mx-auto text-white">
               <Lock className="w-6 h-6 text-orange-400" />
@@ -1237,6 +1252,18 @@ export const AdminDashboard: React.FC = () => {
 
               <button
                 type="button"
+                onClick={() => setActiveTab('broadcast')}
+                className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors cursor-pointer ${
+                  activeTab === 'broadcast'
+                    ? 'bg-orange-500 text-white'
+                    : 'bg-teal-800 text-teal-100 hover:bg-teal-700'
+                }`}
+              >
+                Broadcast
+              </button>
+
+              <button
+                type="button"
                 onClick={handleLaunchTestProfile}
                 className="px-4 py-2 rounded-full text-xs font-semibold bg-teal-800 text-teal-100 hover:bg-orange-500 hover:text-white transition-colors cursor-pointer"
                 title="Open live student test interface as Legend Laurence"
@@ -1305,6 +1332,17 @@ export const AdminDashboard: React.FC = () => {
                 className="w-full py-4 text-left text-sm font-semibold text-white hover:text-orange-400 transition-colors block cursor-pointer"
               >
                 Ledger
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('broadcast');
+                  setIsMobileNavOpen(false);
+                }}
+                className="w-full py-4 text-left text-sm font-semibold text-white hover:text-orange-400 transition-colors block cursor-pointer"
+              >
+                Broadcast
               </button>
 
               <button
@@ -2817,6 +2855,11 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               </div>
             </div>
+          )}
+
+          {/* TAB: EMAIL BROADCAST */}
+          {activeTab === 'broadcast' && (
+            <EmailBroadcastStudio />
           )}
 
           {/* TAB 4: PLATFORM & SELAR SETTINGS */}

@@ -102,6 +102,23 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    // Newsletter Subscribers: Public can subscribe, admin can read/manage
+    match /subscribers/{subscriberId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Email Broadcasts: Only admin
+    match /broadcasts/{broadcastId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Health / Connection Test
+    match /test/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // Fallback rule
     match /{document=**} {
       allow read, write: if isAdmin();

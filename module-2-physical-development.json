@@ -1,0 +1,1716 @@
+{
+  "schema_version": "1.0",
+  "course": {
+    "title": "Baby First Health Early Childhood Development Certificate",
+    "publisher": "Baby First Health"
+  },
+  "module": {
+    "id": "m2",
+    "number": 2,
+    "title": "Physical Development in Early Childhood",
+    "estimated_teaching_time": {
+      "min": 30,
+      "max": 35,
+      "unit": "minutes"
+    },
+    "target_learners": {
+      "raw": "Parents, caregivers, childcare workers, teachers, health practitioners, and other adults caring for children aged 0–5.",
+      "list": [
+        "Parents",
+        "Caregivers",
+        "Childcare workers",
+        "Teachers",
+        "Health practitioners",
+        "Other adults caring for children aged 0–5"
+      ]
+    },
+    "age_range": {
+      "min_years": 0,
+      "max_years": 5
+    },
+    "stats": {
+      "lessons": 13,
+      "lessons_with_content": 12,
+      "quiz_questions": 10,
+      "glossary_terms": 8,
+      "references": 12
+    },
+    "learning_objectives": [
+      "Explain what physical development is",
+      "Understand gross and fine motor skills",
+      "Use milestones as helpful guides rather than deadlines",
+      "Know when to seek professional advice"
+    ],
+    "outline": [
+      {
+        "order": 1,
+        "id": "m2-l01",
+        "kind": "lesson",
+        "title": "Welcome to the Module",
+        "type": "introduction"
+      },
+      {
+        "order": 2,
+        "id": "m2-l02",
+        "kind": "lesson",
+        "title": "What Is Physical Development?",
+        "type": "concept"
+      },
+      {
+        "order": 3,
+        "id": "m2-l03",
+        "kind": "lesson",
+        "title": "Gross Motor Skills",
+        "type": "concept"
+      },
+      {
+        "order": 4,
+        "id": "m2-l04",
+        "kind": "lesson",
+        "title": "Fine Motor Skills",
+        "type": "concept"
+      },
+      {
+        "order": 5,
+        "id": "m2-l05",
+        "kind": "lesson",
+        "title": "Physical Development From 0–5 Years",
+        "type": "reference_guide"
+      },
+      {
+        "order": 6,
+        "id": "m2-l06",
+        "kind": "lesson",
+        "title": "What Helps Physical Development?",
+        "type": "practical_guidance"
+      },
+      {
+        "order": 7,
+        "id": "m2-l07",
+        "kind": "lesson",
+        "title": "Nutrition, Sleep and Physical Development",
+        "type": "concept"
+      },
+      {
+        "order": 8,
+        "id": "m2-l08",
+        "kind": "lesson",
+        "title": "The Role of Play",
+        "type": "practical_guidance"
+      },
+      {
+        "order": 9,
+        "id": "m2-l09",
+        "kind": "lesson",
+        "title": "Children Develop at Different Rates",
+        "type": "concept"
+      },
+      {
+        "order": 10,
+        "id": "m2-l10",
+        "kind": "lesson",
+        "title": "When Should a Parent Be Concerned?",
+        "type": "safety_guidance"
+      },
+      {
+        "order": 11,
+        "id": "m2-l11",
+        "kind": "lesson",
+        "title": "Practical Case Study",
+        "type": "case_study"
+      },
+      {
+        "order": 12,
+        "id": "m2-l12",
+        "kind": "lesson",
+        "title": "Common Mistakes Parents and Caregivers Make",
+        "type": "practical_guidance"
+      },
+      {
+        "order": 13,
+        "id": "m2-l13",
+        "kind": "lesson",
+        "title": "Practical Activity",
+        "type": "activity"
+      },
+      {
+        "order": 14,
+        "id": "m2-key-takeaways",
+        "kind": "key_takeaways",
+        "title": "Key Takeaways"
+      },
+      {
+        "order": 15,
+        "id": "m2-knowledge-check",
+        "kind": "knowledge_check",
+        "title": "Knowledge Check"
+      },
+      {
+        "order": 16,
+        "id": "m2-glossary",
+        "kind": "glossary",
+        "title": "Glossary"
+      },
+      {
+        "order": 17,
+        "id": "m2-professional-note",
+        "kind": "professional_note",
+        "title": "Professional Note"
+      },
+      {
+        "order": 18,
+        "id": "m2-references",
+        "kind": "references",
+        "title": "References"
+      }
+    ],
+    "lessons": [
+      {
+        "id": "m2-l01",
+        "order": 1,
+        "title": "Welcome to the Module",
+        "slug": "welcome-to-the-module",
+        "type": "introduction",
+        "priority": "high",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "Welcome to Module 2 of the Baby First Health Early Childhood Development Certificate."
+          },
+          {
+            "type": "paragraph",
+            "text": "In this module, you will learn what physical development means, how children build movement skills from birth to age five, and how you can safely support a child’s physical abilities through everyday play, nutrition, sleep, and responsive care."
+          },
+          {
+            "type": "learning_objectives",
+            "text": "By the end, you should be able to explain physical development, understand gross and fine motor skills, use milestones as helpful guides rather than deadlines, and know when to seek professional advice.",
+            "items": [
+              "Explain what physical development is",
+              "Understand gross and fine motor skills",
+              "Use milestones as helpful guides rather than deadlines",
+              "Know when to seek professional advice"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m2-l02",
+        "order": 2,
+        "title": "What Is Physical Development?",
+        "slug": "what-is-physical-development",
+        "type": "concept",
+        "key_terms": [
+          "Physical development",
+          "Physical growth"
+        ],
+        "blocks": [
+          {
+            "type": "definition",
+            "term": "Physical development",
+            "text": "Physical development is the way a child’s body grows and learns to move and use its muscles. It includes growth in height and weight, but it is much more than that."
+          },
+          {
+            "type": "comparison",
+            "title": "Growth vs development",
+            "items": [
+              {
+                "term": "Physical growth",
+                "text": "Physical growth means changes in the body’s size, such as becoming taller, heavier, or having larger muscles and bones."
+              },
+              {
+                "term": "Physical development",
+                "text": "Physical development means learning to control and use the body. This includes holding up the head, sitting, walking, running, holding a spoon, drawing, climbing, and balancing."
+              }
+            ]
+          },
+          {
+            "type": "example",
+            "title": "A simple example",
+            "text": "A child may grow taller and gain weight, but physical development is also seen when the child learns to:",
+            "items": [
+              "Sit without support",
+              "Crawl across the floor",
+              "Pick up a piece of food",
+              "Walk without holding an adult’s hand",
+              "Kick a ball",
+              "Feed themselves with a spoon",
+              "Turn the pages of a book"
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "key_point",
+            "text": "Physical development supports a child’s independence. When a child learns to walk, hold objects, dress, eat, and play, they can do more for themselves and take part more fully in family and community life."
+          }
+        ]
+      },
+      {
+        "id": "m2-l03",
+        "order": 3,
+        "title": "Gross Motor Skills",
+        "slug": "gross-motor-skills",
+        "type": "concept",
+        "key_terms": [
+          "Gross motor skills"
+        ],
+        "blocks": [
+          {
+            "type": "definition",
+            "term": "Gross motor skills",
+            "text": "Gross motor skills are movements that use the large muscles of the body. These include the arms, legs, back, and trunk—the middle part of the body."
+          },
+          {
+            "type": "list",
+            "purpose": "examples",
+            "intro": "Examples include:",
+            "items": [
+              "Holding the head up",
+              "Rolling over",
+              "Sitting",
+              "Crawling",
+              "Standing",
+              "Walking",
+              "Running",
+              "Jumping",
+              "Climbing",
+              "Balancing",
+              "Throwing and kicking a ball"
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "These skills usually develop step by step. A baby first needs head control before sitting well. A child usually needs to walk before running confidently. However, children do not all follow exactly the same order or timing."
+          },
+          {
+            "type": "example",
+            "text": "For example, one child may walk at 11 months, while another may walk at 15 months. Both can be developing well. What matters most is that the child is making steady progress over time.",
+            "tags": [
+              "individual_variation"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m2-l04",
+        "order": 4,
+        "title": "Fine Motor Skills",
+        "slug": "fine-motor-skills",
+        "type": "concept",
+        "key_terms": [
+          "Fine motor skills",
+          "Coordination"
+        ],
+        "blocks": [
+          {
+            "type": "definition",
+            "term": "Fine motor skills",
+            "text": "Fine motor skills are smaller, more controlled movements, especially of the hands and fingers. They also involve the eyes and hands working together."
+          },
+          {
+            "type": "list",
+            "purpose": "examples",
+            "intro": "Examples include:",
+            "items": [
+              "Reaching for a toy",
+              "Grasping a rattle",
+              "Picking up small pieces of food",
+              "Holding a spoon",
+              "Turning pages",
+              "Scribbling with a crayon",
+              "Drawing",
+              "Building with blocks",
+              "Buttoning clothes",
+              "Using child-safe scissors with supervision"
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "Fine motor skills matter because they help children become more independent. A child who can hold a spoon can try to feed themselves. A child who can hold a crayon can draw and later learn to write. A child who can turn pages can explore books more independently."
+          },
+          {
+            "type": "paragraph",
+            "text": "Fine motor skills also support learning. When children build, draw, sort, pour, and manipulate objects, they are strengthening hand control, concentration, problem-solving, and coordination."
+          }
+        ]
+      },
+      {
+        "id": "m2-l05",
+        "order": 5,
+        "title": "Physical Development From 0–5 Years",
+        "slug": "physical-development-from-0-5-years",
+        "type": "reference_guide",
+        "key_terms": [
+          "Developmental milestone"
+        ],
+        "priority": "high",
+        "blocks": [
+          {
+            "type": "callout",
+            "variant": "important_note",
+            "text": "The ages below are general guides, not deadlines. Children develop at different rates, and many healthy children reach skills earlier or later than others."
+          },
+          {
+            "type": "definition",
+            "term": "Developmental milestones",
+            "text": "Developmental milestones are skills that most children can do by a certain age. The CDC describes milestones as skills that at least 75% of children can do by a given age, which means they are broad population guides rather than exact expectations for every child.",
+            "citation_marker_in_source": true,
+            "sources_named": [
+              "CDC"
+            ]
+          },
+          {
+            "type": "age_stage",
+            "label": "0–12 months",
+            "age_min_months": 0,
+            "age_max_months": 12,
+            "summary": "During the first year, babies learn to control their bodies and explore the world through movement.",
+            "abilities_intro": "Common early abilities include:",
+            "abilities": [
+              "Lifting the head during tummy time",
+              "Moving both arms and legs",
+              "Reaching for objects",
+              "Rolling over",
+              "Sitting with and then without support",
+              "Crawling or moving across the floor in their own way",
+              "Pulling up to stand",
+              "Taking first steps, sometimes around the first birthday"
+            ],
+            "notes": [
+              {
+                "type": "paragraph",
+                "text": "Not all babies crawl in the same way. Some crawl forward, some move backward first, and some use other ways to move before walking. The important thing is that the baby is becoming stronger and more mobile over time."
+              }
+            ]
+          },
+          {
+            "type": "age_stage",
+            "label": "1–2 years",
+            "age_min_months": 12,
+            "age_max_months": 24,
+            "summary": "Toddlers become more mobile and begin to use their hands for everyday tasks.",
+            "abilities_intro": "Common abilities include:",
+            "abilities": [
+              "Walking independently",
+              "Walking while pulling or carrying a toy",
+              "Beginning to run",
+              "Climbing onto low furniture with supervision",
+              "Kicking a ball",
+              "Eating with a spoon",
+              "Drinking from a cup",
+              "Scribbling",
+              "Building simple towers with blocks"
+            ],
+            "notes": [
+              {
+                "type": "paragraph",
+                "text": "At around age two, many children can run, kick a ball, walk up a few stairs with help, and eat with a spoon. These are useful signs of progress, not pass-or-fail tests.",
+                "citation_marker_in_source": true
+              }
+            ]
+          },
+          {
+            "type": "age_stage",
+            "label": "2–3 years",
+            "age_min_months": 24,
+            "age_max_months": 36,
+            "summary": "Children become more confident movers and begin to coordinate their bodies more smoothly.",
+            "abilities_intro": "Common abilities include:",
+            "abilities": [
+              "Running more confidently",
+              "Kicking and throwing a ball",
+              "Climbing",
+              "Walking up and down stairs while holding on",
+              "Jumping with both feet",
+              "Turning pages",
+              "Copying simple lines or circles",
+              "Building with more blocks"
+            ],
+            "notes": [
+              {
+                "type": "paragraph",
+                "text": "At this age, children often enjoy active games such as chasing, dancing, carrying objects, and playing with balls. They need safe space and patient adults, not perfect performance."
+              }
+            ]
+          },
+          {
+            "type": "age_stage",
+            "label": "3–4 years",
+            "age_min_months": 36,
+            "age_max_months": 48,
+            "summary": "Preschool children develop better balance, strength, and hand control.",
+            "abilities_intro": "Common abilities include:",
+            "abilities": [
+              "Climbing well",
+              "Running easily",
+              "Pedalling a tricycle",
+              "Walking upstairs with alternating feet",
+              "Hopping or standing briefly on one foot",
+              "Catching a large ball",
+              "Drawing simple shapes",
+              "Using a spoon and fork more confidently"
+            ],
+            "notes": [
+              {
+                "type": "paragraph",
+                "text": "By age four, many children can hop, stand on one foot briefly, catch a bounced ball most of the time, and begin to use child-safe scissors with supervision. Again, children vary, and practice matters.",
+                "citation_marker_in_source": true
+              }
+            ]
+          },
+          {
+            "type": "age_stage",
+            "label": "4–5 years",
+            "age_min_months": 48,
+            "age_max_months": 60,
+            "summary": "Children become more coordinated and independent.",
+            "abilities_intro": "Common abilities include:",
+            "abilities": [
+              "Running, jumping, hopping, and skipping",
+              "Balancing on one foot",
+              "Climbing and swinging with supervision",
+              "Throwing and catching",
+              "Using a fork and spoon",
+              "Drawing people and simple shapes",
+              "Beginning to manage clothing, such as buttons or zips"
+            ],
+            "notes": [
+              {
+                "type": "paragraph",
+                "text": "By age five, many children can stand on one foot for several seconds, hop, swing, climb, and use a fork and spoon. These abilities prepare children for school activities, games, and greater independence.",
+                "citation_marker_in_source": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m2-l06",
+        "order": 6,
+        "title": "What Helps Physical Development?",
+        "slug": "what-helps-physical-development",
+        "type": "practical_guidance",
+        "key_terms": [
+          "Tummy time"
+        ],
+        "tags": [
+          "safety"
+        ],
+        "priority": "high",
+        "blocks": [
+          {
+            "type": "callout",
+            "variant": "key_point",
+            "text": "Children develop physical skills through opportunity, practice, safety, good health, and encouragement. Adults do not need to “train” children like athletes. Children learn best through play and everyday activities."
+          },
+          {
+            "type": "subsection",
+            "title": "Safe opportunities to move and explore",
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "Children need room to move. A baby needs a clean, safe floor space to stretch, roll, reach, and practise tummy time. A toddler needs space to walk, push, carry, and climb safely."
+              },
+              {
+                "type": "example",
+                "text": "Instead of keeping a toddler seated for long periods, create a safe area where the child can walk, push a small basket, carry plastic cups, or climb a low, stable step with an adult nearby."
+              },
+              {
+                "type": "callout",
+                "variant": "evidence",
+                "text": "WHO recommends that infants be active several times a day through interactive floor-based play, including tummy time for babies who are not yet mobile.",
+                "citation_marker_in_source": true,
+                "sources_named": [
+                  "WHO"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Floor play for babies",
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "Tummy time means placing an awake baby on their tummy for short periods while an adult watches closely. It helps babies build neck, shoulder, arm, and back strength."
+              },
+              {
+                "type": "example",
+                "text": "Place a baby on a clean mat on their tummy for a few minutes while awake. Put a safe toy in front of the baby and talk or sing to encourage them to lift their head."
+              },
+              {
+                "type": "callout",
+                "variant": "safety_warning",
+                "text": "Never leave a baby alone during tummy time. Babies should always sleep on their back in a safe sleep space."
+              }
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Active play",
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "Active play helps children practise movement naturally. It can include dancing, chasing bubbles, playing ball, walking, climbing, pulling toys, or helping with simple household tasks."
+              },
+              {
+                "type": "example",
+                "text": "A caregiver can put on music and invite a toddler to dance, march, jump, or copy simple movements."
+              }
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Outdoor play",
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "Outdoor play gives children space to run, climb, balance, and explore. It also supports health and wellbeing. WHO notes that regular physical activity and active play are vital for young children’s healthy growth and development.",
+                "citation_marker_in_source": true,
+                "sources_named": [
+                  "WHO"
+                ]
+              },
+              {
+                "type": "callout",
+                "variant": "safety_warning",
+                "text": "Outdoor play must always be adapted to the local environment. In hot weather, choose cooler times of day, provide shade and water, and watch for unsafe ground, traffic, animals, or sharp objects."
+              }
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Age-appropriate toys and materials",
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "Children do not need expensive toys. Safe, simple, locally available materials can support movement and hand skills."
+              },
+              {
+                "type": "list",
+                "purpose": "examples",
+                "intro": "Examples include:",
+                "items": [
+                  "Balls",
+                  "Plastic cups and containers",
+                  "Spoons and bowls for pretend cooking",
+                  "Blocks or stacked safe objects",
+                  "Crayons and paper",
+                  "Books",
+                  "Safe household objects for sorting and carrying"
+                ]
+              },
+              {
+                "type": "example",
+                "text": "A toddler can practise fine motor skills by putting bottle caps into a container, stacking cups, or turning pages of a picture book with an adult."
+              }
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Opportunities to practise",
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "Skills improve with repetition. Let children try again, even when they spill, fall safely, or do something messily."
+              },
+              {
+                "type": "example",
+                "text": "If a child is learning to use a spoon, allow practice at mealtimes even if some food falls. Praise the effort: “You are holding your spoon. Well done.”"
+              }
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Good nutrition",
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "Children need enough energy and nutrients to grow, move, and stay active. Breastfeeding, appropriate complementary foods from around six months, varied family foods, and enough water support growth and activity. Nutrition is covered in more detail elsewhere in the program."
+              }
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Adequate sleep",
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "Sleep allows the body to rest, recover, and grow. WHO recommends about 12–16 hours of sleep in 24 hours for infants aged 4–11 months, 11–14 hours for children aged 1–2 years, and 10–13 hours for children aged 3–4 years, including naps where appropriate.",
+                "citation_marker_in_source": true,
+                "sources_named": [
+                  "WHO"
+                ]
+              },
+              {
+                "type": "guideline_table",
+                "title": "WHO recommended sleep in 24 hours, including naps where appropriate",
+                "source_org": "WHO",
+                "rows": [
+                  {
+                    "age": "4–11 months",
+                    "hours_min": 12,
+                    "hours_max": 16
+                  },
+                  {
+                    "age": "1–2 years",
+                    "hours_min": 11,
+                    "hours_max": 14
+                  },
+                  {
+                    "age": "3–4 years",
+                    "hours_min": 10,
+                    "hours_max": 13
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Safe environments",
+            "blocks": [
+              {
+                "type": "callout",
+                "variant": "safety_warning",
+                "text": "Encouraging movement does not mean allowing danger. Remove sharp objects, cover or block unsafe areas, supervise water and climbing, and ensure outdoor spaces are safe."
+              }
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Regular healthcare",
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "Routine health visits help monitor growth, nutrition, immunisation, and development. They are also a good time for parents to ask questions about movement, feeding, sleep, or any concern."
+              }
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Avoiding unnecessary restriction",
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "Children need time outside of prams, high chairs, car seats, and carriers. WHO advises that infants and children aged 1–2 years should not be restrained for more than one hour at a time, and that young children should not sit for extended periods.",
+                "citation_marker_in_source": true,
+                "sources_named": [
+                  "WHO"
+                ]
+              },
+              {
+                "type": "example",
+                "text": "During a long journey, plan safe breaks where a toddler can stretch, walk, and move before returning to the car seat."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m2-l07",
+        "order": 7,
+        "title": "Nutrition, Sleep and Physical Development",
+        "slug": "nutrition-sleep-and-physical-development",
+        "type": "concept",
+        "tags": [
+          "safety"
+        ],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "Nutrition, sleep, and general health work together to support physical development."
+          },
+          {
+            "type": "list",
+            "purpose": "factors",
+            "items": [
+              {
+                "label": "Nutrition",
+                "text": "Nutrition provides energy for movement and nutrients for bones, muscles, and the brain."
+              },
+              {
+                "label": "Sleep",
+                "text": "Sleep helps the body recover and supports growth, attention, mood, and learning."
+              },
+              {
+                "label": "General health",
+                "text": "General health affects how well a child can play and learn. Repeated illness, untreated pain, poor vision, or ongoing feeding problems can affect a child’s activity and development."
+              }
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "when_to_seek_help",
+            "text": "A child who is well fed, rested, and healthy is usually more able to explore, play, and practise new skills. If a child is often tired, has poor appetite, is not growing as expected, or seems unusually weak or inactive, a qualified healthcare professional should assess the child."
+          }
+        ]
+      },
+      {
+        "id": "m2-l08",
+        "order": 8,
+        "title": "The Role of Play",
+        "slug": "the-role-of-play",
+        "type": "practical_guidance",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "Play is one of the most powerful ways children develop physically. Through play, children practise balance, strength, coordination, problem-solving, and confidence."
+          },
+          {
+            "type": "definition",
+            "term": "Play",
+            "text": "WHO describes play as voluntary, enjoyable activity that can be solitary or social and may involve objects. Young children build and strengthen developmental skills through playful interaction with people and objects.",
+            "citation_marker_in_source": true,
+            "sources_named": [
+              "WHO"
+            ]
+          },
+          {
+            "type": "age_group_play",
+            "audience": "Babies",
+            "summary": "Babies learn through safe floor movement, reaching, grasping, kicking, rolling, and tummy time.",
+            "examples_intro": "Examples:",
+            "examples": [
+              "Place a safe toy just within reach.",
+              "Let the baby kick a soft ball.",
+              "Talk and sing during tummy time.",
+              "Offer safe objects to hold and explore."
+            ]
+          },
+          {
+            "type": "age_group_play",
+            "audience": "Toddlers",
+            "summary": "Toddlers need chances to walk, carry, push, pull, climb safely, and practise hand skills.",
+            "examples_intro": "Examples:",
+            "examples": [
+              "Let the child carry a small plastic cup to the table.",
+              "Provide a ball for rolling or kicking.",
+              "Encourage safe climbing on low steps with supervision.",
+              "Offer crayons and paper for scribbling."
+            ]
+          },
+          {
+            "type": "age_group_play",
+            "audience": "Preschool children",
+            "summary": "Preschool children benefit from running, jumping, balancing, throwing, catching, dancing, and active games.",
+            "examples_intro": "Examples:",
+            "examples": [
+              "Play “stop and go” or simple chasing games.",
+              "Throw and catch a soft ball.",
+              "Dance to music.",
+              "Walk on a low, safe line drawn on the ground to practise balance."
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "key_point",
+            "text": "Children do not need costly equipment. A ball, cups, safe containers, paper, crayons, music, and a safe outdoor space can provide many learning opportunities."
+          }
+        ]
+      },
+      {
+        "id": "m2-l09",
+        "order": 9,
+        "title": "Children Develop at Different Rates",
+        "slug": "children-develop-at-different-rates",
+        "type": "concept",
+        "tags": [
+          "when_to_seek_help"
+        ],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "Children develop at different rates. Some walk early. Some talk early. Some become confident climbers later. Some children prefer watching before they try a new movement."
+          },
+          {
+            "type": "paragraph",
+            "text": "This variation is normal. A child should not be constantly compared with a sibling, cousin, neighbour’s child, or classmate."
+          },
+          {
+            "type": "callout",
+            "variant": "important_note",
+            "text": "However, “children develop differently” should never be used to dismiss a real concern. A caregiver knows the child well. If a child is not progressing, has persistent difficulty with movement, or loses a skill they previously had, it is important to speak with a qualified healthcare professional."
+          },
+          {
+            "type": "callout",
+            "variant": "evidence",
+            "text": "The CDC advises parents to act early if a child is not meeting milestones, has lost skills, or if the parent has any concern.",
+            "citation_marker_in_source": true,
+            "sources_named": [
+              "CDC"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "m2-l10",
+        "order": 10,
+        "title": "When Should a Parent Be Concerned?",
+        "slug": "when-should-a-parent-be-concerned",
+        "type": "safety_guidance",
+        "key_terms": [
+          "Developmental screening"
+        ],
+        "tags": [
+          "safety",
+          "when_to_seek_help"
+        ],
+        "priority": "critical",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "A developmental concern does not automatically mean something is wrong, but it is worth discussing with a qualified professional."
+          },
+          {
+            "type": "list",
+            "purpose": "red_flags",
+            "intro": "Speak with a doctor, nurse, or other qualified child-health professional if you notice:",
+            "items": [
+              "The child is not making expected progress in movement over time.",
+              "The child has significant difficulty with movement compared with their usual abilities.",
+              "The child persistently uses one side of the body much more than the other.",
+              "The child loses a skill they previously had, such as no longer walking or sitting as before.",
+              "The child has major difficulty with walking, balance, coordination, or using their hands.",
+              "The child seems unusually stiff, floppy, weak, or in pain during movement.",
+              "The parent or caregiver has a concern that continues or seems unusual."
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "evidence",
+            "text": "The American Academy of Pediatrics recommends ongoing developmental monitoring and standardized developmental screening at set ages, with additional assessment whenever parents or professionals have concerns.",
+            "citation_marker_in_source": true,
+            "sources_named": [
+              "AAP"
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "safety_warning",
+            "text": "Do not try to diagnose a child using the internet. A single late skill does not automatically mean a disorder. What matters is the overall pattern of the child’s development, whether progress is continuing, and whether skills are being lost."
+          }
+        ]
+      },
+      {
+        "id": "m2-l11",
+        "order": 11,
+        "title": "Practical Case Study",
+        "slug": "practical-case-study",
+        "type": "case_study",
+        "priority": "high",
+        "blocks": [
+          {
+            "type": "case_study",
+            "title": "Case: Amara and her two-year-old son, Musa",
+            "setting": "Busy neighbourhood in Yaoundé",
+            "characters": [
+              {
+                "name": "Amara",
+                "role": "Parent"
+              },
+              {
+                "name": "Musa",
+                "role": "Child",
+                "age": "2 years"
+              }
+            ],
+            "narrative": [
+              {
+                "type": "paragraph",
+                "text": "Amara lives in a busy neighbourhood in Yaoundé. Her son, Musa, is two years old. At a family gathering, Amara notices that her sister’s child, who is also two, runs confidently and kicks a ball. Musa walks well but prefers to hold his mother’s hand and does not run much."
+              },
+              {
+                "type": "paragraph",
+                "text": "Amara becomes worried. A neighbour tells her that Musa must be “delayed” because he is not running like the other child."
+              },
+              {
+                "type": "list",
+                "purpose": "observations",
+                "intro": "Amara decides to observe Musa calmly for one week. She notices that he:",
+                "items": [
+                  "Walks steadily and climbs onto the sofa with help",
+                  "Picks up small objects and puts them into a bowl",
+                  "Holds a spoon and tries to feed himself",
+                  "Kicks a ball when it is placed close to him",
+                  "Enjoys dancing to music",
+                  "Is learning new words and follows simple instructions"
+                ]
+              },
+              {
+                "type": "paragraph",
+                "text": "Amara also creates more chances for movement. She lets Musa carry safe plastic cups to the table, kick a ball in a safe open space, and scribble with crayons. She reduces long periods when he is seated or restrained."
+              },
+              {
+                "type": "paragraph",
+                "text": "After two weeks, Musa is beginning to take a few quick running steps when playing chase with his mother. Amara still decides to mention her earlier concern at Musa’s next health visit, especially because she wants reassurance and professional guidance."
+              }
+            ],
+            "what_this_case_teaches": {
+              "heading": "What this case teaches",
+              "items": [
+                "Children should not be judged only by comparison with another child.",
+                "It is helpful to observe the child’s overall abilities, not one skill alone.",
+                "Children need safe daily opportunities to move and practise.",
+                "A caregiver’s concern deserves respectful attention.",
+                "If a concern continues, a qualified healthcare professional should assess the child."
+              ]
+            },
+            "discussion_questions": {
+              "heading": "Discussion questions",
+              "items": [
+                {
+                  "order": 1,
+                  "question": "Why was it helpful for Amara to observe Musa over several days instead of deciding immediately that something was wrong?"
+                },
+                {
+                  "order": 2,
+                  "question": "What physical skills was Musa already showing?"
+                },
+                {
+                  "order": 3,
+                  "question": "What simple, low-cost activities could Amara use to encourage Musa’s movement?"
+                },
+                {
+                  "order": 4,
+                  "question": "When should Amara seek professional advice about Musa’s physical development?"
+                },
+                {
+                  "order": 5,
+                  "question": "How can caregivers support a child without comparing them with other children?"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "m2-l12",
+        "order": 12,
+        "title": "Common Mistakes Parents and Caregivers Make",
+        "slug": "common-mistakes-parents-and-caregivers-make",
+        "type": "practical_guidance",
+        "content_status": "missing",
+        "blocks": []
+      },
+      {
+        "id": "m2-l13",
+        "order": 13,
+        "title": "Practical Activity",
+        "slug": "practical-activity",
+        "type": "activity",
+        "priority": "high",
+        "blocks": [
+          {
+            "type": "activity",
+            "title": "Observation activity: “Watch, Support, Encourage”",
+            "instructions": "Choose a child aged 0–5 whom you care for. Observe the child during normal, safe play for 10–15 minutes. Do not test, pressure, or diagnose the child.",
+            "observation_minutes": {
+              "min": 10,
+              "max": 15
+            },
+            "record_intro": "Record the following:",
+            "record_items": [
+              {
+                "prompt": "How the child moves",
+                "examples": "crawling, walking, running, climbing, balancing, jumping, or dancing."
+              },
+              {
+                "prompt": "How the child uses their hands",
+                "examples": "reaching, grasping, holding a spoon, turning pages, stacking, drawing, or picking up objects."
+              },
+              {
+                "prompt": "What physical activities the child enjoys",
+                "examples": "ball play, dancing, climbing, carrying objects, drawing, or outdoor play."
+              },
+              {
+                "prompt": "What skills the child is practising",
+                "examples": "balance, coordination, hand control, strength, or independence."
+              },
+              {
+                "prompt": "How you can safely encourage more movement",
+                "examples": "providing floor space, offering a ball, allowing safe climbing, encouraging self-feeding, or reducing long periods of sitting."
+              }
+            ],
+            "follow_up": "After the observation, write down one simple change you can make this week to give the child more safe opportunities to move and play."
+          }
+        ]
+      }
+    ],
+    "key_takeaways": {
+      "id": "m2-key-takeaways",
+      "order": 14,
+      "kind": "key_takeaways",
+      "title": "Key Takeaways",
+      "priority": "high",
+      "items": [
+        {
+          "order": 1,
+          "text": "Physical development is more than getting taller and heavier; it includes learning to move and use the body."
+        },
+        {
+          "order": 2,
+          "text": "Physical growth refers to changes in body size, while physical development includes movement skills and coordination."
+        },
+        {
+          "order": 3,
+          "text": "Gross motor skills are large-body movements such as sitting, walking, running, jumping, and climbing."
+        },
+        {
+          "order": 4,
+          "text": "Fine motor skills are smaller hand-and-finger movements such as grasping, feeding, drawing, and turning pages."
+        },
+        {
+          "order": 5,
+          "text": "Developmental milestones are useful general guides, not exact deadlines."
+        },
+        {
+          "order": 6,
+          "text": "Children develop at different rates, and progress over time matters more than comparison with other children."
+        },
+        {
+          "order": 7,
+          "text": "Safe floor play, tummy time, active play, outdoor play, and everyday tasks support physical development."
+        },
+        {
+          "order": 8,
+          "text": "Good nutrition, adequate sleep, safety, and regular healthcare all support healthy development."
+        },
+        {
+          "order": 9,
+          "text": "Children do not need expensive toys; safe, simple, locally available materials can support play and learning."
+        },
+        {
+          "order": 10,
+          "text": "Persistent concerns, significant movement difficulties, or loss of previously learned skills should be discussed with a qualified healthcare professional."
+        }
+      ]
+    },
+    "assessment": {
+      "id": "m2-knowledge-check",
+      "order": 15,
+      "kind": "knowledge_check",
+      "title": "Knowledge Check",
+      "question_type": "multiple_choice",
+      "total_questions": 10,
+      "priority": "high",
+      "questions": [
+        {
+          "order": 1,
+          "id": "m2-q01",
+          "question": "What is physical development?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Only a child’s height and weight"
+            },
+            {
+              "id": "B",
+              "text": "The way a child’s body grows and learns to move and use muscles"
+            },
+            {
+              "id": "C",
+              "text": "Only a child’s ability to read"
+            },
+            {
+              "id": "D",
+              "text": "Only a child’s personality"
+            }
+          ],
+          "correct_option": "B",
+          "explanation": "Physical development includes growth, movement, coordination, and physical abilities.",
+          "related_lessons": [
+            2
+          ]
+        },
+        {
+          "order": 2,
+          "id": "m2-q02",
+          "question": "Which is an example of a gross motor skill?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Turning a page"
+            },
+            {
+              "id": "B",
+              "text": "Holding a spoon"
+            },
+            {
+              "id": "C",
+              "text": "Running"
+            },
+            {
+              "id": "D",
+              "text": "Scribbling"
+            }
+          ],
+          "correct_option": "C",
+          "explanation": "Running uses large muscles and is a gross motor skill.",
+          "related_lessons": [
+            3
+          ]
+        },
+        {
+          "order": 3,
+          "id": "m2-q03",
+          "question": "Which is an example of a fine motor skill?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Crawling"
+            },
+            {
+              "id": "B",
+              "text": "Walking"
+            },
+            {
+              "id": "C",
+              "text": "Jumping"
+            },
+            {
+              "id": "D",
+              "text": "Picking up a small object"
+            }
+          ],
+          "correct_option": "D",
+          "explanation": "Picking up a small object requires controlled hand and finger movements.",
+          "related_lessons": [
+            4
+          ]
+        },
+        {
+          "order": 4,
+          "id": "m2-q04",
+          "question": "What should caregivers remember about developmental milestones?",
+          "options": [
+            {
+              "id": "A",
+              "text": "They are exact deadlines for every child"
+            },
+            {
+              "id": "B",
+              "text": "They are general guides that most children reach by certain ages"
+            },
+            {
+              "id": "C",
+              "text": "They prove whether a child is intelligent"
+            },
+            {
+              "id": "D",
+              "text": "They should replace professional advice"
+            }
+          ],
+          "correct_option": "B",
+          "explanation": "Milestones are broad guides, not rigid deadlines. Children develop at different rates.",
+          "related_lessons": [
+            5
+          ],
+          "citation_marker_in_source": true
+        },
+        {
+          "order": 5,
+          "id": "m2-q05",
+          "question": "A baby is awake and not yet mobile. Which activity helps build strength for later movement?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Keeping the baby in a car seat for long periods"
+            },
+            {
+              "id": "B",
+              "text": "Supervised tummy time and floor play"
+            },
+            {
+              "id": "C",
+              "text": "Watching television"
+            },
+            {
+              "id": "D",
+              "text": "Avoiding all movement"
+            }
+          ],
+          "correct_option": "B",
+          "explanation": "WHO recommends interactive floor-based play and tummy time for infants who are not yet mobile.",
+          "related_lessons": [
+            6
+          ],
+          "citation_marker_in_source": true
+        },
+        {
+          "order": 6,
+          "id": "m2-q06",
+          "question": "A two-year-old walks well but is not yet running as confidently as another two-year-old. What is the best first response?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Assume the child has a serious disorder"
+            },
+            {
+              "id": "B",
+              "text": "Punish the child for not running"
+            },
+            {
+              "id": "C",
+              "text": "Observe overall progress, provide safe movement opportunities, and seek advice if concerns continue"
+            },
+            {
+              "id": "D",
+              "text": "Compare the child daily with other children"
+            }
+          ],
+          "correct_option": "C",
+          "explanation": "Children vary in timing. Caregivers should support practice and seek professional advice if concerns persist or skills are lost.",
+          "related_lessons": [
+            9,
+            11
+          ],
+          "citation_marker_in_source": true
+        },
+        {
+          "order": 7,
+          "id": "m2-q07",
+          "question": "Why are fine motor skills important?",
+          "options": [
+            {
+              "id": "A",
+              "text": "They help children become more independent in everyday tasks"
+            },
+            {
+              "id": "B",
+              "text": "They replace the need for gross motor skills"
+            },
+            {
+              "id": "C",
+              "text": "They are only important for children who want to become artists"
+            },
+            {
+              "id": "D",
+              "text": "They develop without practice or opportunity"
+            }
+          ],
+          "correct_option": "A",
+          "explanation": "Fine motor skills support feeding, dressing, drawing, handling objects, and later writing.",
+          "related_lessons": [
+            4
+          ]
+        },
+        {
+          "order": 8,
+          "id": "m2-q08",
+          "question": "Which situation should be discussed with a qualified healthcare professional?",
+          "options": [
+            {
+              "id": "A",
+              "text": "A child walks at 13 months instead of 11 months"
+            },
+            {
+              "id": "B",
+              "text": "A child prefers one game over another"
+            },
+            {
+              "id": "C",
+              "text": "A child loses the ability to walk after previously walking"
+            },
+            {
+              "id": "D",
+              "text": "A child is quieter during illness"
+            }
+          ],
+          "correct_option": "C",
+          "explanation": "Loss of a previously acquired skill is an important concern that should be assessed promptly.",
+          "related_lessons": [
+            10
+          ],
+          "citation_marker_in_source": true
+        },
+        {
+          "order": 9,
+          "id": "m2-q09",
+          "question": "A caregiver wants to support a toddler’s physical development at home. Which is the best approach?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Buy expensive electronic toys"
+            },
+            {
+              "id": "B",
+              "text": "Keep the child seated to prevent falls"
+            },
+            {
+              "id": "C",
+              "text": "Provide safe space for walking, carrying, climbing, and ball play"
+            },
+            {
+              "id": "D",
+              "text": "Allow unrestricted access to every area of the home"
+            }
+          ],
+          "correct_option": "C",
+          "explanation": "Children develop through safe, repeated opportunities to move and explore.",
+          "related_lessons": [
+            6
+          ]
+        },
+        {
+          "order": 10,
+          "id": "m2-q10",
+          "question": "A parent is worried about a child’s movement but has no other clear concern. What should the parent do?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Wait silently until the child is much older"
+            },
+            {
+              "id": "B",
+              "text": "Search online and diagnose the child"
+            },
+            {
+              "id": "C",
+              "text": "Share the concern with a qualified healthcare professional and ask about developmental screening if needed"
+            },
+            {
+              "id": "D",
+              "text": "Stop the child from all physical activity"
+            }
+          ],
+          "correct_option": "C",
+          "explanation": "Parents know their children well. Persistent concerns should be discussed with a qualified professional, who can decide whether screening or referral is needed.",
+          "related_lessons": [
+            10
+          ],
+          "citation_marker_in_source": true
+        }
+      ]
+    },
+    "glossary": {
+      "id": "m2-glossary",
+      "order": 16,
+      "kind": "glossary",
+      "title": "Glossary",
+      "priority": "standard",
+      "terms": [
+        {
+          "term": "Physical development",
+          "definition": "The way a child’s body grows and learns to move, coordinate, and use muscles."
+        },
+        {
+          "term": "Physical growth",
+          "definition": "Changes in body size, such as height, weight, and body proportions."
+        },
+        {
+          "term": "Gross motor skills",
+          "definition": "Movements using large muscles, such as sitting, crawling, walking, running, jumping, and climbing."
+        },
+        {
+          "term": "Fine motor skills",
+          "definition": "Smaller, controlled movements, especially of the hands and fingers, such as grasping, feeding oneself, drawing, and turning pages."
+        },
+        {
+          "term": "Developmental milestone",
+          "definition": "A skill that most children can do by a certain age, used as a general guide rather than a strict deadline."
+        },
+        {
+          "term": "Coordination",
+          "definition": "The ability to use different parts of the body smoothly together, such as using the eyes and hands to catch a ball."
+        },
+        {
+          "term": "Tummy time",
+          "definition": "Short periods when an awake baby is placed on their tummy while closely supervised, helping build neck, shoulder, and back strength."
+        },
+        {
+          "term": "Developmental screening",
+          "definition": "A brief, structured check used by qualified professionals to identify children who may need further developmental assessment."
+        }
+      ]
+    },
+    "professional_note": {
+      "id": "m2-professional-note",
+      "order": 17,
+      "kind": "professional_note",
+      "title": "Professional Note",
+      "priority": "critical",
+      "paragraphs": [
+        "This module provides educational information about physical development in early childhood. It does not diagnose developmental conditions or replace professional assessment.",
+        "Children develop at different rates, and a single difference from a milestone does not automatically mean something is wrong. However, parents and caregivers should seek advice from a qualified healthcare professional when they have ongoing concerns, notice significant movement difficulties, or observe a child losing skills they previously had. Urgent medical concerns should receive appropriate medical attention without delay."
+      ]
+    },
+    "references": {
+      "id": "m2-references",
+      "order": 18,
+      "kind": "references",
+      "title": "References",
+      "priority": "standard",
+      "groups": [
+        {
+          "key": "official_guidance",
+          "title": "Official guidance",
+          "items": [
+            {
+              "citation": "World Health Organization. Guidelines on physical activity, sedentary behaviour and sleep for children under 5 years of age. Geneva: WHO; 2019.",
+              "organization": "WHO",
+              "year": 2019,
+              "group": "official_guidance",
+              "url": "https://www.who.int/publications/i/item/9789241550536",
+              "id": "m2-ref-01"
+            },
+            {
+              "citation": "World Health Organization. Guidelines on physical activity, sedentary behaviour and sleep for children under 5 years of age (full guideline PDF).",
+              "organization": "WHO",
+              "group": "official_guidance",
+              "url": "https://iris.who.int/bitstream/handle/10665/311664/9789241550536-eng.pdf",
+              "id": "m2-ref-02"
+            },
+            {
+              "citation": "World Health Organization. Standards for healthy eating, physical activity, sedentary behaviour and sleep in early childhood education and care settings: a toolkit. Geneva: WHO; 2021.",
+              "organization": "WHO",
+              "year": 2021,
+              "group": "official_guidance",
+              "url": "https://iris.who.int/bitstream/handle/10665/345926/9789240032255-eng.pdf",
+              "id": "m2-ref-03"
+            },
+            {
+              "citation": "World Health Organization. Physical activity fact sheet. Geneva: WHO; 2024.",
+              "organization": "WHO",
+              "year": 2024,
+              "group": "official_guidance",
+              "url": "https://www.who.int/news-room/fact-sheets/detail/physical-activity",
+              "id": "m2-ref-04"
+            },
+            {
+              "citation": "Centers for Disease Control and Prevention. Developmental Milestones. Learn the Signs. Act Early.",
+              "organization": "CDC",
+              "group": "official_guidance",
+              "url": "https://www.cdc.gov/act-early/milestones/index.html",
+              "id": "m2-ref-05"
+            },
+            {
+              "citation": "Centers for Disease Control and Prevention. Developmental Milestones Matter!",
+              "organization": "CDC",
+              "group": "official_guidance",
+              "url": "https://www.cdc.gov/act-early/families/milestones-matter.html",
+              "id": "m2-ref-06"
+            },
+            {
+              "citation": "Centers for Disease Control and Prevention. Milestones by 2 Months.",
+              "organization": "CDC",
+              "group": "official_guidance",
+              "url": "https://www.cdc.gov/act-early/milestones/2-months.html",
+              "id": "m2-ref-07"
+            },
+            {
+              "citation": "Centers for Disease Control and Prevention. Milestones by 2 Years.",
+              "organization": "CDC",
+              "group": "official_guidance",
+              "url": "https://www.cdc.gov/act-early/milestones/2-years.html",
+              "id": "m2-ref-08"
+            },
+            {
+              "citation": "Centers for Disease Control and Prevention. Milestones by 5 Years.",
+              "organization": "CDC",
+              "group": "official_guidance",
+              "url": "https://www.cdc.gov/act-early/milestones/5-years.html",
+              "id": "m2-ref-09"
+            },
+            {
+              "citation": "Centers for Disease Control and Prevention. Milestone Moments Booklet.",
+              "organization": "CDC",
+              "group": "official_guidance",
+              "url": "https://stacks.cdc.gov/view/cdc/112314/cdc_112314_DS1.pdf",
+              "id": "m2-ref-10"
+            }
+          ]
+        },
+        {
+          "key": "professional_clinical_guidance",
+          "title": "Professional clinical guidance",
+          "items": [
+            {
+              "citation": "American Academy of Pediatrics. Noritz GH, Murphy NA; Council on Children with Disabilities. Motor Delays: Early Identification and Evaluation. Pediatrics. 2013;131(6):e2016–e2027. Reaffirmed 2017 and 2022.",
+              "organization": "AAP",
+              "year": 2013,
+              "group": "professional_clinical_guidance",
+              "url": "https://publications.aap.org/pediatrics/article/131/6/e2016/31072/Motor-Delays-Early-Identification-and-Evaluation",
+              "id": "m2-ref-11"
+            }
+          ]
+        },
+        {
+          "key": "research_and_evidence_review",
+          "title": "Research and evidence review",
+          "items": [
+            {
+              "citation": "Wenden EJ, Pearce N, George P, Christian HE. Movement behavior policies in the early childhood education and care setting: an international scoping review. Frontiers in Public Health. 2023.",
+              "year": 2023,
+              "group": "research_and_evidence_review",
+              "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10126357/",
+              "id": "m2-ref-12"
+            }
+          ]
+        }
+      ]
+    },
+    "important_sections": [
+      {
+        "category": "learning_objectives",
+        "priority": "high",
+        "title": "What learners will be able to do",
+        "location": "m2-l01",
+        "why": "States the module outcomes."
+      },
+      {
+        "category": "key_definition",
+        "priority": "high",
+        "title": "Physical growth vs physical development",
+        "location": "m2-l02",
+        "why": "Core distinction the whole module builds on."
+      },
+      {
+        "category": "key_definition",
+        "priority": "high",
+        "title": "Gross motor skills",
+        "location": "m2-l03",
+        "why": "Core term."
+      },
+      {
+        "category": "key_definition",
+        "priority": "high",
+        "title": "Fine motor skills",
+        "location": "m2-l04",
+        "why": "Core term."
+      },
+      {
+        "category": "key_definition",
+        "priority": "high",
+        "title": "Developmental milestones (CDC 75% definition)",
+        "location": "m2-l05",
+        "why": "Explains milestones as guides, not deadlines."
+      },
+      {
+        "category": "guideline_data",
+        "priority": "high",
+        "title": "Milestone abilities by age, 0–5 years",
+        "location": "m2-l05",
+        "why": "Five age stages with common abilities."
+      },
+      {
+        "category": "safety_warning",
+        "priority": "critical",
+        "title": "Tummy time supervision and back-sleeping",
+        "location": "m2-l06",
+        "why": "Never leave a baby alone during tummy time; babies sleep on their back."
+      },
+      {
+        "category": "safety_warning",
+        "priority": "critical",
+        "title": "Outdoor play safety",
+        "location": "m2-l06",
+        "why": "Adapt to heat, ground, traffic, animals and sharp objects."
+      },
+      {
+        "category": "safety_warning",
+        "priority": "critical",
+        "title": "Safe environments",
+        "location": "m2-l06",
+        "why": "Encouraging movement does not mean allowing danger."
+      },
+      {
+        "category": "guideline_data",
+        "priority": "high",
+        "title": "WHO sleep recommendations by age",
+        "location": "m2-l06",
+        "why": "Hours of sleep per 24 hours for ages 4 months to 4 years."
+      },
+      {
+        "category": "when_to_seek_help",
+        "priority": "critical",
+        "title": "Signs a child needs professional assessment",
+        "location": "m2-l07",
+        "why": "Often tired, poor appetite, not growing as expected, unusually weak or inactive."
+      },
+      {
+        "category": "when_to_seek_help",
+        "priority": "critical",
+        "title": "Different rates must not dismiss real concerns",
+        "location": "m2-l09",
+        "why": "Variation is normal, but real concerns must not be dismissed."
+      },
+      {
+        "category": "when_to_seek_help",
+        "priority": "critical",
+        "title": "Red flags: when a parent should be concerned",
+        "location": "m2-l10",
+        "why": "Seven situations to discuss with a qualified professional."
+      },
+      {
+        "category": "safety_warning",
+        "priority": "critical",
+        "title": "Do not diagnose a child using the internet",
+        "location": "m2-l10",
+        "why": "Look at the overall pattern and whether skills are lost."
+      },
+      {
+        "category": "case_study",
+        "priority": "high",
+        "title": "Amara and Musa",
+        "location": "m2-l11",
+        "why": "Applied example with lessons and five discussion questions."
+      },
+      {
+        "category": "practical_activity",
+        "priority": "high",
+        "title": "Watch, Support, Encourage observation activity",
+        "location": "m2-l13",
+        "why": "Learner activity with five record prompts and a follow-up action."
+      },
+      {
+        "category": "key_takeaways",
+        "priority": "high",
+        "title": "Key Takeaways",
+        "location": "m2-key-takeaways",
+        "why": "Ten-point module summary."
+      },
+      {
+        "category": "assessment",
+        "priority": "high",
+        "title": "Knowledge Check",
+        "location": "m2-knowledge-check",
+        "why": "Ten multiple-choice questions with answers and explanations."
+      },
+      {
+        "category": "glossary",
+        "priority": "standard",
+        "title": "Glossary",
+        "location": "m2-glossary",
+        "why": "Eight key terms."
+      },
+      {
+        "category": "disclaimer",
+        "priority": "critical",
+        "title": "Professional Note",
+        "location": "m2-professional-note",
+        "why": "Not a diagnosis or replacement for professional assessment."
+      },
+      {
+        "category": "references",
+        "priority": "standard",
+        "title": "References",
+        "location": "m2-references",
+        "why": "WHO, CDC, AAP and research citations."
+      }
+    ],
+    "content_gaps": [
+      {
+        "location": "m2-l12",
+        "title": "Common Mistakes Parents and Caregivers Make",
+        "issue": "Heading exists in the source but no content follows it; the next heading comes straight after.",
+        "action_needed": "Add the content or remove the lesson."
+      }
+    ]
+  },
+  "source_notes": [
+    "Stray citation-marker characters from the pasted text were removed. Any block that had one carries citation_marker_in_source: true so the citation can be re-linked.",
+    "sources_named is detected automatically from organisations named in the text (WHO, CDC, AAP).",
+    "Lesson type, priority, tags, key_terms, important_sections and quiz related_lessons are editorial classifications, not in the original text.",
+    "learning_objectives items are taken from the 'By the end...' sentence in lesson 1."
+  ]
+}
