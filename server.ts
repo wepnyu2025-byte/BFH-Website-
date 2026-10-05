@@ -31,7 +31,11 @@ app.use((req, res, next) => {
 const handleLessonTts = async (req: express.Request, res: express.Response) => {
   try {
     const { title, text } = req.body || {};
-    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+    const apiKey =
+      process.env.GEMINI_API_KEY ||
+      process.env.VITE_GEMINI_API_KEY ||
+      process.env.GOOGLE_GENAI_API_KEY ||
+      process.env.GOOGLE_API_KEY;
 
     if (!apiKey) {
       return res.status(500).json({
@@ -93,7 +97,11 @@ const handlePediaCoach = async (req: express.Request, res: express.Response) => 
       return res.status(400).json({ error: 'Query is required' });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+    const apiKey =
+      process.env.GEMINI_API_KEY ||
+      process.env.VITE_GEMINI_API_KEY ||
+      process.env.GOOGLE_GENAI_API_KEY ||
+      process.env.GOOGLE_API_KEY;
     if (!apiKey) {
       return res.status(500).json({
         success: false,

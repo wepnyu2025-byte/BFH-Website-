@@ -3,15 +3,26 @@
   command = "npm run build"
   functions = "netlify/functions"
 
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/lesson-tts"
+  to = "/.netlify/functions/lesson-tts"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/api/pedia-coach"
   to = "/.netlify/functions/pedia-coach"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/api/send-broadcast"
   to = "/.netlify/functions/send-broadcast"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/api/*"
