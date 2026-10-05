@@ -53,8 +53,11 @@ export const handler = async (event: any) => {
     }
 
     const ai = new GoogleGenAI({ apiKey });
-    const cleanExcerpt = (text || '').slice(0, 1600);
+    // Use 800 character chunk to ensure sub-3-second generation well under Netlify 10s timeout
+    const cleanExcerpt = (text || '').slice(0, 800);
     const textToSpeak = `${title ? `${title}. ` : ''}${cleanExcerpt}`;
+
+    console.log(`[lesson-tts] Generating Google TTS for: "${title}" (${textToSpeak.length} chars)`);
 
     const response = await ai.models.generateContent({
       model: 'gemini-3.8-flash-lite-tts',
@@ -76,6 +79,7 @@ export const handler = async (event: any) => {
     );
 
     if (!audioPart?.inlineData?.data) {
+      console.warn('[lesson-tts] No audio part in response');
       return {
         statusCode: 502,
         headers: CORS_HEADERS,
@@ -85,6 +89,8 @@ export const handler = async (event: any) => {
         }),
       };
     }
+
+    console.log(`[lesson-tts] Successfully generated audio (${audioPart.inlineData.data.length} bytes)`);
 
     return {
       statusCode: 200,
@@ -96,6 +102,7 @@ export const handler = async (event: any) => {
       }),
     };
   } catch (error: any) {
+    console.error('[lesson-tts] Unhandled error:', error?.message || error);
     return {
       statusCode: 500,
       headers: CORS_HEADERS,
