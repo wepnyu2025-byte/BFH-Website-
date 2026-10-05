@@ -1631,12 +1631,12 @@ Baby First Health Educational Program
          =================================================================== */}
       {showAiCoach && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-teal-950/70 backdrop-blur-sm">
-          <div className="bg-white rounded-[28px] sm:rounded-[36px] shadow-2xl border border-teal-100 max-w-full sm:max-w-xl md:max-w-3xl lg:max-w-4xl w-full h-[92vh] max-h-[820px] md:h-[760px] flex flex-col overflow-hidden">
+          <div className="bg-white rounded-[28px] sm:rounded-[36px] border border-teal-200 max-w-full sm:max-w-xl md:max-w-3xl lg:max-w-4xl w-full h-[92vh] max-h-[820px] md:h-[760px] flex flex-col overflow-hidden">
             {/* Modal Header */}
             <div className="px-5 py-4 sm:px-7 sm:py-5 border-b border-teal-100 bg-linear-to-r from-teal-50/90 to-emerald-50/60 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                 <div className="relative shrink-0">
-                  <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-white shadow-xs border border-teal-200/80 flex items-center justify-center p-1.5">
+                  <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-white border border-teal-200/80 flex items-center justify-center p-1.5">
                     <img src="/BFH-logo.svg" alt="BFH AI Coach" className="w-8 h-8 sm:w-9 sm:h-9 object-contain" />
                   </div>
                   <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full ring-2 ring-emerald-400/30" />
@@ -1651,17 +1651,16 @@ Baby First Health Educational Program
                       Active Mentor
                     </span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-teal-900/70 mt-0.5 truncate">
+                  <div className="flex items-center gap-1.5 text-xs text-teal-900/80 mt-0.5 truncate">
                     <BookOpen className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-                    <span className="font-semibold text-teal-900 shrink-0">Grounded:</span>
-                    <span className="truncate">{activeLesson.title}</span>
+                    <span className="truncate font-medium">{activeLesson.title}</span>
                   </div>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setShowAiCoach(false)}
-                className="p-2 sm:p-2.5 rounded-full bg-white hover:bg-teal-100/80 text-teal-800 border border-teal-200/70 transition-colors shadow-2xs cursor-pointer shrink-0 ml-2"
+                className="p-2 sm:p-2.5 rounded-full bg-white hover:bg-teal-100/80 text-teal-800 border border-teal-200/70 transition-colors cursor-pointer shrink-0 ml-2"
                 aria-label="Close Coach"
               >
                 <X className="w-5 h-5" />
@@ -1683,7 +1682,7 @@ Baby First Health Educational Program
                       key={idx}
                       type="button"
                       onClick={() => handleSendCoachMessage(undefined, chip)}
-                      className="text-xs px-3 py-1.5 rounded-full bg-white hover:bg-teal-100/90 text-teal-900 font-medium border border-teal-200/80 whitespace-nowrap transition-all shadow-2xs hover:scale-[1.02] cursor-pointer"
+                      className="text-xs px-3 py-1.5 rounded-full bg-white hover:bg-teal-100/90 text-teal-900 font-medium border border-teal-200/80 whitespace-nowrap transition-all hover:scale-[1.02] cursor-pointer"
                     >
                       {chip}
                     </button>
@@ -1705,7 +1704,7 @@ Baby First Health Educational Program
                     </div>
                   )}
                   <div
-                    className={`max-w-[90%] sm:max-w-[80%] p-4 sm:p-5 rounded-2xl shadow-xs ${
+                    className={`max-w-[90%] sm:max-w-[80%] p-4 sm:p-5 rounded-2xl ${
                       msg.sender === 'student'
                         ? 'bg-linear-to-r from-teal-700 to-teal-800 text-white rounded-tr-none font-medium text-xs sm:text-sm leading-relaxed whitespace-pre-line'
                         : 'bg-white text-teal-950 border border-teal-100/90 rounded-tl-none font-normal'
@@ -1716,12 +1715,12 @@ Baby First Health Educational Program
                 </div>
               ))}
               {isCoachThinking && (
-                <div className="flex items-center gap-3 p-3.5 max-w-[80%] rounded-2xl bg-white border border-teal-100 shadow-2xs">
+                <div className="flex items-center gap-3 p-3.5 max-w-[80%] rounded-2xl bg-white border border-teal-100">
                   <div className="w-7 h-7 rounded-full bg-teal-100 flex items-center justify-center p-1 shrink-0">
                     <img src="/BFH-logo.svg" alt="Pedia" className="w-4 h-4 object-contain animate-spin" />
                   </div>
                   <div className="text-xs text-teal-800 font-medium flex items-center gap-1.5">
-                    <span>Pedia is reviewing clinical lesson guidance</span>
+                    <span>Pedia is reviewing lesson guidance</span>
                     <span className="flex gap-1">
                       <span className="w-1.5 h-1.5 bg-teal-600 rounded-full animate-bounce [animation-delay:0ms]" />
                       <span className="w-1.5 h-1.5 bg-teal-600 rounded-full animate-bounce [animation-delay:150ms]" />
@@ -1740,24 +1739,20 @@ Baby First Health Educational Program
                   type="text"
                   value={coachInput}
                   onChange={(e) => setCoachInput(e.target.value)}
-                  placeholder={`Ask Pedia about terms or concepts in "${activeLesson.title}"...`}
+                  placeholder="Ask anything about this lesson alone....."
                   disabled={isCoachThinking}
                   className="flex-1 px-4 sm:px-5 py-3.5 rounded-full bg-teal-50/70 border border-teal-200/80 text-xs sm:text-sm text-teal-950 outline-none focus:border-teal-500 focus:bg-white focus:ring-3 focus:ring-teal-500/15 transition-all placeholder:text-teal-900/50"
                 />
                 <button
                   type="submit"
                   disabled={!coachInput.trim() || isCoachThinking}
-                  className="p-3.5 sm:px-6 sm:py-3.5 rounded-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-bold text-xs sm:text-sm transition-all shadow-sm hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center gap-2 shrink-0"
+                  className="p-3.5 sm:px-6 sm:py-3.5 rounded-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-bold text-xs sm:text-sm transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center gap-2 shrink-0"
                   aria-label="Send Message"
                 >
                   <span className="hidden sm:inline">Ask Coach</span>
                   <Send className="w-4 h-4" />
                 </button>
               </form>
-              <div className="mt-2 text-[11px] text-teal-900/60 text-center flex items-center justify-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-teal-600 inline" />
-                <span>Grounded in WHO Nurturing Care Framework & AAP Pediatric Guidelines</span>
-              </div>
             </div>
           </div>
         </div>

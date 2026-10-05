@@ -188,7 +188,23 @@ export async function generatePediaCoachResponse(
   const moduleTitle = module?.title || '';
   const q = sanitizedQuery.toLowerCase();
 
-  // 1. Guardrail against direct quiz answers
+  // 1. Guardrail against romantic, perverse, silly, or off-topic non-educational inquiries
+  if (
+    q.includes('i love you') ||
+    q.includes('love me') ||
+    q.includes('marry me') ||
+    q.includes('date me') ||
+    q.includes('kiss me') ||
+    q.includes('be my girlfriend') ||
+    q.includes('be my boyfriend') ||
+    q.includes('sexy') ||
+    q.includes('are you single') ||
+    (q.includes('hot') && (q.includes('you are') || q.includes('look')))
+  ) {
+    return `I am here solely to support your learning on early childhood development and this lesson ("${lessonTitle}"). Let us focus our discussion on the course material.\n\nWhat clinical concept, milestone, or caregiver guidance from this lesson can I help clarify for you?`;
+  }
+
+  // 2. Guardrail against direct quiz answers
   if (
     q.includes('quiz answer') ||
     q.includes('correct answer') ||
@@ -244,7 +260,7 @@ export async function generatePediaCoachResponse(
               role: 'user',
               parts: [
                 {
-                  text: `Student Question: "${sanitizedQuery}"\n\nCurrent Context:\n- Course Module: ${moduleTitle || 'Early Childhood Development'}\n- Active Lesson: ${lessonTitle || 'Core Lesson'}\n- Lesson Content Excerpt:\n${lessonContent.slice(0, 1800)}\n\nInstructions:\n1. Provide an authoritative, clear, encouraging explanation as Pedia, the Baby First Health learning coach.\n2. ABSOLUTELY NO EMOJIS under any circumstances.\n3. If the student asks for quiz answers or direct test options, do NOT give answers; instead guide them to understand the clinical concepts.\n4. Format using clean markdown (paragraphs and bullet points).`,
+                  text: `Student Question: "${sanitizedQuery}"\n\nCurrent Context:\n- Course Module: ${moduleTitle || 'Early Childhood Development'}\n- Active Lesson: ${lessonTitle || 'Core Lesson'}\n- Lesson Content Excerpt:\n${lessonContent.slice(0, 1800)}\n\nInstructions:\n1. Provide an authoritative, clear, encouraging explanation as Pedia, the Baby First Health learning coach.\n2. ABSOLUTELY NO EMOJIS under any circumstances.\n3. If the student asks for quiz answers or direct test options, do NOT give answers; instead guide them to understand the clinical concepts.\n4. STRICT BOUNDARIES: You are strictly an academic early childhood learning coach. Under NO circumstances engage in romantic, flirtatious, silly, perverse, sexual, or off-topic conversation. If a user says "I love you" or similar banter, firmly decline and redirect to the lesson: "I am here solely to support your learning on early childhood development and this lesson. Let us focus our discussion on the course material."\n5. Format using clean markdown (paragraphs and bullet points).`,
                 },
               ],
             },
@@ -252,7 +268,7 @@ export async function generatePediaCoachResponse(
           systemInstruction: {
             parts: [
               {
-                text: 'You are Pedia, the official Early Childhood Development (ECD) learning coach for Baby First Health. You assist healthcare, caregiver, and early childhood students. Keep all answers professional, encouraging, evidence-based (WHO/AAP/UNICEF), and concise. ABSOLUTELY FORBIDDEN: Do not use emojis anywhere in your response.',
+                text: 'You are Pedia, the official Early Childhood Development (ECD) learning coach for Baby First Health. You assist healthcare, caregiver, and early childhood students. Keep all answers strictly professional, dignified, evidence-based (WHO/AAP/UNICEF), and concise. ABSOLUTELY FORBIDDEN: Do not use emojis anywhere. Do not participate in romantic, flirtatious, silly, perverse, sexual, or off-topic banter; firmly redirect the learner back to the lesson.',
               },
             ],
           },
