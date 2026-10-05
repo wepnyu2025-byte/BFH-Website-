@@ -6,8 +6,8 @@ const ROOT_DIR = process.cwd();
 const DIST_DIR = path.join(ROOT_DIR, 'dist');
 const CONTENT_DIR = path.join(ROOT_DIR, 'content', 'blog');
 
-// Single source of truth for site domain
-const SITE_URL = 'https://babyfirsthealth.netlify.app';
+// Single source of truth for site domain (auto-detects custom domain from Netlify URL or VITE_SITE_URL)
+const SITE_URL = (process.env.VITE_SITE_URL || process.env.URL || 'https://babyfirsthealth.netlify.app').replace(/\/+$/, '');
 const SITE_BRAND = 'Baby First Health';
 
 interface Source {
@@ -451,6 +451,23 @@ function renderBlogIndexHtml(template: string, posts: ParsedPost[]): string {
   return html;
 }
 
+function escapeXml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function toCleanSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 function generateSitemap(posts: ParsedPost[]): string {
   const staticPages = [
     { path: '', priority: '1.0', changefreq: 'daily' },
@@ -474,7 +491,7 @@ function generateSitemap(posts: ParsedPost[]): string {
     const loc = page.path ? `${SITE_URL}/${page.path}` : `${SITE_URL}/`;
     return `
   <url>
-    <loc>${loc}</loc>
+    <loc>${escapeXml(loc)}</loc>
     <lastmod>${now}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
@@ -482,10 +499,10 @@ function generateSitemap(posts: ParsedPost[]): string {
   });
 
   const categoryUrls = CATEGORIES.map((cat) => {
-    const catSlug = cat.toLowerCase().replace(/\s+/g, '-');
+    const catSlug = toCleanSlug(cat);
     return `
   <url>
-    <loc>${SITE_URL}/blog/category/${catSlug}</loc>
+    <loc>${escapeXml(`${SITE_URL}/blog/category/${catSlug}`)}</loc>
     <lastmod>${now}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -495,7 +512,7 @@ function generateSitemap(posts: ParsedPost[]): string {
   const postUrls = posts.map((post) => {
     return `
   <url>
-    <loc>${SITE_URL}/blog/${post.slug}</loc>
+    <loc>${escapeXml(`${SITE_URL}/blog/${post.slug}`)}</loc>
     <lastmod>${post.date || now}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -519,7 +536,11 @@ Sitemap: ${SITE_URL}/sitemap.xml
 }
 
 function generateNetlifyRedirects(): string {
-  return `/* /index.html 200\n`;
+  return `/api/pedia-coach /.netlify/functions/pedia-coach 200
+/api/send-broadcast /.netlify/functions/send-broadcast 200
+/api/* /.netlify/functions/:splat 200
+/* /index.html 200
+`;
 }
 
 async function run() {
@@ -582,12 +603,19 @@ async function run() {
   // 4. Generate sitemap.xml
   const sitemapXml = generateSitemap(posts);
   fs.writeFileSync(path.join(DIST_DIR, 'sitemap.xml'), sitemapXml, 'utf-8');
-  console.log('✅ Generated dist/sitemap.xml');
+  const publicDir = path.join(ROOT_DIR, 'public');
+  if (fs.existsSync(publicDir)) {
+    fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapXml, 'utf-8');
+  }
+  console.log('✅ Generated dist/sitemap.xml & public/sitemap.xml');
 
   // 5. Generate robots.txt
   const robotsTxt = generateRobotsTxt();
   fs.writeFileSync(path.join(DIST_DIR, 'robots.txt'), robotsTxt, 'utf-8');
-  console.log('✅ Generated dist/robots.txt');
+  if (fs.existsSync(publicDir)) {
+    fs.writeFileSync(path.join(publicDir, 'robots.txt'), robotsTxt, 'utf-8');
+  }
+  console.log('✅ Generated dist/robots.txt & public/robots.txt');
 
   // 6. Generate Netlify _redirects
   const redirects = generateNetlifyRedirects();
