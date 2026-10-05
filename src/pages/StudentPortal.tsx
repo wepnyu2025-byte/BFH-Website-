@@ -20,12 +20,14 @@ import {
   X,
   AlertCircle,
   FileText,
+  Headphones,
   Briefcase,
   GraduationCap,
   MapPin,
   Bookmark,
   Download,
   Play,
+  Pause,
   Key,
   Video,
   Home,
@@ -143,6 +145,10 @@ export const StudentPortal: React.FC = () => {
 
   // Audio Play state for module audio guide
   const [playingModuleAudioId, setPlayingModuleAudioId] = useState<string | null>(null);
+
+  // Lesson Read Aloud state
+  const [isReadingAloud, setIsReadingAloud] = useState(false);
+  const [isReadingPaused, setIsReadingPaused] = useState(false);
 
   // AI Coach Flip Animation state
   const [isCoachFlipped, setIsCoachFlipped] = useState(false);
@@ -272,8 +278,42 @@ export const StudentPortal: React.FC = () => {
   const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({});
   const [quizResult, setQuizResult] = useState<{ score: number; passed: boolean; total: number; correct: number } | null>(null);
 
+  // Resource notice modal (for audio / document when not yet uploaded by admin)
+  const [resourceNotice, setResourceNotice] = useState<{
+    isOpen: boolean;
+    type: 'audio' | 'document';
+    message: string;
+  } | null>(null);
+
+  // Daily question limit per lesson (5 questions per lesson per day)
+  const DAILY_COACH_LIMIT = 5;
+  const getCoachUsageKey = (lessonId: string) => {
+    const today = new Date().toISOString().split('T')[0];
+    return `bfh_pedia_usage_${lessonId}_${today}`;
+  };
+  const getQuestionsUsedToday = (lessonId: string): number => {
+    if (typeof window === 'undefined') return 0;
+    try {
+      const stored = localStorage.getItem(getCoachUsageKey(lessonId));
+      return stored ? parseInt(stored, 10) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  };
+
+  const [coachQuestionsUsed, setCoachQuestionsUsed] = useState<number>(0);
+
   // Pedia AI Coach modal state
   const [showAiCoach, setShowAiCoach] = useState(false);
+
+  useEffect(() => {
+    if (activeLesson?.id) {
+      setCoachQuestionsUsed(getQuestionsUsedToday(activeLesson.id));
+    }
+  }, [activeLesson?.id, showAiCoach]);
+
+  const remainingQuestions = Math.max(0, DAILY_COACH_LIMIT - coachQuestionsUsed);
+
   const [coachMessages, setCoachMessages] = useState<Array<{ sender: 'coach' | 'student'; text: string }>>([
     {
       sender: 'coach',
@@ -428,40 +468,15 @@ export const StudentPortal: React.FC = () => {
       document.body.removeChild(a);
       return;
     }
-    const cleanTitle = `${mod.order}. ${mod.title.replace(/^Module\s*\d*[:.-]?\s*/i, '').replace(/^\d+\.\s*/, '')}`;
-    const docContent = `BABY FIRST HEALTH LEARNING CURRICULUM
-=====================================
-Module: ${cleanTitle}
-
-Description:
-${mod.description}
-
-Lessons in this Module:
-${mod.lessons
-  .map(
-    (l) =>
-      `-------------------------------------
-Lesson ${l.order}: ${l.title}
--------------------------------------
-
-${l.content}
-`
-  )
-  .join('\n')}
-
-=====================================
-Baby First Health Educational Program
-`;
-    const blob = new Blob([docContent], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = mod.docName || `Module_${mod.order}_Study_Document.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+    // In case document is not uploaded from admin, show the readiness notice
+    setResourceNotice({
+      isOpen: true,
+      type: 'document',
+      message: 'Your lesson document is being prepared, you will be notified when it\'s ready.',
+    });
   };
 
-  // Play / Pause Module Audio Guide (Audio is listen-only on student page; cannot be downloaded)
+  // Play / Pause Module Audio Guide (Plays admin uploaded audio; does not initiate browser text-to-speech)
   const handlePlayModuleAudio = (mod: CourseModule) => {
     const audioSource = mod.audioUrl || mod.audioLink;
     // If an uploaded audio file or attached link exists for this module
@@ -483,30 +498,32 @@ Baby First Health Educational Program
       return;
     }
 
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-
-    if (playingModuleAudioId === mod.id) {
-      window.speechSynthesis.cancel();
-      setPlayingModuleAudioId(null);
-      return;
-    }
-
-    window.speechSynthesis.cancel();
-    const cleanTitle = `${mod.order}. ${mod.title.replace(/^Module\s*\d*[:.-]?\s*/i, '').replace(/^\d+\.\s*/, '')}`;
-    const textToRead = `${cleanTitle}. ${mod.description}. This module includes ${mod.lessons.length} core learning lessons.`;
-    const utterance = new SpeechSynthesisUtterance(textToRead);
-    utterance.rate = 0.95;
-    utterance.onend = () => setPlayingModuleAudioId(null);
-    utterance.onerror = () => setPlayingModuleAudioId(null);
-    setPlayingModuleAudioId(mod.id);
-    window.speechSynthesis.speak(utterance);
+    // In case audio is not uploaded from admin, show the readiness notice
+    setResourceNotice({
+      isOpen: true,
+      type: 'audio',
+      message: 'Your audio lesson is being prepared, you will be notified when it\'s ready.',
+    });
   };
 
-  // Send Pedia AI message
+  // Send Pedia AI message (enforces 5 questions per lesson per day)
   const handleSendCoachMessage = async (e?: React.FormEvent, customPrompt?: string) => {
     if (e) e.preventDefault();
     const query = (customPrompt || coachInput).trim();
     if (!query) return;
+
+    if (remainingQuestions <= 0) {
+      return;
+    }
+
+    // Record question usage for this lesson today
+    const nextCount = coachQuestionsUsed + 1;
+    setCoachQuestionsUsed(nextCount);
+    if (typeof window !== 'undefined' && activeLesson?.id) {
+      try {
+        localStorage.setItem(getCoachUsageKey(activeLesson.id), nextCount.toString());
+      } catch {}
+    }
 
     setCoachMessages((prev) => [...prev, { sender: 'student', text: query }]);
     if (!customPrompt) setCoachInput('');
@@ -527,6 +544,69 @@ Baby First Health Educational Program
     } finally {
       setIsCoachThinking(false);
     }
+  };
+
+  // Helper to strip markdown symbols for clean text-to-speech pronunciation
+  const cleanMarkdownForSpeech = (markdown: string): string => {
+    return (markdown || '')
+      .replace(/^#+\s+/gm, '')
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/\*(.*?)\*/g, '$1')
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+      .replace(/^>\s*/gm, '')
+      .replace(/`{1,3}.*?`{1,3}/gs, '')
+      .replace(/\|/g, ', ')
+      .replace(/[-*+]\s+/g, '')
+      .replace(/\n{2,}/g, '. ')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  };
+
+  // Cancel read aloud speech synthesis whenever lesson or view changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      setIsReadingAloud(false);
+      setIsReadingPaused(false);
+    }
+  }, [activeLesson?.id, currentView]);
+
+  // Read Aloud Play / Pause handler for lesson
+  const handleToggleReadAloud = () => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+
+    if (isReadingAloud) {
+      if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+        window.speechSynthesis.pause();
+        setIsReadingAloud(false);
+        setIsReadingPaused(true);
+        return;
+      }
+    }
+
+    if (isReadingPaused && window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+      setIsReadingAloud(true);
+      setIsReadingPaused(false);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const cleanContent = cleanMarkdownForSpeech(activeLesson.content);
+    const textToRead = `${activeLesson.title}. ${cleanContent}`;
+    const utterance = new SpeechSynthesisUtterance(textToRead);
+    utterance.rate = 0.95;
+    utterance.onend = () => {
+      setIsReadingAloud(false);
+      setIsReadingPaused(false);
+    };
+    utterance.onerror = () => {
+      setIsReadingAloud(false);
+      setIsReadingPaused(false);
+    };
+    window.speechSynthesis.speak(utterance);
+    setIsReadingAloud(true);
+    setIsReadingPaused(false);
   };
 
   // Cryptographic SHA-256 helper for client-side password verification
@@ -1381,14 +1461,35 @@ Baby First Health Educational Program
         {currentView === 'LESSON' && (
           <div className="space-y-6">
             <div className="bg-white rounded-[32px] p-6 sm:p-10 space-y-6">
-              {/* Lesson Title */}
-              <div className="space-y-2">
-                <span className="px-3.5 py-1 rounded-full bg-teal-50 text-teal-900 text-xs font-semibold inline-block">
-                  Lesson {activeLesson.order}
-                </span>
-                <h2 className="font-body font-bold text-teal-900 text-2xl sm:text-3xl leading-snug">
-                  {activeLesson.title}
-                </h2>
+              {/* Top of Lesson Card: Lesson Title + Round Play/Pause Button */}
+              <div className="flex items-start sm:items-center justify-between gap-4 flex-wrap pb-2 border-b border-teal-50">
+                <div className="space-y-1.5 min-w-0">
+                  <span className="px-3.5 py-1 rounded-full bg-teal-50 text-teal-900 text-xs font-semibold inline-block">
+                    Lesson {activeLesson.order}
+                  </span>
+                  <h2 className="font-body font-bold text-teal-900 text-2xl sm:text-3xl leading-snug">
+                    {activeLesson.title}
+                  </h2>
+                </div>
+
+                {/* Round Play / Pause Button for Read Aloud */}
+                <button
+                  type="button"
+                  onClick={handleToggleReadAloud}
+                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all cursor-pointer shrink-0 ${
+                    isReadingAloud
+                      ? 'bg-orange-500 hover:bg-orange-600 text-white animate-pulse'
+                      : 'bg-teal-800 hover:bg-teal-900 text-white'
+                  }`}
+                  title={isReadingAloud ? 'Pause reading' : 'Read lesson aloud'}
+                  aria-label={isReadingAloud ? 'Pause' : 'Play'}
+                >
+                  {isReadingAloud ? (
+                    <Pause className="w-5 h-5 fill-current" />
+                  ) : (
+                    <Play className="w-5 h-5 fill-current ml-0.5" />
+                  )}
+                </button>
               </div>
 
               {/* Lesson Image (if set) */}
@@ -1636,19 +1737,18 @@ Baby First Health Educational Program
             <div className="px-5 py-4 sm:px-7 sm:py-5 border-b border-teal-100 bg-linear-to-r from-teal-50/90 to-emerald-50/60 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                 <div className="relative shrink-0">
-                  <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-white border border-teal-200/80 flex items-center justify-center p-1.5">
-                    <img src="/BFH-logo.svg" alt="BFH AI Coach" className="w-8 h-8 sm:w-9 sm:h-9 object-contain" />
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white border border-teal-200/80 flex items-center justify-center p-1.5">
+                    <img src="/BFH-logo.svg" alt="BFH" className="w-7 h-7 sm:w-8 sm:h-8 object-contain" />
                   </div>
-                  <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full ring-2 ring-emerald-400/30" />
+                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse ring-2 ring-white" />
                 </div>
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
+                  <div className="flex items-center gap-2.5 flex-wrap">
                     <h3 className="font-body font-bold text-teal-950 text-base sm:text-lg tracking-tight">
-                      Pedia AI Learning Coach
+                      Ask Pedia
                     </h3>
-                    <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 text-[11px] font-semibold">
-                      <Sparkles className="w-3 h-3 text-teal-600" />
-                      Active Mentor
+                    <span className="text-[11px] font-semibold text-teal-800 bg-teal-100/90 px-2 py-0.5 rounded-md">
+                      {remainingQuestions} left
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-teal-900/80 mt-0.5 truncate">
@@ -1666,30 +1766,6 @@ Baby First Health Educational Program
                 <X className="w-5 h-5" />
               </button>
             </div>
-
-            {/* Quick Context Question Chips */}
-            {(() => {
-              const activeMod = modules.find((m) => m.id === activeLesson.moduleId);
-              const chips = getSuggestedQuestions(activeLesson, activeMod);
-              return (
-                <div className="px-5 py-2.5 sm:px-7 sm:py-3 bg-teal-50/40 border-b border-teal-100/60 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0">
-                  <span className="text-[11px] font-bold text-teal-900/80 uppercase tracking-wider shrink-0 flex items-center gap-1">
-                    <HelpCircle className="w-3.5 h-3.5 text-teal-600" />
-                    Quick Prompts:
-                  </span>
-                  {chips.map((chip, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => handleSendCoachMessage(undefined, chip)}
-                      className="text-xs px-3 py-1.5 rounded-full bg-white hover:bg-teal-100/90 text-teal-900 font-medium border border-teal-200/80 whitespace-nowrap transition-all hover:scale-[1.02] cursor-pointer"
-                    >
-                      {chip}
-                    </button>
-                  ))}
-                </div>
-              );
-            })()}
 
             {/* Coach Chat Messages Container */}
             <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-7 sm:py-6 space-y-4 bg-slate-50/30">
@@ -1739,14 +1815,18 @@ Baby First Health Educational Program
                   type="text"
                   value={coachInput}
                   onChange={(e) => setCoachInput(e.target.value)}
-                  placeholder="Ask anything about this lesson alone....."
-                  disabled={isCoachThinking}
-                  className="flex-1 px-4 sm:px-5 py-3.5 rounded-full bg-teal-50/70 border border-teal-200/80 text-xs sm:text-sm text-teal-950 outline-none focus:border-teal-500 focus:bg-white focus:ring-3 focus:ring-teal-500/15 transition-all placeholder:text-teal-900/50"
+                  placeholder={
+                    remainingQuestions <= 0
+                      ? "Daily limit reached for this lesson (0 left)"
+                      : "Ask anything about this lesson alone....."
+                  }
+                  disabled={isCoachThinking || remainingQuestions <= 0}
+                  className="flex-1 px-4 sm:px-5 py-3.5 rounded-full bg-teal-50/70 border border-teal-200/80 text-xs sm:text-sm text-teal-950 outline-none focus:border-teal-500 focus:bg-white focus:ring-3 focus:ring-teal-500/15 transition-all placeholder:text-teal-900/50 disabled:opacity-60 disabled:cursor-not-allowed"
                 />
                 <button
                   type="submit"
-                  disabled={!coachInput.trim() || isCoachThinking}
-                  className="p-3.5 sm:px-6 sm:py-3.5 rounded-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-bold text-xs sm:text-sm transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center gap-2 shrink-0"
+                  disabled={!coachInput.trim() || isCoachThinking || remainingQuestions <= 0}
+                  className="p-3.5 sm:px-6 sm:py-3.5 rounded-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-bold text-xs sm:text-sm transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center gap-2 shrink-0 disabled:cursor-not-allowed"
                   aria-label="Send Message"
                 >
                   <span className="hidden sm:inline">Ask Coach</span>
@@ -1754,6 +1834,31 @@ Baby First Health Educational Program
                 </button>
               </form>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Preparation Notice Modal for Audio & Document */}
+      {resourceNotice?.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-teal-950/60 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl border border-teal-200 max-w-sm w-full p-6 text-center animate-in fade-in duration-150">
+            <div className="w-12 h-12 rounded-xl bg-teal-50 border border-teal-200/80 flex items-center justify-center mx-auto mb-4 text-teal-700">
+              {resourceNotice.type === 'audio' ? (
+                <Headphones className="w-6 h-6 text-teal-700" />
+              ) : (
+                <FileText className="w-6 h-6 text-teal-700" />
+              )}
+            </div>
+            <p className="text-sm font-medium text-teal-950 mb-6 leading-relaxed">
+              {resourceNotice.message}
+            </p>
+            <button
+              type="button"
+              onClick={() => setResourceNotice(null)}
+              className="w-full py-2.5 px-4 rounded-xl bg-teal-800 hover:bg-teal-900 text-white text-xs font-bold transition-colors cursor-pointer"
+            >
+              I understand
+            </button>
           </div>
         </div>
       )}
