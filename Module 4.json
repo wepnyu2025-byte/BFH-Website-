@@ -1,0 +1,646 @@
+{
+  "module": "Module 4: Language & Communication Development",
+  "program": "Baby First Health Early Childhood Development Certificate",
+  "target_learners": "Parents, caregivers, childcare workers, teachers, health practitioners, and anyone working with children aged 0–5.",
+  "estimated_teaching_time": "30–35 minutes",
+  "sections": {
+    "1_welcome_to_the_module": "Communication begins long before a child says their first word. A newborn baby looks toward a caregiver, smiles, cries, reaches for an object, or turns away when they have had enough. These are all forms of communication, even though the baby cannot yet speak. Language development starts early through everyday interactions between children and the adults who care for them. This module will help you understand how communication, language, and speech develop from birth to age five, and how you can support children's early learning through simple, everyday activities.",
+    "2_communication_language_and_speech": {
+      "communication": "How people share messages, needs, feelings, thoughts, and information. A baby crying when hungry, a toddler pointing at a dog, or a child waving goodbye are all communicating.",
+      "language": "The system of words, sounds, signs, or symbols used to understand and communicate meaning. Language includes the words a child understands and uses, the rules for putting words together, and the ability to use language for different purposes (asking, telling, greeting).",
+      "speech": "The physical production of spoken sounds. Speech involves using the mouth, tongue, lips, and breathing muscles to make sounds that form words.",
+      "why_it_matters": "A child may have good communication skills (using gestures, eye contact, and sounds to share meaning) even if their speech is not yet clear. A child may understand a lot of language (receptive language) before they can say many words (expressive language). Understanding these differences helps adults support children appropriately without unnecessary worry."
+    },
+    "3_communication_from_birth": {
+      "description": "Babies are born ready to communicate. From the first days and weeks of life, babies use many ways to share their needs and feelings with caregivers:",
+      "ways_babies_communicate": [
+        "Crying – Different cries may signal hunger, pain, tiredness, or discomfort.",
+        "Facial expressions – Smiling, frowning, widening eyes.",
+        "Eye contact – Looking at a caregiver's face, following movement.",
+        "Body movements – Stretching, kicking, turning toward or away.",
+        "Gestures – Reaching, pointing, waving.",
+        "Sounds – Cooing, gurgling, babbling.",
+        "Vocal turn-taking – Making sounds and waiting for a caregiver to respond, then making sounds again."
+      ],
+      "how_caregivers_can_respond": {
+        "description": "When a baby communicates, responsive interaction matters. The child communicates and the adult responds. This back-and-forth interaction, sometimes called 'serve and return,' builds strong brain connections and supports language development.",
+        "examples": [
+          "Baby coos → caregiver smiles and says, 'Hello! Are you talking to me?'",
+          "Baby cries → caregiver checks if the baby is hungry, tired, or needs comfort.",
+          "Baby reaches for a toy → caregiver names the toy and hands it over: 'You want the ball. Here is the ball.'"
+        ]
+      }
+    },
+    "4_language_development_from_0_to_5": {
+      "note": "Children develop language at different rates, but there are general patterns most children follow. These are guidelines, not strict deadlines.",
+      "0_12_months": [
+        "Responds to voices and familiar sounds.",
+        "Makes cooing and gurgling sounds; begins babbling (e.g., 'ba-ba,' 'da-da').",
+        "Uses vocal play and experiments with different sounds.",
+        "Uses gestures such as reaching, pointing, and waving.",
+        "Recognizes familiar words (e.g., their name, 'mama,' 'dada').",
+        "Understands tone of voice and daily routines.",
+        "Begins intentional communication (e.g., crying differently for different needs, pointing to show interest)."
+      ],
+      "1_2_years": [
+        "Says first meaningful words (often around 12 months).",
+        "Vocabulary grows rapidly; by 18 months many children say several words, and by 2 years many children say 50 or more words.",
+        "Understands simple instructions (e.g., 'Give me the cup,' 'Come here').",
+        "Uses pointing and gestures to communicate wants and needs.",
+        "Names familiar people and objects.",
+        "Begins combining words (e.g., 'More milk,' 'Mama go')."
+      ],
+      "2_3_years": [
+        "Vocabulary continues to increase.",
+        "Uses short sentences (2–4 words).",
+        "Asks simple questions (e.g., 'Where ball?', 'What that?').",
+        "Follows simple instructions with 2–3 steps (e.g., 'Get your shoes and come here').",
+        "Talks about familiar experiences (e.g., 'Went to market,' 'Doggy bark').",
+        "Increasing ability to communicate wants, ideas, and feelings."
+      ],
+      "3_5_years": [
+        "Uses more complex sentences (4+ words).",
+        "Tells simple stories with two or more events (e.g., 'Dog ran, then fell').",
+        "Describes events and experiences.",
+        "Asks and answers questions about stories and daily life.",
+        "Understands more complex instructions.",
+        "Learns new vocabulary quickly, including words about time (yesterday, tomorrow), numbers, and colors.",
+        "Develops conversational ability (3+ back-and-forth exchanges).",
+        "Develops early literacy skills (recognizing rhymes, retelling stories, 'reading' pictures)."
+      ],
+      "important": "These are general patterns. Some children develop more quickly in some areas and more slowly in others. Children learning more than one language may show different patterns, which is normal."
+    },
+    "5_understanding_comes_before_speaking": {
+      "description": "Children often understand significantly more language than they can express. This is true for all children, but especially for young toddlers and children learning multiple languages.",
+      "receptive_language": "Understanding language—what a child comprehends when others speak. For example, a 15-month-old may not say many words but can follow simple instructions like 'Give me the spoon' or 'Where is your shoe?'",
+      "expressive_language": "Using sounds, words, gestures, or sentences to communicate. A child may understand 'Do you want milk?' but only say 'Milk' or point to the cup.",
+      "simple_examples": [
+        "A 2-year-old understands a story read aloud but says only a few words from the book.",
+        "A 3-year-old follows a 3-step instruction ('Go to your room, get your shoes, and come back') but speaks in short sentences.",
+        "A bilingual 2½-year-old understands instructions in two languages but mixes words from both languages when speaking."
+      ],
+      "importance": "Understanding that receptive language often develops ahead of expressive language helps adults avoid unnecessary worry and focus on rich, meaningful interaction."
+    },
+    "6_how_adults_help_children_learn_language": {
+      "description": "Small, everyday interactions make a big difference in children's language development. Research shows that responsive, language-rich environments support strong communication skills.",
+      "strategies": {
+        "talk": "Talk to children during normal activities: bathing, dressing, cooking, shopping, walking. Describe what you are doing and what the child is doing.",
+        "describe": "'I am washing your hands.' 'You are putting on your shoes.' 'The pot is hot.'",
+        "name": "Name objects, people, actions, and feelings. 'This is a cup.' 'That is Mama.' 'The dog is running.' 'You look happy.'",
+        "expand": "If a child says 'ball,' an adult can respond: 'Yes, a big red ball.' If a child says 'Milk,' the adult can say: 'You want more milk. Here is your milk.'",
+        "ask": "Ask age-appropriate questions. 'What is this?' 'Where is the dog?' 'What do you think will happen next?' Give the child time to respond.",
+        "listen": "Give children time to respond. Wait a few seconds after asking a question or making a comment. This shows you value their communication.",
+        "respond": "Show interest in what the child communicates. Smile, nod, repeat what they say, and add a little more information."
+      },
+      "why_it_matters": "Every conversation, every shared book, every song builds brain connections that support language, thinking, and learning. Children learn language through meaningful interaction with caring adults, not from passive activities like watching screens alone."
+    },
+    "7_reading_stories_songs_and_rhymes": {
+      "description": "Everyday literacy activities support language development in powerful ways. Reading, storytelling, singing, and rhymes expose children to new vocabulary, sentence patterns, and the rhythm of language.",
+      "activities_that_support_language": [
+        "Reading picture books – Even 5–10 minutes a day makes a difference. Point to pictures, name objects, ask simple questions.",
+        "Storytelling – Tell family stories, stories from your childhood, or make up simple stories together.",
+        "Singing – Sing familiar songs, lullabies, and nursery rhymes. Repetition helps children learn words and patterns.",
+        "Nursery rhymes – Rhymes help children hear sounds in words, which supports later reading skills.",
+        "Repeating songs – Children enjoy repetition. Sing the same songs many times; children learn through repetition.",
+        "Asking questions about stories – 'What is happening in the picture?' 'What do you think will happen next?'",
+        "Letting children describe pictures – Encourage the child to tell you what they see in a book, newspaper, or magazine.",
+        "Creating simple stories together – 'Once there was a little dog. The dog was hungry. What should the dog eat?'"
+      ],
+      "practical_ideas_for_families_with_few_or_no_childrens_books": [
+        "Tell family stories and traditional tales from your community.",
+        "Describe pictures in newspapers, magazines, or old calendars.",
+        "Create stories from everyday objects (a spoon becomes a magic wand, a box becomes a car).",
+        "Sing familiar songs and rhymes from your culture.",
+        "Make simple homemade picture cards using drawings or cut-out pictures."
+      ],
+      "important": "Expensive educational materials are not required. The most important thing is warm, responsive interaction between the child and caregiver."
+    },
+    "8_bilingual_and_multilingual_children": {
+      "definitions": {
+        "bilingual": "A child is learning or using two languages.",
+        "multilingual": "A child is learning or using three or more languages.",
+        "note": "Children can learn more than one language from birth or starting at any age."
+      },
+      "why_families_may_use_multiple_languages_at_home": [
+        "Parents and grandparents may speak different languages.",
+        "The home language may be different from the language used at school or in the community.",
+        "Families may want children to maintain their heritage language while also learning a widely-used language (e.g., English, French)."
+      ],
+      "key_points_for_families": [
+        "Rich interaction matters most. Children need plenty of meaningful conversation in the languages caregivers are comfortable using.",
+        "Code-switching (mixing languages) is normal. A child may say 'I want eau' (mixing English and French) or 'Give me mmiri' (mixing English and Igbo). This is not confusion; it is a natural part of bilingual development.",
+        "Learning more than one language does not automatically cause speech or language delay. Research shows that bilingual children develop language at similar rates to monolingual children when total vocabulary across both languages is considered.",
+        "Assessment should consider the child's overall communication across all languages they use. A child may know some words in one language and other words in another language. This is normal and does not indicate a problem."
+      ],
+      "realistic_examples": [
+        "A child in Yaoundé may hear French at school, Ewondo at home with grandparents, and English on television. The child may use different languages with different people.",
+        "A child in Lagos may hear Yoruba at home, English at school, and Pidgin English in the community. The child may mix languages when speaking with family members."
+      ],
+      "common_misconceptions_to_avoid": [
+        {
+          "myth": "Using two languages will confuse the child.",
+          "fact": "Research shows no evidence that bilingualism causes confusion. Children can learn to separate and use different languages appropriately."
+        },
+        {
+          "myth": "The child should only speak one language to avoid delay.",
+          "fact": "Discouraging the home language does not help and may harm the child's communication, cultural identity, and family relationships. A strong foundation in any language supports learning additional languages."
+        },
+        {
+          "myth": "If the child mixes languages, something is wrong.",
+          "fact": "Code-mixing is a normal part of bilingual development and often reflects the child's communication environment."
+        }
+      ],
+      "supporting_bilingual_and_multilingual_children": [
+        "Speak to the child in the language you are most comfortable using.",
+        "Encourage family members to use their home languages with the child.",
+        "Provide rich language experiences in all languages the child hears.",
+        "Do not stop speaking the home language, even if the child is learning a school language."
+      ]
+    },
+    "9_communication_through_play": {
+      "description": "Play creates natural opportunities for language development. During play, children are motivated to communicate, ask questions, describe actions, and share ideas.",
+      "types_of_play_that_support_language": [
+        "Pretend play – Playing 'house,' 'market,' 'school,' or 'doctor.' Children use language to take on roles and create scenarios.",
+        "Building blocks – Children describe what they are building, ask for pieces, and explain their ideas.",
+        "Dolls and stuffed animals – Children talk to and about dolls, creating conversations and stories.",
+        "Household role-play – Cooking, cleaning, shopping with toy or real household items.",
+        "Drawing – Children describe their pictures and tell stories about what they drew.",
+        "Puzzles – Children name pieces, ask for help, and talk about where pieces fit.",
+        "Outdoor play – Running, climbing, playing games with rules that require communication.",
+        "Simple games – 'I Spy,' hide-and-seek, ball games that involve turn-taking and language.",
+        "Sorting activities – Sorting objects by color, size, or type while naming and describing."
+      ],
+      "how_adults_can_talk_with_children_during_play": {
+        "description": "Instead of simply giving instructions, adults can engage in conversation with open-ended questions that encourage children to use language, think, and express their ideas.",
+        "example_questions": [
+          "What are you building?",
+          "What do you think will happen?",
+          "Where should we put this?",
+          "Why did you choose that?",
+          "Can you tell me what happened?",
+          "Tell me about your picture."
+        ]
+      }
+    },
+    "10_screen_time_and_language_development": {
+      "description": "Screen use (television, tablets, phones, videos) has a complex relationship with language development. The key issue is not screens themselves, but the quality and amount of interaction children receive.",
+      "important_considerations": [
+        "Passive screen viewing – When children watch screens alone without adult interaction, they miss opportunities for back-and-forth conversation, which is essential for language learning.",
+        "Interactive screen use – Some apps and programs encourage interaction, but they cannot replace real human conversation.",
+        "Adult participation – When adults watch media with children and talk about what is happening ('Look at the dog! What is the dog doing?'), screen time can become more language-rich.",
+        "Face-to-face interaction – Young children learn language best through direct interaction with caring adults, not through screens alone.",
+        "Talking during shared media use – If screens are used, adults should talk with children about what they see and hear.",
+        "Protecting time for other activities – Children need plenty of time for play, reading, conversation, sleep, and physical activity."
+      ],
+      "current_recommendations": [
+        "For children under 18–24 months, screen time (other than video calling with family) is generally not recommended.",
+        "For children 2–5 years, limit screen time to about 1 hour per day of high-quality programming, ideally with an adult present.",
+        "Avoid screens during meals and 1–2 hours before bedtime."
+      ],
+      "important": "Screens do not automatically cause language delay. However, excessive screen time that replaces conversation, play, and reading can reduce language-learning opportunities."
+    },
+    "11_supporting_children_with_communication_difficulties": {
+      "description": "Some children may need extra support to develop communication skills. Adults can use practical, encouraging strategies to help.",
+      "practical_ways_to_support": [
+        "Give extra time to respond – Wait patiently after asking a question or making a comment.",
+        "Use simple language – Speak in short, clear sentences.",
+        "Use gestures and visual cues – Point, show objects, use facial expressions to support understanding.",
+        "Repeat important words – Repeat key words naturally in conversation.",
+        "Follow the child's interests – Talk about what the child is looking at, playing with, or interested in.",
+        "Encourage communication – Praise all communication attempts (words, gestures, sounds). Do not speak for the child every time.",
+        "Praise communication attempts – 'Good talking!' 'I like how you told me what you want.'",
+        "Reduce unnecessary pressure – Avoid forcing the child to speak or correcting every mistake harshly."
+      ],
+      "important": "Support should be encouraging rather than frustrating or embarrassing. Children learn best when they feel safe, valued, and motivated to communicate."
+    },
+    "12_every_child_develops_differently": {
+      "description": "Children develop at different rates. This is normal and expected.",
+      "sources_of_variation": [
+        "Normal variation – Some children speak early; others speak later. Both can be within the normal range.",
+        "Different rates of language development – A child may develop vocabulary quickly but take longer to form sentences, or vice versa.",
+        "Different personalities – Some children are more talkative; others are more quiet or observant.",
+        "Different exposure to language – Children who hear more conversation, reading, and singing typically have more language-learning opportunities.",
+        "Differences between monolingual and multilingual children – Children learning multiple languages may show different patterns, such as mixing languages or having vocabulary distributed across languages. This is normal."
+      ],
+      "important": "Milestone information provides general guidance, not a pass/fail examination. Avoid comparing children based on exact word counts or strict age deadlines."
+    },
+    "13_recognizing_possible_communication_concerns": {
+      "description": "This section explains situations where a parent or caregiver may want to discuss a child's communication development with a qualified professional (such as a pediatrician, early childhood specialist, or speech-language therapist). This information is not diagnostic.",
+      "situations_where_professional_advice_may_be_appropriate": [
+        "Limited response to sounds or voices – The child does not seem to hear or respond to sounds, voices, or their name by expected ages.",
+        "Significant difficulty understanding language – The child has trouble following simple instructions appropriate for their age, even with gestures and visual support.",
+        "Very limited communication for the child's developmental stage – The child uses very few words, gestures, or sounds compared to other children of similar age.",
+        "Persistent difficulty being understood – The child's speech is very difficult for familiar adults to understand, well beyond the expected age.",
+        "Lack of expected progress – The child does not seem to be gaining new communication skills over time.",
+        "Loss of previously acquired communication skills – The child had certain skills (words, gestures, social responses) and then lost them.",
+        "Significant difficulty communicating basic needs – The child cannot effectively communicate hunger, pain, discomfort, or wants, even with gestures."
+      ],
+      "hearing_considerations": "Hearing difficulties can affect speech and language development. If there are concerns about a child's communication, hearing should be considered and checked by a qualified professional.",
+      "important": [
+        "This module does not diagnose speech, language, hearing, autism, or other conditions.",
+        "Early professional assessment can help identify appropriate support.",
+        "If you have concerns, talk with your child's doctor or an early childhood specialist."
+      ]
+    },
+    "14_african_family_case_study": {
+      "title": "Case: Amina and the Two Languages",
+      "case_description": "Amina is 2½ years old. She lives in Yaoundé, Cameroon. At home, she hears Ewondo from her grandmother, French from her parents, and English from an older cousin who attends an English-medium school. Amina understands instructions at home ('Bring the spoon,' 'Come here,' 'Where is your shoe?') and communicates using a mixture of words, gestures, and two languages. She may say 'Je veux mmiri' (mixing French and another language) or 'Give me eau.' A relative visits and tells Amina's parents: 'You are confusing the child by speaking two languages. She should only speak French, or she will never learn properly. Stop speaking Ewondo at home.' Amina's parents are worried. They love their home language and want Amina to speak Ewondo with her grandmother, but they also want her to succeed in French at school.",
+      "discussion_questions_and_model_answers": [
+        {
+          "question": "1. Is the relative correct that using two languages is 'confusing' Amina?",
+          "model_answer": "No. Research shows no evidence that bilingualism causes confusion in children. Children can learn to separate and use different languages appropriately. Code-mixing (using words from both languages in one sentence) is a normal part of bilingual development and reflects Amina's communication environment."
+        },
+        {
+          "question": "2. Should Amina's parents stop speaking Ewondo at home?",
+          "model_answer": "No. Discouraging the home language does not help and may harm Amina's communication, cultural identity, and family relationships. A strong foundation in any language supports learning additional languages. Amina should continue to hear and use Ewondo at home, especially with her grandmother."
+        },
+        {
+          "question": "3. How can Amina's parents support her communication development?",
+          "model_answer": "Amina's parents should: Speak to Amina in the languages they are most comfortable using; Encourage the grandmother to continue speaking Ewondo with Amina; Provide rich language experiences (talking, reading, singing, storytelling) in all languages Amina hears; Focus on meaningful interaction rather than worrying about which language Amina uses at any moment."
+        },
+        {
+          "question": "4. When might professional assessment be appropriate for Amina?",
+          "model_answer": "If Amina shows significant difficulty understanding language in all languages she hears, uses very few words or gestures compared to other children her age, or loses previously acquired skills, her parents should discuss this with a pediatrician or early childhood specialist. Assessment should consider Amina's communication across all languages, not just one language."
+        },
+        {
+          "question": "5. What can Amina's parents tell the relative who is concerned?",
+          "model_answer": "Amina's parents can explain that research shows bilingual children develop language normally, that mixing languages is expected, and that maintaining the home language supports Amina's cultural identity and family relationships. They can share that many children in Cameroon and around the world grow up successfully using multiple languages."
+        }
+      ]
+    },
+    "15_practical_activities": {
+      "description": "Here are 5 simple activities parents and caregivers can use at home. These activities require little or no money and can be done during everyday routines.",
+      "activities": [
+        {
+          "name": "Activity 1: Talk During Routine",
+          "recommended_age": "0–5 years (adapt language to child's age)",
+          "how_to_do_it": "Describe what you are doing while bathing, dressing, cooking, or preparing food.",
+          "examples": [
+            "'I am washing your hands. The water is warm.'",
+            "'Now we are putting on your shirt. One arm, two arms.'",
+            "'I am cutting the onions. The onions make my eyes water.'",
+            "'We are going to the market. We will buy rice and beans.'"
+          ],
+          "communication_skill_supported": "Vocabulary, understanding daily routines, connecting words with actions and objects."
+        },
+        {
+          "name": "Activity 2: Picture Talk",
+          "recommended_age": "1–5 years",
+          "how_to_do_it": "Use any picture (from a book, newspaper, magazine, old calendar, or even a drawing you make). Ask the child to describe what they see. For younger children, you can name objects and ask simple questions.",
+          "examples": [
+            "'What do you see in this picture?'",
+            "'Where is the dog?'",
+            "'What is the child doing?'",
+            "'Tell me about this picture.'",
+            "'Where is the ball?' 'Do you see the cat?' (for younger children)"
+          ],
+          "communication_skill_supported": "Vocabulary, describing, asking and answering questions, early literacy skills."
+        },
+        {
+          "name": "Activity 3: Story Builder",
+          "recommended_age": "2–5 years",
+          "how_to_do_it": "Create a simple story together. Start with one sentence and let the child add to it. You can also use familiar stories from your culture or make up stories about the child's daily experiences.",
+          "examples": [
+            "Adult: 'Once there was a little dog.'",
+            "Child: 'The dog was hungry.'",
+            "Adult: 'The dog went to the market.'",
+            "Child: 'The dog bought rice.'",
+            "Adult: 'What happened next?'"
+          ],
+          "communication_skill_supported": "Storytelling, sequencing, vocabulary, imagination, conversational turn-taking."
+        },
+        {
+          "name": "Activity 4: Object Hunt",
+          "recommended_age": "1–4 years",
+          "how_to_do_it": "Ask the child to find objects around the home. Name the objects and describe them. For older children, you can give 2-step instructions.",
+          "examples": [
+            "'Can you find the red cup?'",
+            "'Where is your shoe?'",
+            "'Bring me the spoon.'",
+            "'Find something soft.'",
+            "'Go to the kitchen and bring the cup.' (for older children)"
+          ],
+          "communication_skill_supported": "Understanding instructions, vocabulary, following directions, receptive and expressive language."
+        },
+        {
+          "name": "Activity 5: Song and Rhyme Time",
+          "recommended_age": "0–5 years (adapt songs to child's age)",
+          "how_to_do_it": "Use familiar songs and rhymes from your culture. Sing with repetition and gestures.",
+          "examples": [
+            "Sing lullabies, nursery rhymes, or traditional songs.",
+            "Add hand movements or actions to songs (clapping, pointing, waving).",
+            "Repeat the same songs many times; children learn through repetition.",
+            "Encourage the child to join in with sounds, words, or actions."
+          ],
+          "communication_skill_supported": "Vocabulary, rhythm and sounds of language, memory, turn-taking, early literacy skills (rhyming)."
+        }
+      ]
+    },
+    "16_common_mistakes_adults_make": {
+      "description": "Here are common mistakes adults make that can unintentionally limit children's communication development. This section is practical and non-judgmental; we all make mistakes, and awareness helps us improve.",
+      "mistakes": [
+        "Speaking for the child all the time – When adults always say what the child wants before the child has a chance to communicate, the child misses opportunities to practice language.",
+        "Not giving children enough time to respond – Adults often ask a question and immediately answer it themselves. Children need time to process and respond.",
+        "Correcting every mistake harshly – Saying 'No, that's wrong' or making the child repeat words many times can discourage communication. Instead, model the correct form naturally.",
+        "Mocking pronunciation – Laughing at a child's attempts to say words can make the child feel embarrassed and less willing to try.",
+        "Discouraging the home language – Telling families to stop speaking their home language can harm the child's communication, cultural identity, and family relationships.",
+        "Comparing children – Saying 'Your cousin was speaking at 1 year; why is your child not speaking?' creates unnecessary worry. Children develop at different rates.",
+        "Expecting children to speak like adults – Young children's speech is naturally less clear and grammatically simple. This is normal.",
+        "Using screens as the primary source of language learning – Screens cannot replace face-to-face conversation, play, and reading.",
+        "Rarely talking or reading with the child – Children need rich language experiences. Even 10–15 minutes of talking, reading, or singing each day makes a difference.",
+        "Asking too many questions without listening to the answer – Turn conversation into a test, and children may feel pressured. Balance questions with comments and genuine listening."
+      ]
+    },
+    "17_key_takeaways": [
+      "1. Communication begins before a child says their first word, through crying, smiling, gestures, and sounds.",
+      "2. Communication, language, and speech are related but different concepts. Understanding these differences helps adults support children appropriately.",
+      "3. Children develop language through responsive, back-and-forth interaction with caring adults.",
+      "4. Understanding (receptive language) often develops before speaking (expressive language).",
+      "5. Talking, reading, singing, and storytelling every day support strong language development.",
+      "6. Bilingual and multilingual development is normal and beneficial. Mixing languages is expected and does not indicate confusion.",
+      "7. Play creates natural opportunities for language development. Talk with children during play, not just give instructions.",
+      "8. Screen time should not replace face-to-face conversation, play, and reading.",
+      "9. Every child develops at their own rate. Milestones are guidelines, not strict deadlines.",
+      "10. If you have concerns about a child's communication, talk with a qualified professional. Early assessment can help identify appropriate support."
+    ]
+  },
+  "knowledge_check": {
+    "instructions": "Choose the best answer for each question. Only one answer is correct.",
+    "questions": [
+      {
+        "question": "A 9-month-old baby cries, smiles, reaches for objects, and turns toward familiar voices. What does this show?",
+        "options": {
+          "A": "The baby has a speech problem.",
+          "B": "The baby is not developing normally.",
+          "C": "The baby is communicating, even though they cannot yet speak.",
+          "D": "The baby should be speaking in sentences by this age."
+        },
+        "correct_answer": "C",
+        "explanation": "Babies communicate through crying, smiling, reaching, and turning toward voices long before they can speak. These are all normal forms of early communication."
+      },
+      {
+        "question": "What is the difference between receptive and expressive language?",
+        "options": {
+          "A": "Receptive language is speaking; expressive language is understanding.",
+          "B": "Receptive language is understanding language; expressive language is using words, gestures, or sounds to communicate.",
+          "C": "Receptive language is for babies; expressive language is for older children.",
+          "D": "There is no difference; they mean the same thing."
+        },
+        "correct_answer": "B",
+        "explanation": "Receptive language refers to understanding what others say. Expressive language refers to using words, gestures, or sounds to communicate. Children often understand more than they can express."
+      },
+      {
+        "question": "A 2-year-old child understands simple instructions but says only about 10 words. What is the best response?",
+        "options": {
+          "A": "Tell the parents the child has a language delay and needs immediate therapy.",
+          "B": "Encourage the parents to stop speaking their home language and only use one language.",
+          "C": "Recognize that understanding often develops before speaking, and encourage rich, responsive interaction.",
+          "D": "Tell the parents to make the child repeat words until they can say 50 words."
+        },
+        "correct_answer": "C",
+        "explanation": "Understanding (receptive language) often develops before speaking (expressive language). Encouraging rich interaction and monitoring progress is appropriate. If concerns persist, professional advice may be sought, but harsh correction or discouraging home languages is not helpful."
+      },
+      {
+        "question": "A family speaks two languages at home. The child mixes words from both languages when speaking. What does this indicate?",
+        "options": {
+          "A": "The child is confused and should only speak one language.",
+          "B": "The child has a language disorder.",
+          "C": "This is normal code-mixing, which is a typical part of bilingual development.",
+          "D": "The child is not intelligent enough to separate the languages."
+        },
+        "correct_answer": "C",
+        "explanation": "Code-mixing (using words from both languages in one sentence) is a normal part of bilingual development. Research shows no evidence that bilingualism causes confusion."
+      },
+      {
+        "question": "Which activity best supports language development during daily routines?",
+        "options": {
+          "A": "Letting the child watch television while you cook.",
+          "B": "Describing what you are doing while bathing, dressing, or preparing food.",
+          "C": "Asking the child to be quiet while you work.",
+          "D": "Speaking only in short commands without explanation."
+        },
+        "correct_answer": "B",
+        "explanation": "Describing daily activities provides rich language input and helps children connect words with actions and objects. This supports vocabulary and understanding."
+      },
+      {
+        "question": "A 3-year-old child can tell a simple story with two events, asks questions, and carries on a conversation with 3+ exchanges. What does this indicate?",
+        "options": {
+          "A": "The child is developing language skills typically expected around this age.",
+          "B": "The child is speaking too much and should be quieter.",
+          "C": "The child should be speaking in longer sentences like an adult.",
+          "D": "The child is showing signs of a language problem."
+        },
+        "correct_answer": "A",
+        "explanation": "By 3 years, many children can tell simple stories, ask questions, and carry on conversations with multiple exchanges. These are typical language milestones."
+      },
+      {
+        "question": "What is the best approach to screen time for a 2-year-old child?",
+        "options": {
+          "A": "Allow unlimited screen time because educational programs are good for language.",
+          "B": "Avoid all screen time, including video calling with family.",
+          "C": "Limit screen time to about 1 hour per day of high-quality programming, ideally with an adult present to talk about what is happening.",
+          "D": "Use screens as the main way to teach the child new words."
+        },
+        "correct_answer": "C",
+        "explanation": "For children 2–5 years, current recommendations suggest limiting screen time to about 1 hour per day of high-quality programming, ideally with an adult present. Screens should not replace face-to-face conversation, play, and reading."
+      },
+      {
+        "question": "A parent is worried because their 18-month-old child is not yet speaking in sentences, but the child understands simple instructions and uses gestures to communicate. What is the best advice?",
+        "options": {
+          "A": "The child definitely has a language delay and needs immediate therapy.",
+          "B": "The child should be speaking in sentences by 18 months, so this is a serious concern.",
+          "C": "This can be normal variation; understanding and gestures are positive signs. Continue rich interaction and monitor progress.",
+          "D": "The parents should stop speaking to the child until the child starts speaking more."
+        },
+        "correct_answer": "C",
+        "explanation": "Children develop at different rates. Understanding instructions and using gestures are positive communication signs. Continued rich interaction and monitoring are appropriate. If concerns persist, professional advice may be sought."
+      },
+      {
+        "question": "Which of the following is a common mistake adults make that can limit language development?",
+        "options": {
+          "A": "Reading with the child every day.",
+          "B": "Speaking for the child all the time, not giving them a chance to communicate.",
+          "C": "Singing songs and rhymes with the child.",
+          "D": "Describing daily activities while doing chores."
+        },
+        "correct_answer": "B",
+        "explanation": "Speaking for the child all the time reduces opportunities for the child to practice communication. Adults should give children time to respond and encourage their communication attempts."
+      },
+      {
+        "question": "When should a parent or caregiver consider seeking professional advice about a child's communication?",
+        "options": {
+          "A": "When the child mixes two languages while speaking.",
+          "B": "When the child does not respond to sounds or voices, shows significant difficulty understanding language, or loses previously acquired communication skills.",
+          "C": "When the child prefers to play alone sometimes.",
+          "D": "When the child's speech is not as clear as an adult's speech."
+        },
+        "correct_answer": "B",
+        "explanation": "Concerns such as limited response to sounds, significant difficulty understanding language, or loss of previously acquired skills may warrant professional assessment. Mixing languages and speech that is less clear than an adult's can be normal."
+      }
+    ]
+  },
+  "short_glossary": {
+    "communication": "How people share messages, needs, feelings, thoughts, and information through words, gestures, sounds, or actions.",
+    "language": "The system of words, sounds, signs, or symbols used to understand and communicate meaning. Includes vocabulary, grammar, and the ability to use language for different purposes.",
+    "speech": "The physical production of spoken sounds using the mouth, tongue, lips, and breathing muscles.",
+    "receptive_language": "Understanding language—what a child comprehends when others speak.",
+    "expressive_language": "Using sounds, words, gestures, or sentences to communicate.",
+    "vocabulary": "The words a child understands and uses.",
+    "babbling": "Repetitive consonant-vowel sounds (e.g., 'ba-ba,' 'da-da') that babies make as they practice speech sounds.",
+    "gesture": "A movement of the body (such as pointing, waving, or reaching) used to communicate meaning.",
+    "multilingualism": "The ability to use or learn three or more languages.",
+    "code_switching": "Mixing words or phrases from two or more languages in one conversation or sentence. This is normal in bilingual and multilingual development.",
+    "early_literacy": "Skills and experiences that prepare children for reading and writing, such as recognizing pictures, hearing rhymes, retelling stories, and understanding that print carries meaning.",
+    "developmental_milestone": "A skill or behavior that most children (about 75% or more) can do by a certain age. Milestones are guidelines, not strict deadlines."
+  },
+  "professional_note": {
+    "disclaimer": "This module is educational and provides general information about language and communication development in children aged 0–5 years. It does not diagnose speech, language, hearing, developmental, or other conditions. Children develop at different rates, and milestone information provides general guidance rather than strict deadlines. Variation in development is normal. Parents and caregivers should speak with an appropriate qualified professional (such as a pediatrician, early childhood specialist, or speech-language therapist) if concerns about a child's communication persist or if the child shows significant difficulties in understanding or expressing language. Hearing should be considered when there are concerns about speech or language development. Hearing difficulties can affect communication, and a hearing assessment may be appropriate. Early assessment can help identify appropriate support and interventions. If you have concerns, do not wait; act early and seek professional advice. This module is not a substitute for standardized, validated developmental screening tools or professional evaluation."
+  },
+  "references": [
+    {
+      "id": 1,
+      "title": "CDC. Learn the Signs. Act Early. Developmental Milestones.",
+      "url": "https://www.cdc.gov/act-early/milestones/index.html"
+    },
+    {
+      "id": 2,
+      "title": "CDC. Milestones by 5 Years.",
+      "url": "https://www.cdc.gov/act-early/milestones/5-years.html"
+    },
+    {
+      "id": 3,
+      "title": "CDC. Milestone Moments Booklet.",
+      "url": "https://stacks.cdc.gov/view/cdc/112314/cdc_112314_DS1.pdf"
+    },
+    {
+      "id": 4,
+      "title": "CDC. Understanding Children's Developmental Milestones.",
+      "url": "https://www.cdc.gov/ncbddd/watchmetraining/module2.html"
+    },
+    {
+      "id": 5,
+      "title": "CDC. Milestones by 30 Months.",
+      "url": "https://www.cdc.gov/act-early/milestones/30-months.html"
+    },
+    {
+      "id": 6,
+      "title": "CDC. Milestones by 3 Years.",
+      "url": "https://www.cdc.gov/act-early/milestones/3-years.html"
+    },
+    {
+      "id": 7,
+      "title": "CDC. Milestones by 1 Year.",
+      "url": "https://www.cdc.gov/act-early/milestones/1-year.html"
+    },
+    {
+      "id": 8,
+      "title": "CDC. Milestones by 2 Years.",
+      "url": "https://www.cdc.gov/act-early/milestones/2-years.html"
+    },
+    {
+      "id": 9,
+      "title": "CDC. Developmental Milestones Matter.",
+      "url": "https://www.cdc.gov/act-early/families/milestones-matter.html"
+    },
+    {
+      "id": 10,
+      "title": "American Speech-Language-Hearing Association (ASHA). Introduction to the Research Symposium on Bilingualism Forum. Journal of Speech, Language, and Hearing Research, 2023."
+    },
+    {
+      "id": 11,
+      "title": "ASHA. Bilingual and Home Language Interventions With Young Dual Language Learners: A Research Synthesis. Language, Speech, and Hearing Services in Schools, 2016."
+    },
+    {
+      "id": 12,
+      "title": "ASHA. Bilingual Myth-Busters Series: Language Confusion in Bilingual Children. Communication Disorders Quarterly, 2013."
+    },
+    {
+      "id": 13,
+      "title": "ASHA. Late Language Emergence. Practice Portal.",
+      "url": "https://www.asha.org/Practice-Portal/Clinical-Topics/Late-Language-Emergence/"
+    },
+    {
+      "id": 14,
+      "title": "ASHA Leader. Becoming Bilingual. 2014."
+    },
+    {
+      "id": 15,
+      "title": "World Health Organization (WHO). Early childhood development guidelines. [General reference for ECD principles]"
+    },
+    {
+      "id": 16,
+      "title": "UNICEF. Early childhood development resources. [General reference for ECD principles]"
+    },
+    {
+      "id": 17,
+      "title": "American Academy of Pediatrics. Screen time recommendations.",
+      "url": "https://www.healthychildren.org"
+    },
+    {
+      "id": 18,
+      "title": "Harvard Center on the Developing Child. Serve and return interaction. [General reference for early interaction principles]"
+    }
+  ],
+  "footnotes": [
+    {
+      "fn": 1,
+      "url": "https://stacks.cdc.gov/view/cdc/112314/cdc_112314_DS1.pdf"
+    },
+    {
+      "fn": 2,
+      "url": "https://www.cdc.gov/ncbddd/watchmetraining/module2.html"
+    },
+    {
+      "fn": 3,
+      "url": "https://www.cdc.gov/act-early/milestones/5-years.html"
+    },
+    {
+      "fn": 4,
+      "url": "https://www.cdc.gov/ncbddd/actearly/milestones/milestones-5yr.html"
+    },
+    {
+      "fn": 5,
+      "url": "https://pubs.asha.org/doi/10.1044/2023_JSLHR-23-00661"
+    },
+    {
+      "fn": 6,
+      "url": "https://www.asha.org/Practice-Portal/Clinical-Topics/Late-Language-Emergence/"
+    },
+    {
+      "fn": 7,
+      "url": "https://pubs.asha.org/doi/abs/10.1044/cds20.1.5"
+    },
+    {
+      "fn": 8,
+      "url": "https://www.cdc.gov/act-early/milestones/1-year.html"
+    },
+    {
+      "fn": 9,
+      "url": "https://www.cdc.gov/act-early/milestones/30-months.html"
+    },
+    {
+      "fn": 10,
+      "url": "https://www.cdc.gov/act-early/milestones/2-years.html"
+    },
+    {
+      "fn": 11,
+      "url": "https://www.cdc.gov/act-early/milestones/3-years.html"
+    },
+    {
+      "fn": 12,
+      "url": "https://pubs.asha.org/doi/abs/10.1044/2016_LSHSS-15-0030"
+    },
+    {
+      "fn": 13,
+      "url": "https://leader.pubs.asha.org/doi/10.1044/leader.FTR2.19112014.40"
+    },
+    {
+      "fn": 14,
+      "url": "https://www.cdc.gov/act-early/families/milestones-matter.html"
+    },
+    {
+      "fn": 15,
+      "url": "https://www.cdc.gov/act-early/milestones/index.html"
+    }
+  ]
+}

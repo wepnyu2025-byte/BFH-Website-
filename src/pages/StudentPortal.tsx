@@ -1500,58 +1500,65 @@ export const StudentPortal: React.FC = () => {
               </div>
 
               {/* Dynamic Populated Resource Content */}
-              {activeRefTab === 'TERMS' && modules[0]?.glossary && (
-                <div className="pt-3 space-y-2 bg-teal-50/40 p-4 rounded-[20px]">
-                  <h4 className="font-body font-bold text-teal-900 text-sm">Key Clinical Terminology</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {modules[0].glossary.slice(0, 3).map((item, idx) => (
-                      <div key={idx} className="p-3 rounded-[16px] bg-white">
-                        <span className="font-bold text-teal-900 text-xs block mb-0.5">{item.term}</span>
-                        <span className="text-xs text-teal-950/75 leading-relaxed">{item.definition}</span>
+              {(() => {
+                const currentRefModule = (activeLesson ? modules.find((m) => m.id === activeLesson.moduleId) : null) || modules[0];
+                return (
+                  <>
+                    {activeRefTab === 'TERMS' && currentRefModule?.glossary && (
+                      <div className="pt-3 space-y-2 bg-teal-50/40 p-4 rounded-[20px]">
+                        <h4 className="font-body font-bold text-teal-900 text-sm">Key Clinical Terminology ({currentRefModule.title})</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {currentRefModule.glossary.slice(0, 4).map((item, idx) => (
+                            <div key={idx} className="p-3 rounded-[16px] bg-white">
+                              <span className="font-bold text-teal-900 text-xs block mb-0.5">{item.term}</span>
+                              <span className="text-xs text-teal-950/75 leading-relaxed">{item.definition}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+                    )}
 
-              {activeRefTab === 'GLOSSARY' && modules[0]?.glossary && (
-                <div className="pt-3 space-y-2 bg-teal-50/40 p-4 rounded-[20px]">
-                  <h4 className="font-body font-bold text-teal-900 text-sm">Full Module Glossary</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {modules[0].glossary.map((item, idx) => (
-                      <div key={idx} className="p-3 rounded-[16px] bg-white">
-                        <span className="font-bold text-teal-900 text-xs block mb-0.5">{item.term}</span>
-                        <span className="text-xs text-teal-950/75 leading-relaxed">{item.definition}</span>
+                    {activeRefTab === 'GLOSSARY' && currentRefModule?.glossary && (
+                      <div className="pt-3 space-y-2 bg-teal-50/40 p-4 rounded-[20px]">
+                        <h4 className="font-body font-bold text-teal-900 text-sm">Full Module Glossary ({currentRefModule.title})</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {currentRefModule.glossary.map((item, idx) => (
+                            <div key={idx} className="p-3 rounded-[16px] bg-white">
+                              <span className="font-bold text-teal-900 text-xs block mb-0.5">{item.term}</span>
+                              <span className="text-xs text-teal-950/75 leading-relaxed">{item.definition}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+                    )}
 
-              {activeRefTab === 'SOURCES' && modules[0]?.references && (
-                <div className="pt-3 space-y-2 bg-teal-50/40 p-4 rounded-[20px]">
-                  <h4 className="font-body font-bold text-teal-900 text-sm">WHO, UNICEF & Harvard Scientific Citations</h4>
-                  <ul className="space-y-2 text-xs text-teal-950/75">
-                    {modules[0].references.map((ref, idx) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <span className="text-orange-500 font-bold">•</span>
-                        {ref.url ? (
-                          <a
-                            href={ref.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-teal-900 hover:underline transition-colors"
-                          >
-                            {ref.title}
-                          </a>
-                        ) : (
-                          <span>{ref.title}</span>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+                    {activeRefTab === 'SOURCES' && currentRefModule?.references && (
+                      <div className="pt-3 space-y-2 bg-teal-50/40 p-4 rounded-[20px]">
+                        <h4 className="font-body font-bold text-teal-900 text-sm">WHO, CDC, UNICEF & Scientific Citations ({currentRefModule.title})</h4>
+                        <ul className="space-y-2 text-xs text-teal-950/75">
+                          {currentRefModule.references.map((ref, idx) => (
+                            <li key={idx} className="flex items-start gap-2">
+                              <span className="text-orange-500 font-bold">•</span>
+                              {ref.url ? (
+                                <a
+                                  href={ref.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="hover:text-teal-900 hover:underline transition-colors"
+                                >
+                                  {ref.title}
+                                </a>
+                              ) : (
+                                <span>{ref.title}</span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
           </div>
         )}

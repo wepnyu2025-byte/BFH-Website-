@@ -145,6 +145,121 @@ export function getSuggestedQuestions(lesson: CourseLesson, module?: CourseModul
     ];
   }
 
+  // Module 4: Language & Communication Development topics
+  if (title.includes('bilingual') || title.includes('multilingual') || content.includes('amina') || content.includes('code-switch')) {
+    return [
+      'Does learning two languages cause speech confusion in toddlers?',
+      'Why is code-switching (mixing languages) normal in bilingual children?',
+      'What should parents do if relatives say to stop speaking their heritage language?'
+    ];
+  }
+
+  if (title.includes('receptive') || title.includes('expressive') || content.includes('receptive')) {
+    return [
+      'Why does receptive language develop before expressive speech?',
+      'What should a parent do if a 2-year-old understands everything but says few words?',
+      'How do gestures like pointing show strong receptive language?'
+    ];
+  }
+
+  if (title.includes('serve-and-return') || title.includes('communication from birth')) {
+    return [
+      'How does serve-and-return interaction build brain architecture?',
+      'How do newborn babies communicate before speaking?',
+      'What are practical examples of returning a baby’s communication "serve"?'
+    ];
+  }
+
+  if (title.includes('screen') || content.includes('screen time')) {
+    return [
+      'Why does background television reduce parent-child language exchange?',
+      'What are the AAP and WHO screen time recommendations for 0–5 years?',
+      'How can adults make necessary screen use interactive through co-viewing?'
+    ];
+  }
+
+  if (title.includes('red flag') || title.includes('concern') || content.includes('hearing')) {
+    return [
+      'Why must hearing always be tested first when speech is delayed?',
+      'What are the major red flags in language development between 1 and 3 years?',
+      'When should a family seek evaluation from a speech-language pathologist?'
+    ];
+  }
+
+  // Module 5: Social & Emotional Development topics
+  if (title.includes('tantrum') || title.includes('difficult behavior') || content.includes('kofi') || content.includes('meltdown')) {
+    return [
+      'Why are toddler tantrums considered a normal biological developmental stage?',
+      'What is the step-by-step protocol for de-escalating a public tantrum like Kofi’s?',
+      'Why does giving in to screaming teach children the wrong coping habits?'
+    ];
+  }
+
+  if (title.includes('co-regulation') || title.includes('regulation') || content.includes('soothe')) {
+    return [
+      'What is the biological difference between co-regulation and self-regulation?',
+      'How does an adult’s calm nervous system help settle a distressed infant?',
+      'Why is demanding self-control from an 18-month-old scientifically unrealistic?'
+    ];
+  }
+
+  if (title.includes('discipline') || title.includes('boundary') || content.includes('positive discipline')) {
+    return [
+      'Why does the American Academy of Pediatrics oppose physical punishment?',
+      'How can caregivers offer limited choices to encourage toddler cooperation?',
+      'What are effective natural and logical consequences for preschool behavior?'
+    ];
+  }
+
+  if (title.includes('attachment') || title.includes('secure base')) {
+    return [
+      'What is a "secure base" and how does it encourage childhood exploration?',
+      'Does secure attachment require 100% perfect parenting responses?',
+      'How does prompt comforting of an infant build lifelong emotional trust?'
+    ];
+  }
+
+  if (title.includes('empathy') || title.includes('parallel play') || title.includes('social skills')) {
+    return [
+      'What is the difference between parallel play and cooperative play?',
+      'At what age do young children typically develop genuine sharing and empathy?',
+      'How do extended African communal families strengthen emotional security?'
+    ];
+  }
+
+  // Module 6: Developmental Milestones topics
+  if (title.includes('milestone') || title.includes('developmental milestone')) {
+    return [
+      'What is the CDC and WHO definition of a developmental milestone?',
+      'Why should milestone ages be treated as observation guides rather than rigid deadlines?',
+      'How are milestones across physical, cognitive, language, and social domains connected?'
+    ];
+  }
+
+  if (title.includes('screening') || title.includes('monitoring') || content.includes('diagnosis')) {
+    return [
+      'What is the fundamental difference between developmental monitoring and formal screening?',
+      'At what ages does the American Academy of Pediatrics recommend formal developmental screenings?',
+      'Why is a milestone checklist not a medical diagnosis?'
+    ];
+  }
+
+  if (title.includes('chidi') || content.includes('chidi') || content.includes('late talker')) {
+    return [
+      'Why is the cultural belief that "boys always talk late" an inaccurate myth?',
+      'Why should hearing always be tested before diagnosing a language delay in a toddler like Chidi?',
+      'What steps should a mother in Nigeria take when a toddler has an expressive delay?'
+    ];
+  }
+
+  if (title.includes('regression') || content.includes('loss of skill') || content.includes('loses a skill')) {
+    return [
+      'Why is developmental regression (loss of previously mastered skills) an urgent clinical red flag?',
+      'What should a caregiver do immediately if a child stops speaking or loses eye contact?',
+      'What conditions can cause developmental regression in early childhood?'
+    ];
+  }
+
   // Module 1 / General Foundations defaults
   return [
     'What are the key learning principles in this lesson?',
