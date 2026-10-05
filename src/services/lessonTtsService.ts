@@ -1,7 +1,7 @@
 /**
  * High-Definition Lesson Text-to-Speech (TTS) Service
  * 
- * Powered by Google Cloud & Google GenAI TTS (gemini-3.8-flash-lite-tts with Kore/Aoede neural voice),
+ * Powered by Google Cloud & Google GenAI TTS (gemini-3.8-flash-lite-tts with Kore neural voice),
  * with client-side cache and seamless fallback to browser Enhanced/Natural voices.
  */
 
@@ -23,6 +23,19 @@ export function cleanMarkdownForSpeech(markdown: string): string {
     .replace(/\n{2,}/g, '. ')
     .replace(/\s{2,}/g, ' ')
     .trim();
+}
+
+/**
+ * Converts a base64 string into a Blob for zero-overhead HTML5 audio playback on Safari and Chrome
+ */
+function base64ToBlob(base64: string, mimeType: string): Blob {
+  const binaryString = atob(base64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return new Blob([bytes], { type: mimeType });
 }
 
 /**
@@ -55,9 +68,10 @@ export async function getLessonGoogleTtsAudio(
       if (res.ok) {
         const data = await res.json();
         if (data.success && data.audioBase64) {
-          const audioUrl = `data:${data.mimeType || 'audio/wav'};base64,${data.audioBase64}`;
-          audioCache.set(lessonId, audioUrl);
-          return audioUrl;
+          const blob = base64ToBlob(data.audioBase64, data.mimeType || 'audio/wav');
+          const blobUrl = URL.createObjectURL(blob);
+          audioCache.set(lessonId, blobUrl);
+          return blobUrl;
         }
       }
     } catch {

@@ -587,27 +587,40 @@ export const StudentPortal: React.FC = () => {
     setIsTtsLoading(false);
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
 
-    window.speechSynthesis.cancel();
-    const cleanContent = cleanMarkdownForSpeech(activeLesson.content);
-    const textToRead = `${activeLesson.title}. ${cleanContent}`;
-    const utterance = new SpeechSynthesisUtterance(textToRead);
+    try {
+      window.speechSynthesis.cancel();
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
 
-    const naturalVoice = getBestNaturalBrowserVoice();
-    if (naturalVoice) {
-      utterance.voice = naturalVoice;
+      const cleanContent = cleanMarkdownForSpeech(activeLesson.content);
+      const textToRead = `${activeLesson.title}. ${cleanContent}`;
+      const utterance = new SpeechSynthesisUtterance(textToRead);
+
+      const naturalVoice = getBestNaturalBrowserVoice();
+      if (naturalVoice) {
+        utterance.voice = naturalVoice;
+      }
+      utterance.rate = 0.95;
+      utterance.onend = () => {
+        setIsReadingAloud(false);
+        setIsReadingPaused(false);
+      };
+      utterance.onerror = () => {
+        setIsReadingAloud(false);
+        setIsReadingPaused(false);
+      };
+
+      // Slight 50ms delay to prevent speech queue hang in Chrome/Safari
+      setTimeout(() => {
+        window.speechSynthesis.speak(utterance);
+        setIsReadingAloud(true);
+        setIsReadingPaused(false);
+      }, 50);
+    } catch {
+      setIsReadingAloud(false);
+      setIsReadingPaused(false);
     }
-    utterance.rate = 0.95;
-    utterance.onend = () => {
-      setIsReadingAloud(false);
-      setIsReadingPaused(false);
-    };
-    utterance.onerror = () => {
-      setIsReadingAloud(false);
-      setIsReadingPaused(false);
-    };
-    window.speechSynthesis.speak(utterance);
-    setIsReadingAloud(true);
-    setIsReadingPaused(false);
   };
 
   // Read Aloud Play / Pause handler for lesson (Powered by Google Cloud TTS with Natural Fallback)
@@ -667,8 +680,9 @@ export const StudentPortal: React.FC = () => {
       );
 
       if (googleAudioUrl) {
-        const audio = new Audio(googleAudioUrl);
+        const audio = new Audio();
         lessonAudioRef.current = audio;
+        audio.src = googleAudioUrl;
         audio.onended = () => {
           setIsReadingAloud(false);
           setIsReadingPaused(false);
@@ -676,11 +690,18 @@ export const StudentPortal: React.FC = () => {
         audio.onerror = () => {
           fallbackToBrowserSpeech();
         };
-        await audio.play();
-        setIsTtsLoading(false);
-        setIsReadingAloud(true);
-        setIsReadingPaused(false);
-        return;
+
+        try {
+          await audio.play();
+          setIsTtsLoading(false);
+          setIsReadingAloud(true);
+          setIsReadingPaused(false);
+          return;
+        } catch (playErr) {
+          console.warn('Audio element play failed, falling back to speech synthesis:', playErr);
+          fallbackToBrowserSpeech();
+          return;
+        }
       }
     } catch {
       // Fall through to browser natural voice
