@@ -30,12 +30,15 @@ import {
   Video,
   Home,
   ShieldCheck,
-  LogOut
+  LogOut,
+  Sparkles,
+  Bot
 } from 'lucide-react';
 import { marked } from 'marked';
 import { DEFAULT_PROGRAM, DEFAULT_MODULES, DEFAULT_SETTINGS } from '../data/portalDefaults';
 import { CourseLesson, CourseModule, StudentProfile, PortalSettings } from '../types/studentPortal';
 import { getPortalSettings, redeemAccessCode } from '../services/portalService';
+import { getSuggestedQuestions, getPediaWelcomeMessage, generatePediaCoachResponse } from '../services/pediaCoachService';
 
 type PortalView = 'HOME' | 'COURSE' | 'LESSON' | 'QUIZ' | 'CONGRATULATIONS';
 
@@ -68,6 +71,33 @@ const renderFormattedLessonContent = (markdownText: string) => {
     );
   } catch {
     return <div className="font-body text-sm text-teal-950 whitespace-pre-line">{markdownText}</div>;
+  }
+};
+
+// Formatted Markdown renderer for Pedia Coach messages (eliminates raw **, #, and emojis)
+const renderCoachMessageHtml = (text: string) => {
+  try {
+    const sanitizedText = (text || '')
+      .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1FA00}-\u{1FAFF}]/gu, '')
+      .trim();
+
+    const rawHtml = marked.parse(sanitizedText, { gfm: true, breaks: true }) as string;
+    return (
+      <div
+        className="font-body text-xs sm:text-sm text-teal-950 leading-relaxed space-y-2.5
+          [&_p]:mb-2 [&_p:last-child]:mb-0
+          [&_strong]:font-bold [&_strong]:text-teal-950
+          [&_h3]:font-bold [&_h3]:text-teal-900 [&_h3]:text-sm [&_h3]:sm:text-base [&_h3]:mt-2 [&_h3]:mb-1
+          [&_h4]:font-bold [&_h4]:text-teal-900 [&_h4]:text-xs [&_h4]:sm:text-sm [&_h4]:mt-1.5 [&_h4]:mb-1
+          [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5 [&_ul]:my-2
+          [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:space-y-1.5 [&_ol]:my-2
+          [&_li]:text-teal-950/90
+          [&_blockquote]:border-l-3 [&_blockquote]:border-teal-500 [&_blockquote]:bg-teal-50/70 [&_blockquote]:pl-3 [&_blockquote]:py-1.5 [&_blockquote]:my-2 [&_blockquote]:rounded-r-lg [&_blockquote]:text-teal-900"
+        dangerouslySetInnerHTML={{ __html: rawHtml }}
+      />
+    );
+  } catch {
+    return <div className="font-body text-xs sm:text-sm text-teal-950 whitespace-pre-line">{text}</div>;
   }
 };
 
@@ -247,11 +277,32 @@ export const StudentPortal: React.FC = () => {
   const [coachMessages, setCoachMessages] = useState<Array<{ sender: 'coach' | 'student'; text: string }>>([
     {
       sender: 'coach',
-      text: "Hello! I am Pedia, your Baby First Health learning coach. Ask me any question to clarify concepts or clinical terms in this lesson!",
+      text: "Hello! I am Pedia, your Baby First Health early childhood learning coach. Ask me any question to clarify concepts or clinical terms in this lesson!",
     },
   ]);
   const [coachInput, setCoachInput] = useState('');
   const [isCoachThinking, setIsCoachThinking] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // Update Pedia greeting and context whenever the active lesson changes
+  useEffect(() => {
+    if (activeLesson) {
+      const activeModule = modules.find((m) => m.id === activeLesson.moduleId);
+      setCoachMessages([
+        {
+          sender: 'coach',
+          text: getPediaWelcomeMessage(activeLesson, activeModule),
+        },
+      ]);
+    }
+  }, [activeLesson?.id]);
+
+  // Auto-scroll to bottom of chat when new message arrives or modal opens
+  useEffect(() => {
+    if (showAiCoach && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [coachMessages, isCoachThinking, showAiCoach]);
 
   // ID Copy state
   const [copiedId, setCopiedId] = useState(false);
@@ -452,37 +503,30 @@ Baby First Health Educational Program
   };
 
   // Send Pedia AI message
-  const handleSendCoachMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!coachInput.trim()) return;
+  const handleSendCoachMessage = async (e?: React.FormEvent, customPrompt?: string) => {
+    if (e) e.preventDefault();
+    const query = (customPrompt || coachInput).trim();
+    if (!query) return;
 
-    const query = coachInput.trim();
     setCoachMessages((prev) => [...prev, { sender: 'student', text: query }]);
-    setCoachInput('');
+    if (!customPrompt) setCoachInput('');
     setIsCoachThinking(true);
 
-    setTimeout(() => {
-      let reply = '';
-      const lower = query.toLowerCase();
-
-      // Guard: No quiz answers
-      if (lower.includes('quiz') || lower.includes('answer') || lower.includes('option') || lower.includes('correct')) {
-        reply = "As your learning coach, I cannot give out quiz answers. Let's review the clinical concepts above together so you can answer with confidence!";
-      } else if (lower.includes('serve') || lower.includes('return')) {
-        reply = "'Serve and return' refers to warm, reciprocal, back-and-forth interactions between a child and a caring adult (like smiling, vocalizing, and responding). Neuroscience shows these exchanges literally build the neural architecture of the developing brain.";
-      } else if (lower.includes('growth') || lower.includes('difference')) {
-        reply = "Growth refers strictly to physical size increases (height, weight, head circumference in centimeters/kilograms). Development, on the other hand, is the acquisition of functional skills and abilities (such as sitting, talking, stacking blocks, or solving simple problems).";
-      } else if (lower.includes('milestone') || lower.includes('speed') || lower.includes('rate')) {
-        reply = "Developmental milestones are typical skill emergence windows, not rigid deadlines! Each child develops at their own rate. Seek professional clinical advice only if there is a persistent lack of new skills over several months or a regression (loss of skills previously mastered).";
-      } else if (lower.includes('toy') || lower.includes('expensive')) {
-        reply = "Research consistently shows you do not need expensive commercial toys. Everyday safe items (like cups, spoons, blocks, and leaves) paired with talking, singing, and loving adult interaction provide the highest cognitive benefit.";
-      } else {
-        reply = `Regarding "${activeLesson.title}": The fundamental lesson principle is that responsive relationships, safe environments, adequate nutrition, and everyday communicative play form the core foundation of early childhood health and learning.`;
-      }
-
+    try {
+      const activeModule = modules.find((m) => m.id === activeLesson.moduleId);
+      const reply = await generatePediaCoachResponse(query, activeLesson, activeModule);
       setCoachMessages((prev) => [...prev, { sender: 'coach', text: reply }]);
+    } catch {
+      setCoachMessages((prev) => [
+        ...prev,
+        {
+          sender: 'coach',
+          text: `Regarding "${activeLesson.title}": The fundamental lesson principle is that responsive relationships, safe environments, adequate nutrition, and everyday communicative play form the core foundation of early childhood health and learning.`,
+        },
+      ]);
+    } finally {
       setIsCoachThinking(false);
-    }, 700);
+    }
   };
 
   // Cryptographic SHA-256 helper for client-side password verification
@@ -1586,71 +1630,135 @@ Baby First Health Educational Program
           AI COACH MODAL / DRAWER (Pedia Grounded in Active Lesson)
          =================================================================== */}
       {showAiCoach && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-teal-950/60 backdrop-blur-sm">
-          <div className="bg-white rounded-t-[32px] sm:rounded-[32px] p-6 max-w-[540px] w-full max-h-[85vh] flex flex-col space-y-4">
-            <div className="flex items-center justify-between pb-2">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center p-1">
-                  <img src="/BFH-logo.svg" alt="BFH AI Coach" className="w-6 h-6 object-contain" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-teal-950/70 backdrop-blur-sm">
+          <div className="bg-white rounded-[28px] sm:rounded-[36px] shadow-2xl border border-teal-100 max-w-full sm:max-w-xl md:max-w-3xl lg:max-w-4xl w-full h-[92vh] max-h-[820px] md:h-[760px] flex flex-col overflow-hidden">
+            {/* Modal Header */}
+            <div className="px-5 py-4 sm:px-7 sm:py-5 border-b border-teal-100 bg-linear-to-r from-teal-50/90 to-emerald-50/60 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                <div className="relative shrink-0">
+                  <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-white shadow-xs border border-teal-200/80 flex items-center justify-center p-1.5">
+                    <img src="/BFH-logo.svg" alt="BFH AI Coach" className="w-8 h-8 sm:w-9 sm:h-9 object-contain" />
+                  </div>
+                  <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full ring-2 ring-emerald-400/30" />
                 </div>
-                <div>
-                  <h3 className="font-body font-bold text-teal-900 text-sm">
-                    Pedia AI Learning Coach
-                  </h3>
-                  <p className="text-[11px] text-teal-950/60">
-                    Clarifying: {activeLesson.title}
-                  </p>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-body font-bold text-teal-950 text-base sm:text-lg tracking-tight">
+                      Pedia AI Learning Coach
+                    </h3>
+                    <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 text-[11px] font-semibold">
+                      <Sparkles className="w-3 h-3 text-teal-600" />
+                      Active Mentor
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-teal-900/70 mt-0.5 truncate">
+                    <BookOpen className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                    <span className="font-semibold text-teal-900 shrink-0">Grounded:</span>
+                    <span className="truncate">{activeLesson.title}</span>
+                  </div>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setShowAiCoach(false)}
-                className="p-1.5 rounded-full bg-teal-50 hover:bg-teal-100 text-teal-900"
+                className="p-2 sm:p-2.5 rounded-full bg-white hover:bg-teal-100/80 text-teal-800 border border-teal-200/70 transition-colors shadow-2xs cursor-pointer shrink-0 ml-2"
+                aria-label="Close Coach"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Coach Chat Messages */}
-            <div className="flex-1 overflow-y-auto space-y-3 pr-1 max-h-[320px]">
+            {/* Quick Context Question Chips */}
+            {(() => {
+              const activeMod = modules.find((m) => m.id === activeLesson.moduleId);
+              const chips = getSuggestedQuestions(activeLesson, activeMod);
+              return (
+                <div className="px-5 py-2.5 sm:px-7 sm:py-3 bg-teal-50/40 border-b border-teal-100/60 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0">
+                  <span className="text-[11px] font-bold text-teal-900/80 uppercase tracking-wider shrink-0 flex items-center gap-1">
+                    <HelpCircle className="w-3.5 h-3.5 text-teal-600" />
+                    Quick Prompts:
+                  </span>
+                  {chips.map((chip, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => handleSendCoachMessage(undefined, chip)}
+                      className="text-xs px-3 py-1.5 rounded-full bg-white hover:bg-teal-100/90 text-teal-900 font-medium border border-teal-200/80 whitespace-nowrap transition-all shadow-2xs hover:scale-[1.02] cursor-pointer"
+                    >
+                      {chip}
+                    </button>
+                  ))}
+                </div>
+              );
+            })()}
+
+            {/* Coach Chat Messages Container */}
+            <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-7 sm:py-6 space-y-4 bg-slate-50/30">
               {coachMessages.map((msg, i) => (
                 <div
                   key={i}
                   className={`flex ${msg.sender === 'student' ? 'justify-end' : 'justify-start'}`}
                 >
+                  {msg.sender === 'coach' && (
+                    <div className="w-8 h-8 rounded-full bg-teal-100/80 border border-teal-200/80 flex items-center justify-center p-1 mr-2.5 mt-1 shrink-0">
+                      <img src="/BFH-logo.svg" alt="Pedia" className="w-5 h-5 object-contain" />
+                    </div>
+                  )}
                   <div
-                    className={`max-w-[85%] p-3.5 rounded-[20px] text-xs sm:text-sm leading-relaxed ${
+                    className={`max-w-[90%] sm:max-w-[80%] p-4 sm:p-5 rounded-2xl shadow-xs ${
                       msg.sender === 'student'
-                        ? 'bg-teal-600 text-white rounded-br-none'
-                        : 'bg-teal-50 text-teal-950 rounded-bl-none'
+                        ? 'bg-linear-to-r from-teal-700 to-teal-800 text-white rounded-tr-none font-medium text-xs sm:text-sm leading-relaxed whitespace-pre-line'
+                        : 'bg-white text-teal-950 border border-teal-100/90 rounded-tl-none font-normal'
                     }`}
                   >
-                    {msg.text}
+                    {msg.sender === 'coach' ? renderCoachMessageHtml(msg.text) : msg.text}
                   </div>
                 </div>
               ))}
               {isCoachThinking && (
-                <div className="text-xs text-teal-700 italic">Pedia is checking lesson guidance...</div>
+                <div className="flex items-center gap-3 p-3.5 max-w-[80%] rounded-2xl bg-white border border-teal-100 shadow-2xs">
+                  <div className="w-7 h-7 rounded-full bg-teal-100 flex items-center justify-center p-1 shrink-0">
+                    <img src="/BFH-logo.svg" alt="Pedia" className="w-4 h-4 object-contain animate-spin" />
+                  </div>
+                  <div className="text-xs text-teal-800 font-medium flex items-center gap-1.5">
+                    <span>Pedia is reviewing clinical lesson guidance</span>
+                    <span className="flex gap-1">
+                      <span className="w-1.5 h-1.5 bg-teal-600 rounded-full animate-bounce [animation-delay:0ms]" />
+                      <span className="w-1.5 h-1.5 bg-teal-600 rounded-full animate-bounce [animation-delay:150ms]" />
+                      <span className="w-1.5 h-1.5 bg-teal-600 rounded-full animate-bounce [animation-delay:300ms]" />
+                    </span>
+                  </div>
+                </div>
               )}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Coach Input Box */}
-            <form onSubmit={handleSendCoachMessage} className="flex items-center gap-2 pt-2">
-              <input
-                type="text"
-                value={coachInput}
-                onChange={(e) => setCoachInput(e.target.value)}
-                placeholder="Ask about terms or concepts in this lesson..."
-                className="flex-1 px-4 py-3 rounded-full bg-teal-50 text-xs sm:text-sm text-teal-950 outline-none"
-              />
-              <button
-                type="submit"
-                className="p-3 rounded-full bg-orange-500 hover:bg-orange-600 text-white transition-colors"
-                aria-label="Send"
-              >
-                <Send className="w-4 h-4" />
-              </button>
-            </form>
+            <div className="p-4 sm:p-5 border-t border-teal-100 bg-white shrink-0">
+              <form onSubmit={(e) => handleSendCoachMessage(e)} className="flex items-center gap-2 sm:gap-3">
+                <input
+                  type="text"
+                  value={coachInput}
+                  onChange={(e) => setCoachInput(e.target.value)}
+                  placeholder={`Ask Pedia about terms or concepts in "${activeLesson.title}"...`}
+                  disabled={isCoachThinking}
+                  className="flex-1 px-4 sm:px-5 py-3.5 rounded-full bg-teal-50/70 border border-teal-200/80 text-xs sm:text-sm text-teal-950 outline-none focus:border-teal-500 focus:bg-white focus:ring-3 focus:ring-teal-500/15 transition-all placeholder:text-teal-900/50"
+                />
+                <button
+                  type="submit"
+                  disabled={!coachInput.trim() || isCoachThinking}
+                  className="p-3.5 sm:px-6 sm:py-3.5 rounded-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-bold text-xs sm:text-sm transition-all shadow-sm hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center gap-2 shrink-0"
+                  aria-label="Send Message"
+                >
+                  <span className="hidden sm:inline">Ask Coach</span>
+                  <Send className="w-4 h-4" />
+                </button>
+              </form>
+              <div className="mt-2 text-[11px] text-teal-900/60 text-center flex items-center justify-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-teal-600 inline" />
+                <span>Grounded in WHO Nurturing Care Framework & AAP Pediatric Guidelines</span>
+              </div>
+            </div>
           </div>
         </div>
       )}
