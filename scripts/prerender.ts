@@ -6,8 +6,8 @@ const ROOT_DIR = process.cwd();
 const DIST_DIR = path.join(ROOT_DIR, 'dist');
 const CONTENT_DIR = path.join(ROOT_DIR, 'content', 'blog');
 
-// Single source of truth for site domain (auto-detects custom domain from Netlify URL or VITE_SITE_URL)
-const SITE_URL = (process.env.VITE_SITE_URL || process.env.URL || 'https://babyfirsthealth.netlify.app').replace(/\/+$/, '');
+// Single source of truth for site domain (defaults to official custom domain)
+const SITE_URL = (process.env.VITE_SITE_URL || 'https://babyfirsthealth.com').replace(/\/+$/, '');
 const SITE_BRAND = 'Baby First Health';
 
 interface Source {
