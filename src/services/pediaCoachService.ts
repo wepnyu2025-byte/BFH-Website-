@@ -260,6 +260,170 @@ export function getSuggestedQuestions(lesson: CourseLesson, module?: CourseModul
     ];
   }
 
+  // Module 7: Play & Early Learning topics
+  if (title.includes('what is play') || title.includes('free play') || title.includes('guided play')) {
+    return [
+      'What is the difference between free play, guided play, and structured activities?',
+      'Why does research identify guided play as the most effective mode for early learning?',
+      'How does play build core executive function skills in the brain?'
+    ];
+  }
+
+  if (title.includes('household object') || title.includes('everyday object') || content.includes('cardboard')) {
+    return [
+      'Why do open-ended household objects stimulate more creativity than electronic toys?',
+      'What safety checks (like the choking roll test) are essential for everyday play items?',
+      'What are practical examples of high-value play using clean cups and boxes?'
+    ];
+  }
+
+  if (title.includes('scaffolding') || title.includes('child-led') || content.includes('wonder question')) {
+    return [
+      'What does scaffolding look like when supporting a child with building blocks?',
+      'What is the difference between an expanding wonder question and a constricting test question?',
+      'Why should adults resist the urge to immediately fix a child’s collapsing tower?'
+    ];
+  }
+
+  if (title.includes('ngozi') || content.includes('douala') || content.includes('lagos')) {
+    return [
+      'What does Ngozi and Blessing’s story in Lagos teach us about zero-cost early learning?',
+      'How does sorting bottle caps and singing traditional songs build elite cognitive skills?',
+      'Why should parents not feel guilty about not buying expensive imported electronic toys?'
+    ];
+  }
+
+  // Module 8: Creating a Supportive Environment topics
+  if (title.includes('supportive environment') || title.includes('child a vs') || content.includes('child a')) {
+    return [
+      'Why is Child B’s modest environment developmentally superior to Child A’s high-tech room?',
+      'What are the core elements that define a genuinely supportive early childhood environment?',
+      'How do responsive relationships buffer children from economic limitations?'
+    ];
+  }
+
+  if (title.includes('safety') || title.includes('hazard') || content.includes('choking') || content.includes('poison')) {
+    return [
+      'What are the top 5 household safety hazards for children aged 0–5?',
+      'How can families childproof cooking areas and water storage in African compounds?',
+      'Why should medicines, detergents, and kerosene never be stored in repurposed beverage bottles?'
+    ];
+  }
+
+  if (title.includes('routine') || title.includes('predictab') || content.includes('bedtime routine')) {
+    return [
+      'How do predictable daily routines reduce anxiety and emotional meltdowns in young children?',
+      'What is an ideal evening bedtime routine for a toddler or preschooler?',
+      'How can working parents maintain consistency across multiple caregivers?'
+    ];
+  }
+
+  if (title.includes('overstimulation') || title.includes('stimulation') || title.includes('calm space')) {
+    return [
+      'What are the physiological signs of sensory overstimulation in toddlers?',
+      'How can a caregiver create a quiet, low-sensory calming corner in a busy household?',
+      'Why does constant background noise and television impair attention span?'
+    ];
+  }
+
+  // Module 9: Supporting Healthy Development topics
+  if (title.includes('healthy development') || title.includes('everyday web') || content.includes('interconnected web')) {
+    return [
+      'Why is early childhood development described as an interconnected ecosystem?',
+      'How does adequate nutrition directly empower cognitive problem-solving?',
+      'What are the 8 everyday foundations required for holistic child thriving?'
+    ];
+  }
+
+  if (title.includes('responsive feeding') || title.includes('feeding practice') || content.includes('fullness cue')) {
+    return [
+      'What is responsive feeding and how do caregivers recognize infant satiety cues?',
+      'Why should adults never use television or smartphones to distract toddlers into eating?',
+      'How does the Satter Division of Responsibility resolve mealtime power struggles?'
+    ];
+  }
+
+  if (title.includes('picky eating') || title.includes('neophobia') || content.includes('10 to 15 exposures')) {
+    return [
+      'Why is food neophobia considered a biologically normal phase between 18 and 36 months?',
+      'How should parents introduce unfamiliar vegetables without causing mealtime battles?',
+      'What are the clinical red flags that distinguish normal picky eating from growth faltering?'
+    ];
+  }
+
+  if (title.includes('mvpa') || title.includes('movement guideline') || content.includes('180 minutes')) {
+    return [
+      'What are the WHO physical activity recommendations for children aged 1 to 4 years?',
+      'Why must non-mobile awake infants receive at least 30 minutes of tummy time daily?',
+      'What are the physiological risks of prolonged sedentary restraint in high chairs or strollers?'
+    ];
+  }
+
+  if (title.includes('hygiene') || title.includes('handwashing') || content.includes('clean water')) {
+    return [
+      'What are the four critical moments for handwashing in early childhood care?',
+      'Why are feeding bottles and rubber teats hazardous vectors for recurrent infant diarrhea?',
+      'How can families ensure drinking water safety and early pediatric oral hygiene?'
+    ];
+  }
+
+  if (title.includes('immunization') || title.includes('preventive health') || content.includes('road to health')) {
+    return [
+      'What childhood diseases are prevented by routine infant immunizations (BCG, Pentavalent, PCV)?',
+      'How does the Road-to-Health growth chart detect early stunting and wasting?',
+      'What are the acute pediatric danger signs requiring immediate hospital emergency care?'
+    ];
+  }
+
+  // Module 10: Recognizing Developmental Concerns topics
+  if (title.includes('developmental concern') || title.includes('milestone vs') || content.includes('developmental variation')) {
+    return [
+      'What is the fundamental difference between a developmental milestone and a diagnostic exam?',
+      'How does normal developmental variation differ from a genuine developmental concern?',
+      'Why does an isolated off-day or missed milestone not mean a child has a disorder?'
+    ];
+  }
+
+  if (title.includes('observing development') || title.includes('objective observation') || content.includes('creating fear')) {
+    return [
+      'How do objective behavioral notes differ from subjective labels like "lazy" or "aggressive"?',
+      'What are the key elements of a 6-point objective observation record?',
+      'How can educators discuss developmental observations with parents without causing alarm?'
+    ];
+  }
+
+  if (title.includes('warning sign') || title.includes('red flag') || content.includes('asymmetry')) {
+    return [
+      'What are the primary motor red flags in infancy and early childhood?',
+      'Why is persistent body asymmetry before 12 months a reason for clinical referral?',
+      'Why must hearing always be evaluated when expressive or receptive speech is delayed?'
+    ];
+  }
+
+  if (title.includes('loss of previously') || title.includes('regression') || content.includes('developmental regression')) {
+    return [
+      'Why is developmental regression (loss of previously mastered skills) an urgent clinical red flag?',
+      'How does developmental regression differ from slow developmental progress?',
+      'What steps should a family take immediately if a toddler stops speaking words they previously used?'
+    ];
+  }
+
+  if (title.includes('monitoring, screening') || title.includes('surveillance') || content.includes('aap screening schedule')) {
+    return [
+      'What are the distinct differences between developmental monitoring, screening, and assessment?',
+      'At what ages does the AAP recommend formal developmental and autism screening?',
+      'Can an early childhood teacher or parent provide a medical diagnosis using a screening tool?'
+    ];
+  }
+
+  if (title.includes('tunde') || content.includes('he will talk when he is ready')) {
+    return [
+      'Why was the common belief that "boys always talk late" problematic in Tunde’s case study?',
+      'How did Tunde’s healthcare provider distinguish multilingualism from genuine speech delay?',
+      'What immediate supportive strategies can families use at home while awaiting audiology results?'
+    ];
+  }
+
   // Module 1 / General Foundations defaults
   return [
     'What are the key learning principles in this lesson?',

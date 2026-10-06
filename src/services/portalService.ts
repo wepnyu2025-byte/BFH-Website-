@@ -14,6 +14,7 @@ import {
 import { db } from '../config/firebase';
 import {
   StudentProfile,
+  EnrollmentStatus,
   PaymentClaimData,
   PortalSettings,
   CourseModule,
@@ -35,6 +36,20 @@ export function generateSecureStudentId(programCode: string = 'ECD'): string {
     result += UNAMBIGUOUS_CHARS[array[i] % UNAMBIGUOUS_CHARS.length];
   }
   return `BFH-${programCode.toUpperCase()}-${result}`;
+}
+
+export function generateSecureAccessCode(prefix: string = 'BFH'): string {
+  let part1 = '';
+  let part2 = '';
+  const array = new Uint8Array(8);
+  crypto.getRandomValues(array);
+  for (let i = 0; i < 4; i++) {
+    part1 += UNAMBIGUOUS_CHARS[array[i] % UNAMBIGUOUS_CHARS.length];
+  }
+  for (let i = 4; i < 8; i++) {
+    part2 += UNAMBIGUOUS_CHARS[array[i] % UNAMBIGUOUS_CHARS.length];
+  }
+  return `${prefix}-ACC-${part1}-${part2}`;
 }
 
 export function generateVerificationToken(): string {
@@ -61,25 +76,55 @@ export async function getPortalSettings(): Promise<PortalSettings> {
     const docRef = doc(db, 'settings', 'global');
     const snap = await getDoc(docRef);
     if (snap.exists()) {
-      return { ...DEFAULT_SETTINGS, ...(snap.data() as PortalSettings) };
+      const data = snap.data() as PortalSettings;
+      const merged = { ...DEFAULT_SETTINGS, ...data };
+      try {
+        localStorage.setItem('bfh_portal_settings', JSON.stringify(merged));
+      } catch {}
+      return merged;
     }
   } catch (err) {
     console.warn('Using default settings fallback:', err);
   }
+
+  try {
+    const local = localStorage.getItem('bfh_portal_settings');
+    if (local) {
+      return { ...DEFAULT_SETTINGS, ...JSON.parse(local) };
+    }
+  } catch {}
+
   return DEFAULT_SETTINGS;
 }
 
 export async function updatePortalSettings(newSettings: Partial<PortalSettings>): Promise<void> {
-  const docRef = doc(db, 'settings', 'global');
-  await setDoc(docRef, newSettings, { merge: true });
+  try {
+    const docRef = doc(db, 'settings', 'global');
+    await setDoc(docRef, newSettings, { merge: true });
+  } catch (e) {
+    console.warn('Firestore settings update fallback:', e);
+  }
+
+  try {
+    const current = await getPortalSettings();
+    const merged = { ...current, ...newSettings };
+    localStorage.setItem('bfh_portal_settings', JSON.stringify(merged));
+    if (newSettings.promoConfig) {
+      localStorage.setItem('bfh_promo_config', JSON.stringify(newSettings.promoConfig));
+    }
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('storage'));
+    }
+  } catch {}
 }
 
-// Student Registration
+// Student Registration with paired Access Code
 export async function registerStudentLocallyOrFirestore(
-  formData: Omit<StudentProfile, 'id' | 'studentId' | 'status' | 'isEmailVerified' | 'createdAt' | 'updatedAt'>,
+  formData: Omit<StudentProfile, 'id' | 'studentId' | 'status' | 'isEmailVerified' | 'createdAt' | 'updatedAt' | 'pairedAccessCode' | 'isBlocked' | 'blockReason'>,
   authUid?: string
-): Promise<{ student: StudentProfile; studentId: string }> {
+): Promise<{ student: StudentProfile; studentId: string; pairedAccessCode: string }> {
   const studentIdCode = generateSecureStudentId('ECD');
+  const pairedAccessCode = generateSecureAccessCode('BFH');
   const now = new Date().toISOString();
   const uid = authUid || `temp_${Date.now()}`;
 
@@ -87,8 +132,10 @@ export async function registerStudentLocallyOrFirestore(
     ...formData,
     id: uid,
     studentId: studentIdCode,
+    pairedAccessCode,
     isEmailVerified: true,
     status: 'REGISTERED',
+    isBlocked: false,
     createdAt: now,
     updatedAt: now,
   };
@@ -96,6 +143,18 @@ export async function registerStudentLocallyOrFirestore(
   try {
     // Record student profile in Firestore
     await setDoc(doc(db, 'students', uid), student);
+
+    // Record paired access code in Firestore
+    const accessCodeRecord: AccessCode = {
+      id: pairedAccessCode,
+      code: pairedAccessCode,
+      programId: DEFAULT_PROGRAM.id,
+      programTitle: DEFAULT_PROGRAM.title,
+      status: 'AVAILABLE',
+      createdAt: now,
+      notes: `Auto-paired to ${formData.fullName} (${studentIdCode})`,
+    };
+    await setDoc(doc(db, 'accessCodes', pairedAccessCode), accessCodeRecord);
 
     // Record consent record
     const consentId = `consent_${uid}_${Date.now()}`;
@@ -126,9 +185,28 @@ export async function registerStudentLocallyOrFirestore(
   try {
     localStorage.setItem(`bfh_student_${studentIdCode}`, JSON.stringify(student));
     localStorage.setItem('bfh_current_student', JSON.stringify(student));
+
+    // Save student to all students list in localStorage
+    const all = JSON.parse(localStorage.getItem('bfh_all_students') || '[]');
+    const filtered = all.filter((s: any) => s.studentId !== studentIdCode);
+    filtered.unshift(student);
+    localStorage.setItem('bfh_all_students', JSON.stringify(filtered));
+
+    // Save access code to local access codes list
+    const localCodes = JSON.parse(localStorage.getItem('bfh_access_codes') || '[]');
+    localCodes.unshift({
+      code: pairedAccessCode,
+      programId: DEFAULT_PROGRAM.id,
+      programTitle: DEFAULT_PROGRAM.title,
+      batchTag: 'PAIRED_REGISTRATION',
+      isRedeemed: false,
+      createdAt: now,
+      notes: `Auto-paired to ${formData.fullName} (${studentIdCode})`,
+    });
+    localStorage.setItem('bfh_access_codes', JSON.stringify(localCodes));
   } catch {}
 
-  return { student, studentId: studentIdCode };
+  return { student, studentId: studentIdCode, pairedAccessCode };
 }
 
 // Submit Payment Claim
@@ -693,4 +771,168 @@ export async function deleteStudentProfileRecord(studentUid: string): Promise<vo
     console.warn('Firestore deleteStudentProfileRecord fallback:', err);
   }
 }
+
+// Student: Retrieve paired access code using Student ID and Email
+export async function retrievePairedAccessCode(
+  inputStudentId: string,
+  inputEmail: string,
+  inputName?: string
+): Promise<{ success: boolean; accessCode?: string; student?: StudentProfile; error?: string }> {
+  const cleanId = (inputStudentId || '').trim().toUpperCase();
+  const cleanEmail = (inputEmail || '').trim().toLowerCase();
+
+  if (!cleanId || !cleanEmail) {
+    return {
+      success: false,
+      error: 'Student ID and Email Address are required to retrieve your access code.',
+    };
+  }
+
+  let student: StudentProfile | null = null;
+
+  // 1. Check Firestore by studentId
+  try {
+    const q = query(collection(db, 'students'), where('studentId', '==', cleanId));
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      const found = snap.docs[0].data() as StudentProfile;
+      if (found.email && found.email.toLowerCase().trim() === cleanEmail) {
+        student = found;
+      }
+    }
+  } catch (err) {
+    console.warn('Firestore retrievePairedAccessCode fallback:', err);
+  }
+
+  // 2. Check localStorage
+  if (!student) {
+    try {
+      const cached = localStorage.getItem(`bfh_student_${cleanId}`);
+      if (cached) {
+        const parsed = JSON.parse(cached) as StudentProfile;
+        if (parsed.email && parsed.email.toLowerCase().trim() === cleanEmail) {
+          student = parsed;
+        }
+      }
+      if (!student) {
+        const allSaved = localStorage.getItem('bfh_all_students');
+        if (allSaved) {
+          const allList = JSON.parse(allSaved) as StudentProfile[];
+          const found = allList.find(
+            (s) => s.studentId.toUpperCase().trim() === cleanId && s.email.toLowerCase().trim() === cleanEmail
+          );
+          if (found) student = found;
+        }
+      }
+    } catch {}
+  }
+
+  if (!student) {
+    return {
+      success: false,
+      error: 'No registered student found matching this Student ID and Email. Please check your credentials or register on the apply page first.',
+    };
+  }
+
+  // 3. Check if account is blocked or suspended
+  if (student.isBlocked || student.status === 'SUSPENDED') {
+    return {
+      success: false,
+      error:
+        student.blockReason ||
+        'Account Suspended: This student account has been blocked due to violation of our terms and policies (unverified payment). Please contact administration.',
+    };
+  }
+
+  // 4. Ensure student has an access code
+  let code = student.pairedAccessCode;
+  if (!code) {
+    code = generateSecureAccessCode('BFH');
+    student.pairedAccessCode = code;
+    try {
+      await updateDoc(doc(db, 'students', student.id), { pairedAccessCode: code });
+    } catch {}
+    try {
+      localStorage.setItem(`bfh_student_${student.studentId}`, JSON.stringify(student));
+    } catch {}
+  }
+
+  return {
+    success: true,
+    accessCode: code,
+    student,
+  };
+}
+
+// Admin: Block / Suspend or Unblock Student Account with 1-click icon
+export async function toggleBlockStudent(
+  studentIdOrUid: string,
+  isBlocked: boolean,
+  reason: string = 'Violation of terms and policies (unverified payment)'
+): Promise<{ success: boolean; error?: string }> {
+  const now = new Date().toISOString();
+  try {
+    let studentRef = doc(db, 'students', studentIdOrUid);
+    let snap = await getDoc(studentRef);
+
+    if (!snap.exists()) {
+      const q = query(collection(db, 'students'), where('studentId', '==', studentIdOrUid));
+      const querySnap = await getDocs(q);
+      if (!querySnap.empty) {
+        studentRef = doc(db, 'students', querySnap.docs[0].id);
+        snap = querySnap.docs[0];
+      }
+    }
+
+    const newStatus: EnrollmentStatus = isBlocked ? 'SUSPENDED' : 'ACTIVE';
+
+    if (snap.exists()) {
+      await updateDoc(studentRef, {
+        isBlocked,
+        status: newStatus,
+        blockReason: isBlocked ? reason : null,
+        updatedAt: now,
+      });
+    }
+
+    // Update in local cache
+    try {
+      const allSaved = localStorage.getItem('bfh_all_students');
+      if (allSaved) {
+        const list = JSON.parse(allSaved) as StudentProfile[];
+        const updated = list.map((s) => {
+          if (s.id === studentIdOrUid || s.studentId === studentIdOrUid) {
+            return {
+              ...s,
+              isBlocked,
+              status: newStatus,
+              blockReason: isBlocked ? reason : undefined,
+            };
+          }
+          return s;
+        });
+        localStorage.setItem('bfh_all_students', JSON.stringify(updated));
+      }
+
+      const single = localStorage.getItem(`bfh_student_${studentIdOrUid}`);
+      if (single) {
+        const parsed = JSON.parse(single);
+        parsed.isBlocked = isBlocked;
+        parsed.status = newStatus;
+        parsed.blockReason = isBlocked ? reason : undefined;
+        localStorage.setItem(`bfh_student_${studentIdOrUid}`, JSON.stringify(parsed));
+      }
+    } catch {}
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('storage'));
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    console.error('Toggle block student error:', err);
+    return { success: false, error: err.message || 'Failed to update student account status' };
+  }
+}
+
 

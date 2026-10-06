@@ -15,12 +15,30 @@ import { Reveal } from '../components/Reveal';
 import { SmartImage } from '../components/SmartImage';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
 import { CERTIFICATIONS_CONTENT } from '../content/content';
+import { getPortalSettings } from '../services/portalService';
+import { PortalSettings } from '../types/studentPortal';
+import { DEFAULT_SETTINGS } from '../data/portalDefaults';
 
 type Currency = 'ngn' | 'fcfa' | 'usd';
 
 export const Certifications: React.FC = () => {
   const [currency, setCurrency] = useState<Currency>('usd');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [settings, setSettings] = useState<PortalSettings>(DEFAULT_SETTINGS);
+
+  // Sync portal settings and promo configuration
+  useEffect(() => {
+    const syncSettings = () => {
+      getPortalSettings().then(setSettings);
+    };
+    syncSettings();
+    window.addEventListener('storage', syncSettings);
+    window.addEventListener('focus', syncSettings);
+    return () => {
+      window.removeEventListener('storage', syncSettings);
+      window.removeEventListener('focus', syncSettings);
+    };
+  }, []);
 
   // Auto-detect user currency based on timezone or locale
   useEffect(() => {
@@ -59,6 +77,60 @@ export const Certifications: React.FC = () => {
   const toggleExpand = (id: string) => {
     setExpandedId((prev) => (prev === id ? null : id));
   };
+
+  const promo = settings?.promoConfig;
+  const isPromoActive = Boolean(
+    promo?.isActive &&
+    (!promo.expiresAt || new Date(promo.expiresAt).getTime() > Date.now())
+  );
+
+  const getPromoPrice = (isFlagship = false) => {
+    if (!isPromoActive) return null;
+    let origNum = 30000;
+    let promoNum = promo?.promoPriceXAF || 10000;
+    let orig = '';
+    let origK = '';
+    let pr = '';
+
+    if (currency === 'fcfa') {
+      origNum = isFlagship ? 100000 : (promo?.originalPriceXAF || 30000);
+      promoNum = isFlagship ? ((promo?.promoPriceXAF || 10000) * 3) : (promo?.promoPriceXAF || 10000);
+      orig = `${origNum.toLocaleString()} FCFA`;
+      origK = `${origNum >= 1000 ? `${origNum / 1000}k` : origNum} FCFA`;
+      pr = `${promoNum.toLocaleString()} FCFA`;
+    } else if (currency === 'ngn') {
+      origNum = isFlagship ? 250000 : (promo?.originalPriceNGN || 75000);
+      promoNum = isFlagship ? ((promo?.promoPriceNGN || 25000) * 3) : (promo?.promoPriceNGN || 25000);
+      orig = `₦${origNum.toLocaleString()}`;
+      origK = `₦${origNum >= 1000 ? `${origNum / 1000}k` : origNum}`;
+      pr = `₦${promoNum.toLocaleString()}`;
+    } else {
+      origNum = isFlagship ? 165 : (promo?.originalPriceUSD || 50);
+      promoNum = isFlagship ? ((promo?.promoPriceUSD || 18) * 3) : (promo?.promoPriceUSD || 18);
+      orig = `$${origNum}`;
+      origK = `$${origNum}`;
+      pr = `$${promoNum}`;
+    }
+
+    const discountPercent = Math.round(((origNum - promoNum) / origNum) * 100);
+
+    return {
+      original: orig,
+      originalK: origK,
+      promo: pr,
+      discountPercent: discountPercent > 0 ? discountPercent : 67,
+    };
+  };
+
+  const getRemainingPromoDaysText = () => {
+    if (!promo?.expiresAt) return '14 Days Left';
+    const diff = new Date(promo.expiresAt).getTime() - Date.now();
+    if (diff <= 0) return '14 Days Left';
+    const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    return `${days} Days Left`;
+  };
+
+  const promoBadgeDaysText = isPromoActive ? getRemainingPromoDaysText() : '14 Days Left';
 
   return (
     <div className="relative w-full">
@@ -168,39 +240,76 @@ export const Certifications: React.FC = () => {
                 {CERTIFICATIONS_CONTENT.programs.map((program, idx) => {
                   const isOpen = expandedId === program.id;
                   const priceDisplay = program.price[currency];
+                  const promoPriceInfo = getPromoPrice(program.isFlagship);
 
-                  // Premium Sleek Gradient Card for Flagship CIF Program
+                  // Premium Sleek Gradient Card for Flagship BCCP Program
                   if (program.isFlagship) {
                     return (
                       <Reveal key={program.id} type="up" delay={idx * 60}>
                         <div
-                          className="bg-gradient-to-br from-teal-900 via-teal-800 to-teal-950 text-white rounded-[32px] p-6 sm:p-8 md:p-12 transition-transform duration-300 hover:-translate-y-1.5"
+                          className={`relative bg-gradient-to-br from-teal-900 via-teal-800 to-teal-950 text-white rounded-[32px] p-6 sm:p-8 md:p-12 transition-transform duration-300 hover:-translate-y-1.5 ${
+                            isPromoActive ? 'pt-16 sm:pt-20 md:pt-20 lg:pt-22' : 'pt-8 md:pt-12'
+                          }`}
                         >
-                          {/* Always-visible Header */}
-                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
-                            <div className="space-y-2.5 flex-1 min-w-0">
-                              <span className="inline-block px-3.5 py-1 rounded-full bg-orange-500/20 text-orange-400 font-body text-xs font-bold uppercase tracking-wider">
-                                Flagship All-In-One Program
+                          {/* Top Row: Discount badge + 14 Days Left vertically centered on the same symmetry line */}
+                          {isPromoActive && (
+                            <div className="absolute top-5 sm:top-7 md:top-8 left-6 sm:left-8 md:left-12 z-10 flex items-center gap-2.5">
+                              {promoPriceInfo && (
+                                <span className="inline-flex items-center px-3 py-1 rounded-full bg-orange-500 text-white font-body text-xs font-bold tracking-wide shrink-0">
+                                  {promoPriceInfo.discountPercent}% OFF
+                                </span>
+                              )}
+                              <span className="inline-flex items-center gap-1.5 text-orange-300 font-body text-xs font-normal leading-none">
+                                <span className="relative flex h-2 w-2 shrink-0">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-400"></span>
+                                </span>
+                                <span className="translate-y-[0.5px]">{promoBadgeDaysText}</span>
                               </span>
+                            </div>
+                          )}
 
+                          {/* Always-visible Header */}
+                          <div className="flex flex-col md:flex-row md:items-start justify-between gap-5">
+                            <div className="space-y-2 flex-1 min-w-0 pr-0 md:pr-4">
                               <h3 className="font-headline font-extrabold text-white text-xl sm:text-2xl md:text-3xl tracking-tight leading-snug break-words">
                                 {program.title}
                               </h3>
 
-                              <p className="font-body text-sm sm:text-base md:text-lg text-teal-100/90 max-w-2xl leading-relaxed [text-wrap:pretty]">
+                              {program.badge && (
+                                <p className="font-body text-xs text-teal-200/60 font-normal tracking-wide">
+                                  {program.badge}
+                                </p>
+                              )}
+
+                              <p className="font-body text-sm sm:text-base md:text-lg text-teal-100/90 max-w-2xl leading-relaxed [text-wrap:pretty] pt-0.5">
                                 {program.subtitle}
                               </p>
                             </div>
 
-                            {/* Price and Modules Toggle (Never overflows) */}
+                            {/* Inline Prices: Slashed original with k suffix, promo full figure, responsive font sizing */}
                             <div className="flex items-center justify-between md:flex-col md:items-end gap-3 shrink-0 pt-2 md:pt-0">
-                              <span className="font-headline font-extrabold text-orange-400 text-2xl sm:text-3xl md:text-4xl tracking-tight">
-                                {priceDisplay}
-                              </span>
+                              {isPromoActive && promoPriceInfo ? (
+                                <div className="flex items-baseline gap-2 sm:gap-2.5 flex-wrap">
+                                  {/* Slashed Original price with 'k' suffix */}
+                                  <span className="line-through text-teal-200/60 text-xs sm:text-sm md:text-base font-normal">
+                                    {promoPriceInfo.originalK}
+                                  </span>
+
+                                  {/* Main Promo full figure */}
+                                  <span className="font-headline font-extrabold text-orange-400 text-xl sm:text-2xl md:text-3xl tracking-tight leading-tight whitespace-nowrap">
+                                    {promoPriceInfo.promo}
+                                  </span>
+                                </div>
+                              ) : (
+                                <span className="font-headline font-extrabold text-orange-400 text-xl sm:text-2xl md:text-3xl tracking-tight">
+                                  {priceDisplay}
+                                </span>
+                              )}
 
                               <button
                                 onClick={() => toggleExpand(program.id)}
-                                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-teal-800/90 hover:bg-teal-700 text-white font-body text-xs md:text-sm font-semibold transition-colors cursor-pointer shrink-0"
+                                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-teal-800/90 hover:bg-teal-700 text-white font-body text-xs md:text-sm font-semibold transition-colors cursor-pointer shrink-0 mt-1"
                                 aria-expanded={isOpen}
                               >
                                 <span>Modules</span>
@@ -241,7 +350,7 @@ export const Certifications: React.FC = () => {
                                 <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 bg-teal-800/30 rounded-[24px] p-5 md:p-6">
                                   <div className="space-y-1">
                                     <p className="font-headline font-bold text-white text-base md:text-lg">
-                                      Apply for Complete Integrated Family-care
+                                      Apply for Baby First Certified Childcare Professional (BCCP)
                                     </p>
                                     <p className="font-body text-xs md:text-sm text-teal-200/90">
                                       Fill in your official candidate details to register with our admissions desk.
@@ -270,29 +379,69 @@ export const Certifications: React.FC = () => {
                   return (
                     <Reveal key={program.id} type="up" delay={idx * 60}>
                       <div
-                        className="bg-white rounded-[32px] p-6 sm:p-8 md:p-10 transition-transform duration-300 hover:-translate-y-1.5"
+                        className={`relative bg-white rounded-[32px] p-6 sm:p-8 md:p-10 transition-transform duration-300 hover:-translate-y-1.5 ${
+                          isPromoActive ? 'pt-16 sm:pt-20 md:pt-20 lg:pt-22' : 'pt-8 md:pt-10'
+                        }`}
                       >
+                        {/* Top Row: Discount badge + 14 Days Left vertically centered on the same symmetry line */}
+                        {isPromoActive && (
+                          <div className="absolute top-5 sm:top-7 md:top-8 left-6 sm:left-8 md:left-10 z-10 flex items-center gap-2.5">
+                            {promoPriceInfo && (
+                              <span className="inline-flex items-center px-3 py-1 rounded-full bg-orange-500 text-white font-body text-xs font-bold tracking-wide shrink-0">
+                                {promoPriceInfo.discountPercent}% OFF
+                              </span>
+                            )}
+                            <span className="inline-flex items-center gap-1.5 text-orange-600 font-body text-xs font-normal leading-none">
+                              <span className="relative flex h-2 w-2 shrink-0">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                              </span>
+                              <span className="translate-y-[0.5px]">{promoBadgeDaysText}</span>
+                            </span>
+                          </div>
+                        )}
+
                         {/* Always-visible Header */}
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
-                          <div className="space-y-2.5 flex-1 min-w-0">
+                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-5">
+                          <div className="space-y-2 flex-1 min-w-0 pr-0 md:pr-4">
                             <h3 className="font-headline font-extrabold text-teal-900 text-xl md:text-2xl tracking-tight break-words">
                               {program.title}
                             </h3>
 
-                            <p className="font-body text-sm sm:text-base text-teal-950/80 max-w-2xl leading-relaxed [text-wrap:pretty]">
+                            {program.badge && (
+                              <p className="font-body text-xs text-teal-950/50 font-normal tracking-wide">
+                                {program.badge}
+                              </p>
+                            )}
+
+                            <p className="font-body text-sm sm:text-base text-teal-950/80 max-w-2xl leading-relaxed [text-wrap:pretty] pt-0.5">
                               {program.subtitle}
                             </p>
                           </div>
 
-                          {/* Price and Modules Toggle (Never overflows) */}
+                          {/* Inline Prices: Slashed original with k suffix, promo full figure, responsive font sizing */}
                           <div className="flex items-center justify-between md:flex-col md:items-end gap-3 shrink-0 pt-2 md:pt-0">
-                            <span className="font-headline font-extrabold text-teal-900 text-2xl md:text-3xl tracking-tight">
-                              {priceDisplay}
-                            </span>
+                            {isPromoActive && promoPriceInfo ? (
+                              <div className="flex items-baseline gap-2 sm:gap-2.5 flex-wrap">
+                                {/* Slashed Original price with 'k' suffix */}
+                                <span className="line-through text-teal-950/50 text-xs sm:text-sm md:text-base font-normal">
+                                  {promoPriceInfo.originalK}
+                                </span>
+
+                                {/* Main Promo full figure */}
+                                <span className="font-headline font-extrabold text-orange-500 text-xl sm:text-2xl md:text-3xl tracking-tight leading-tight whitespace-nowrap">
+                                  {promoPriceInfo.promo}
+                                </span>
+                              </div>
+                            ) : (
+                              <span className="font-headline font-extrabold text-teal-900 text-xl sm:text-2xl md:text-3xl tracking-tight">
+                                {priceDisplay}
+                              </span>
+                            )}
 
                             <button
                               onClick={() => toggleExpand(program.id)}
-                              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-teal-50 hover:bg-teal-100 text-teal-900 font-body text-xs md:text-sm font-semibold transition-colors cursor-pointer shrink-0"
+                              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-teal-50 hover:bg-teal-100 text-teal-900 font-body text-xs md:text-sm font-semibold transition-colors cursor-pointer shrink-0 mt-1"
                               aria-expanded={isOpen}
                             >
                               <span>Modules</span>

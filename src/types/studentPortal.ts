@@ -24,6 +24,9 @@ export interface StudentProfile {
   isEmailVerified: boolean;
   status: EnrollmentStatus;
   programId: string;
+  pairedAccessCode?: string;
+  isBlocked?: boolean;
+  blockReason?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -144,6 +147,20 @@ export interface AccessCode {
   notes?: string;
 }
 
+export interface PromoConfig {
+  isActive: boolean;
+  badgeText: string;
+  originalPriceXAF: number;
+  promoPriceXAF: number;
+  originalPriceNGN: number;
+  promoPriceNGN: number;
+  originalPriceUSD: number;
+  promoPriceUSD: number;
+  durationValue?: number;
+  durationUnit?: 'days' | 'weeks' | 'months';
+  expiresAt?: string;
+}
+
 export interface PortalSettings {
   paymentVerificationMode: PaymentVerificationMode;
   connectPayeLinkXAF: string;
@@ -152,6 +169,7 @@ export interface PortalSettings {
   selarProductLinkXAF: string;
   selarProductLinkNGN: string;
   selarProductLinkUSD: string;
+  selarBccpLink?: string;
   ecdCourseBannerUrl?: string;
   businessWhatsApp: string;
   allowedVideoHosts: string[];
@@ -160,6 +178,7 @@ export interface PortalSettings {
   autoIssueCertificates: boolean;
   refundPolicyVersion: string;
   refundPolicyContent: string;
+  promoConfig?: PromoConfig;
 }
 
 export interface ApiTestLog {

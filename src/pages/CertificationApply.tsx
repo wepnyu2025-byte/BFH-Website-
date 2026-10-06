@@ -5,11 +5,8 @@ import {
   Copy,
   Download,
   ExternalLink,
-  ShieldAlert,
-  ArrowRight,
-  BookOpen,
+  Upload,
   Check,
-  AlertCircle,
   KeyRound
 } from 'lucide-react';
 import { Container } from '../components/Container';
@@ -38,6 +35,8 @@ const ENGLISH_PROFICIENCY_LEVELS = [
 
 export const CertificationApply: React.FC = () => {
   const [searchParams] = useSearchParams();
+  const courseParam = searchParams.get('course');
+  const isBccp = courseParam === 'cif-certification' || courseParam === 'bccp';
 
   const [settings, setSettings] = useState<PortalSettings>(DEFAULT_SETTINGS);
   const [selectedCurrency, setSelectedCurrency] = useState<CurrencyCode>('XAF');
@@ -54,12 +53,13 @@ export const CertificationApply: React.FC = () => {
     englishProficiency: ENGLISH_PROFICIENCY_LEVELS[1] as string,
   });
 
-  const [policyRead, setPolicyRead] = useState(false);
-  const [policyAgreed, setPolicyAgreed] = useState(false);
-  const [showPolicyModal, setShowPolicyModal] = useState(false);
+  const [passportPhoto, setPassportPhoto] = useState<string | null>(null);
+  const [termsAgreed, setTermsAgreed] = useState(false);
+  const [identityConfirmed, setIdentityConfirmed] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [generatedStudentId, setGeneratedStudentId] = useState<string | null>(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [copiedId, setCopiedId] = useState(false);
 
   useEffect(() => {
@@ -73,10 +73,57 @@ export const CertificationApply: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (uploadEvent) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxDim = 400;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          }
+        } else {
+          if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          setPassportPhoto(dataUrl);
+        }
+      };
+      img.src = uploadEvent.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!policyAgreed) {
-      alert('Please read and agree to the Refund and Payment Policy before submitting.');
+    if (!termsAgreed) {
+      alert('Please read and agree to the terms and policies before registering.');
+      return;
+    }
+    if (!identityConfirmed) {
+      alert('Please confirm your verifiable identity and email address.');
+      return;
+    }
+    if (!passportPhoto) {
+      alert('Please upload a passport photograph.');
       return;
     }
 
@@ -92,10 +139,12 @@ export const CertificationApply: React.FC = () => {
         profession: formData.profession,
         academicLevel: formData.academicLevel,
         englishProficiency: formData.englishProficiency,
+        profilePhotoUrl: passportPhoto,
         programId: DEFAULT_PROGRAM.id,
       });
 
       setGeneratedStudentId(res.studentId);
+      setShowSuccessPopup(true);
     } catch (err) {
       console.error('Registration error:', err);
     } finally {
@@ -134,6 +183,9 @@ IMPORTANT: Save this document. You will need this Student ID to access your Stud
   };
 
   const getPaymentUrl = () => {
+    if (isBccp && settings.selarBccpLink) {
+      return settings.selarBccpLink;
+    }
     if (selectedCurrency === 'NGN') return settings.selarProductLinkNGN || settings.connectPayeLinkNGN;
     if (selectedCurrency === 'USD') return settings.selarProductLinkUSD || settings.connectPayeLinkUSD;
     return settings.selarProductLinkXAF || settings.connectPayeLinkXAF;
@@ -141,44 +193,66 @@ IMPORTANT: Save this document. You will need this Student ID to access your Stud
 
   return (
     <div className="pt-28 md:pt-36">
-      {/* Policy Modal */}
-      {showPolicyModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-teal-950/60 backdrop-blur-sm">
-          <div className="bg-white rounded-[32px] p-6 sm:p-8 max-w-[620px] w-full max-h-[85vh] flex flex-col space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-teal-50">
-              <span className="font-body font-semibold text-teal-900 text-lg">
-                Strict Refund & Payment Policy (v{settings.refundPolicyVersion})
+      {/* Success Pop-up Modal */}
+      {showSuccessPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-teal-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-[32px] p-6 sm:p-8 max-w-[520px] w-full shadow-2xl space-y-6 text-center relative border border-teal-100">
+            <div className="w-16 h-16 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center mx-auto">
+              <CheckCircle2 className="w-9 h-9" />
+            </div>
+
+            <div className="space-y-2">
+              <h2 className="font-body font-semibold text-teal-900 text-2xl">
+                Registration Successful!
+              </h2>
+              <p className="font-body text-sm font-normal text-teal-950/80 leading-relaxed">
+                Your official student profile has been created.
+              </p>
+            </div>
+
+            {/* Student ID Highlight Box */}
+            <div className="bg-teal-900 text-white rounded-2xl p-5 space-y-2 text-left">
+              <span className="text-[11px] uppercase tracking-wider text-teal-300 font-semibold block">
+                Official Student ID
               </span>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowPolicyModal(false);
-                  setPolicyRead(true);
-                }}
-                className="text-xs font-semibold px-3 py-1.5 rounded-full bg-teal-50 text-teal-900 hover:bg-teal-100"
-              >
-                Close & Confirm Read
-              </button>
-            </div>
-
-            <div className="overflow-y-auto space-y-3 font-body text-xs sm:text-sm text-teal-950/80 leading-relaxed pr-2">
-              <div className="bg-orange-50 text-orange-950 p-3 rounded-[16px] text-xs">
-                <strong>Important Notice:</strong> All course fees are strictly non-refundable digital intellectual property. Please read these terms carefully before proceeding.
+              <div className="font-mono text-2xl sm:text-3xl font-extrabold tracking-wider text-white">
+                {generatedStudentId}
               </div>
-              <p className="whitespace-pre-line">{settings.refundPolicyContent}</p>
             </div>
 
-            <div className="pt-2">
+            {/* Delivery Notification Notice */}
+            <div className="p-4 rounded-2xl bg-teal-50/80 text-left space-y-2 border border-teal-100/60">
+              <p className="font-body text-xs font-normal text-teal-950/80 leading-relaxed">
+                Your student ID will be sent via:
+              </p>
+              <ul className="space-y-1.5 text-xs text-teal-900 font-normal">
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal-600 shrink-0" />
+                  <span><strong>Email:</strong> {formData.email}</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal-600 shrink-0" />
+                  <span><strong>WhatsApp:</strong> {formData.whatsappNumber}</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-1">
               <button
                 type="button"
-                onClick={() => {
-                  setShowPolicyModal(false);
-                  setPolicyRead(true);
-                  setPolicyAgreed(true);
-                }}
-                className="w-full py-3 rounded-full bg-teal-600 hover:bg-teal-700 text-white font-body font-bold text-sm transition-colors"
+                onClick={handleCopyId}
+                className="flex-1 py-3 px-4 rounded-full bg-teal-50 hover:bg-teal-100 text-teal-900 font-semibold text-xs inline-flex items-center justify-center gap-2 transition-colors"
               >
-                I Have Read & Agree to These Terms
+                {copiedId ? <Check className="w-4 h-4 text-orange-500" /> : <Copy className="w-4 h-4" />}
+                <span>{copiedId ? 'Copied' : 'Copy Student ID'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowSuccessPopup(false)}
+                className="flex-1 py-3 px-4 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs transition-colors"
+              >
+                Continue to Tuition Payment
               </button>
             </div>
           </div>
@@ -344,6 +418,45 @@ IMPORTANT: Save this document. You will need this Student ID to access your Stud
                     </div>
                   </div>
 
+                  {/* Passport Photograph Upload */}
+                  <div>
+                    <label className="block text-xs font-semibold text-teal-900 mb-1.5">
+                      Passport Photograph *
+                    </label>
+                    {passportPhoto ? (
+                      <div className="flex items-center gap-4 p-3 rounded-2xl bg-teal-50 border border-teal-100">
+                        <img
+                          src={passportPhoto}
+                          alt="Passport"
+                          className="w-14 h-14 rounded-full object-cover border-2 border-teal-600 shadow-sm"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-teal-900 truncate">Passport photo attached</p>
+                          <p className="text-[11px] text-teal-950/60 font-normal">Ready for Student ID</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setPassportPhoto(null)}
+                          className="px-3 py-1.5 rounded-full text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 transition-colors"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="flex items-center justify-center gap-2 w-full px-4 py-3.5 rounded-full border-2 border-dashed border-teal-200 bg-teal-50/50 hover:bg-teal-50 text-teal-900 text-xs font-semibold cursor-pointer transition-colors">
+                        <Upload className="w-4 h-4 text-teal-600" />
+                        <span>Upload Passport Photo</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          required
+                          onChange={handlePhotoUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                  </div>
+
                   {/* Selected Program Box */}
                   <div className="p-4 rounded-[20px] bg-teal-50/80 space-y-2">
                     <span className="text-xs uppercase font-semibold text-teal-800 tracking-wider">
@@ -352,53 +465,78 @@ IMPORTANT: Save this document. You will need this Student ID to access your Stud
                     <h3 className="font-body font-semibold text-teal-900 text-base">
                       {DEFAULT_PROGRAM.title}
                     </h3>
-                    <p className="font-body text-xs text-teal-950/75 leading-relaxed">
-                      Tuition: 30,000 XAF • 75,000 NGN • $50 USD (Self-paced, clinical faculty feedback, accredited diploma).
-                    </p>
+                    {settings.promoConfig?.isActive ? (
+                      <p className="font-body text-xs text-teal-950/80 leading-relaxed font-normal">
+                        <span className="inline-block px-2 py-0.5 rounded-full bg-orange-100 text-orange-900 font-bold text-[10px] mr-1.5 uppercase">
+                          {settings.promoConfig.badgeText || 'PROMO'}
+                        </span>
+                        Tuition:{' '}
+                        <span className="line-through text-teal-950/50">30,000 XAF</span>{' '}
+                        <strong className="text-orange-600 font-bold">
+                          {settings.promoConfig.promoPriceXAF?.toLocaleString() || '10,000'} XAF
+                        </strong>{' '}
+                        •{' '}
+                        <span className="line-through text-teal-950/50">75,000 NGN</span>{' '}
+                        <strong className="text-orange-600 font-bold">
+                          {settings.promoConfig.promoPriceNGN?.toLocaleString() || '25,000'} NGN
+                        </strong>{' '}
+                        •{' '}
+                        <span className="line-through text-teal-950/50">$50</span>{' '}
+                        <strong className="text-orange-600 font-bold">
+                          ${settings.promoConfig.promoPriceUSD || 18} USD
+                        </strong>{' '}
+                        (Self-paced, clinical faculty feedback, accredited diploma).
+                      </p>
+                    ) : (
+                      <p className="font-body text-xs text-teal-950/75 leading-relaxed font-normal">
+                        Tuition: 30,000 XAF • 75,000 NGN • $50 USD (Self-paced, clinical faculty feedback, accredited diploma).
+                      </p>
+                    )}
                   </div>
 
-                  {/* Strict No-Refund Consent Control */}
-                  <div className="p-4 rounded-[20px] bg-orange-50/70 space-y-3">
-                    <div className="flex items-start gap-2.5">
-                      <ShieldAlert className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" />
-                      <div className="space-y-1">
-                        <span className="font-body font-semibold text-xs text-orange-950 block">
-                          Mandatory No-Refund Policy Agreement
-                        </span>
-                        <p className="font-body text-xs text-orange-950/80">
-                          All payments are final. You must review the policy before registering.
-                        </p>
-                      </div>
-                    </div>
+                  {/* Verification & Consent Checkboxes */}
+                  <div className="pt-2 space-y-3">
+                    <label className="flex items-start gap-2.5 cursor-pointer text-sm font-normal text-teal-950/80 select-none">
+                      <input
+                        type="checkbox"
+                        required
+                        checked={termsAgreed}
+                        onChange={(e) => setTermsAgreed(e.target.checked)}
+                        className="w-4 h-4 mt-0.5 rounded border-teal-300 text-teal-600 focus:ring-0 shrink-0 cursor-pointer"
+                      />
+                      <span className="leading-snug">
+                        I have read and agree to the{' '}
+                        <Link
+                          to="/terms"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-teal-700 underline font-normal hover:text-teal-900"
+                        >
+                          terms and policies
+                        </Link>.
+                      </span>
+                    </label>
 
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-1">
-                      <button
-                        type="button"
-                        onClick={() => setShowPolicyModal(true)}
-                        className="px-4 py-2 rounded-full bg-white text-xs font-semibold text-teal-900 hover:bg-teal-100 transition-colors"
-                      >
-                        Read Full Policy
-                      </button>
-
-                      <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-teal-900">
-                        <input
-                          type="checkbox"
-                          checked={policyAgreed}
-                          disabled={!policyRead}
-                          onChange={(e) => setPolicyAgreed(e.target.checked)}
-                          className="w-4 h-4 rounded text-orange-500 focus:ring-0"
-                        />
-                        <span>I have read & agree to the Refund Policy</span>
-                      </label>
-                    </div>
+                    <label className="flex items-start gap-2.5 cursor-pointer text-sm font-normal text-teal-950/80 select-none">
+                      <input
+                        type="checkbox"
+                        required
+                        checked={identityConfirmed}
+                        onChange={(e) => setIdentityConfirmed(e.target.checked)}
+                        className="w-4 h-4 mt-0.5 rounded border-teal-300 text-teal-600 focus:ring-0 shrink-0 cursor-pointer"
+                      />
+                      <span className="leading-snug">
+                        I confirm that I am a real person and have uploaded a real and verifiable identity and email address.
+                      </span>
+                    </label>
                   </div>
 
                   <button
                     type="submit"
-                    disabled={isSubmitting || !policyAgreed}
-                    className="w-full py-4 rounded-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-body font-bold text-base transition-all duration-300"
+                    disabled={isSubmitting || !termsAgreed || !identityConfirmed || !passportPhoto}
+                    className="w-full py-4 rounded-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-body font-bold text-base transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? 'Creating Student Profile...' : 'Complete Registration & Generate ID'}
+                    {isSubmitting ? 'Registering...' : 'Register'}
                   </button>
                 </form>
               </div>
@@ -429,8 +567,24 @@ IMPORTANT: Save this document. You will need this Student ID to access your Stud
                     </span>
                   </div>
 
-                  <div className="font-mono text-2xl sm:text-3xl font-extrabold tracking-wider text-white">
-                    {generatedStudentId}
+                  <div className="flex items-center gap-4">
+                    {passportPhoto && (
+                      <img
+                        src={passportPhoto}
+                        alt="Student Passport"
+                        className="w-16 h-16 rounded-full object-cover border-2 border-teal-400 shrink-0 shadow-md"
+                      />
+                    )}
+                    <div className="space-y-1 min-w-0">
+                      <div className="text-sm font-semibold text-teal-100 truncate">{formData.fullName}</div>
+                      <div className="font-mono text-xl sm:text-2xl md:text-3xl font-extrabold tracking-wider text-white truncate">
+                        {generatedStudentId}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-xs text-teal-200/90 font-normal pt-1 border-t border-teal-800/80">
+                    Your student ID has been sent via email to <strong className="text-white">{formData.email}</strong> and via WhatsApp to <strong className="text-white">{formData.whatsappNumber}</strong>.
                   </div>
 
                   <div className="flex flex-wrap gap-2 pt-2">
@@ -459,20 +613,41 @@ IMPORTANT: Save this document. You will need this Student ID to access your Stud
                     Select Tuition Currency:
                   </label>
                   <div className="grid grid-cols-3 gap-2">
-                    {(['XAF', 'NGN', 'USD'] as CurrencyCode[]).map((cur) => (
-                      <button
-                        key={cur}
-                        type="button"
-                        onClick={() => setSelectedCurrency(cur)}
-                        className={`py-3 rounded-[16px] text-xs font-bold transition-colors ${
-                          selectedCurrency === cur
-                            ? 'bg-teal-600 text-white'
-                            : 'bg-teal-50 text-teal-900 hover:bg-teal-100'
-                        }`}
-                      >
-                        {cur} {cur === 'XAF' ? '(30,000)' : cur === 'NGN' ? '(75,000)' : '($50)'}
-                      </button>
-                    ))}
+                    {(['XAF', 'NGN', 'USD'] as CurrencyCode[]).map((cur) => {
+                      const promoMultiplier = isBccp ? 3 : 1;
+                      const origXAF = isBccp ? '100,000' : '30,000';
+                      const origNGN = isBccp ? '250,000' : '75,000';
+                      const origUSD = isBccp ? '165' : '50';
+                      const promoXAF = ((settings.promoConfig?.promoPriceXAF || 10000) * promoMultiplier).toLocaleString();
+                      const promoNGN = ((settings.promoConfig?.promoPriceNGN || 25000) * promoMultiplier).toLocaleString();
+                      const promoUSD = (settings.promoConfig?.promoPriceUSD || 18) * promoMultiplier;
+
+                      return (
+                        <button
+                          key={cur}
+                          type="button"
+                          onClick={() => setSelectedCurrency(cur)}
+                          className={`py-3 rounded-[16px] text-xs font-bold transition-colors ${
+                            selectedCurrency === cur
+                              ? 'bg-teal-600 text-white'
+                              : 'bg-teal-50 text-teal-900 hover:bg-teal-100'
+                          }`}
+                        >
+                          {cur}{' '}
+                          {cur === 'XAF'
+                            ? settings.promoConfig?.isActive
+                              ? `(${promoXAF})`
+                              : `(${origXAF})`
+                            : cur === 'NGN'
+                            ? settings.promoConfig?.isActive
+                              ? `(${promoNGN})`
+                              : `(${origNGN})`
+                            : settings.promoConfig?.isActive
+                            ? `($${promoUSD})`
+                            : `($${origUSD})`}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 

@@ -47,13 +47,21 @@ export const PaymentConfirmation: React.FC = () => {
 
   const handleSubmitClaim = async (e: React.FormEvent) => {
     e.preventDefault();
+    const isPromoActive = settings.promoConfig?.isActive;
+    const expected =
+      currency === 'XAF'
+        ? (isPromoActive ? settings.promoConfig?.promoPriceXAF || 10000 : 30000)
+        : currency === 'NGN'
+        ? (isPromoActive ? settings.promoConfig?.promoPriceNGN || 25000 : 75000)
+        : (isPromoActive ? settings.promoConfig?.promoPriceUSD || 18 : 50);
+
     await submitPaymentClaim({
       studentId: cachedStudent?.id || 'demo_student_id',
       studentIdCode,
       studentName,
       payerPhoneOrName: payerPhone || studentName,
       currency,
-      amountExpected: currency === 'XAF' ? 30000 : currency === 'NGN' ? 75000 : 50,
+      amountExpected: expected,
       transactionIdHint: txHint,
     });
     setIsSubmitted(true);
@@ -194,7 +202,18 @@ export const PaymentConfirmation: React.FC = () => {
                                   : 'bg-teal-50 text-teal-900 hover:bg-teal-100'
                               }`}
                             >
-                              {c} {c === 'XAF' ? '(30,000)' : c === 'NGN' ? '(75,000)' : '($50)'}
+                              {c}{' '}
+                              {c === 'XAF'
+                                ? settings.promoConfig?.isActive
+                                  ? `(${settings.promoConfig.promoPriceXAF?.toLocaleString() || '10,000'})`
+                                  : '(30,000)'
+                                : c === 'NGN'
+                                ? settings.promoConfig?.isActive
+                                  ? `(${settings.promoConfig.promoPriceNGN?.toLocaleString() || '25,000'})`
+                                  : '(75,000)'
+                                : settings.promoConfig?.isActive
+                                ? `($${settings.promoConfig.promoPriceUSD || 18})`
+                                : '($50)'}
                             </button>
                           ))}
                         </div>

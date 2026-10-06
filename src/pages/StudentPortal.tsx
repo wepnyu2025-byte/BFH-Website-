@@ -183,6 +183,19 @@ export const StudentPortal: React.FC = () => {
   const [secretAdminCodeInput, setSecretAdminCodeInput] = useState('');
   const [adminModalError, setAdminModalError] = useState<string | null>(null);
 
+  // Read URL search params on mount (for seamless redirect from Selar Redeem page)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const codeParam = params.get('access_code') || params.get('code');
+      const idParam = params.get('student_id') || params.get('id');
+      const nameParam = params.get('name');
+      if (codeParam) setLoginAccessCode(codeParam.trim().toUpperCase());
+      if (idParam) setLoginStudentId(idParam.trim().toUpperCase());
+      if (nameParam) setLoginStudentName(nameParam.trim());
+    } catch {}
+  }, []);
+
   // Course & Curriculum data
   const [settings, setSettings] = useState<PortalSettings>(DEFAULT_SETTINGS);
   const [program, setProgram] = useState(() => {
@@ -810,6 +823,15 @@ export const StudentPortal: React.FC = () => {
       existingStudent?.studentId ||
       `BFH-ECD-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
 
+    // Verify account is not suspended or blocked
+    if (existingStudent?.isBlocked || existingStudent?.status === 'SUSPENDED') {
+      setLoginError(
+        existingStudent.blockReason ||
+        'Account Suspended: This student account has been blocked due to violation of our terms and policies (unverified payment). Please contact administration.'
+      );
+      return;
+    }
+
     // If an access code was provided, validate and redeem it
     if (cleanCode) {
       const res = await redeemAccessCode(
@@ -917,11 +939,26 @@ export const StudentPortal: React.FC = () => {
                 required
                 value={loginStudentName}
                 onChange={(e) => setLoginStudentName(e.target.value)}
-                placeholder=""
+                placeholder="e.g. Marie Claire Fotso"
                 className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm text-teal-950 outline-none"
               />
             </div>
 
+            {/* 1. Paste your access Code comes BEFORE input student ID field */}
+            <div>
+              <label className="block text-xs font-semibold text-teal-900 mb-1.5">
+                Paste your access Code
+              </label>
+              <input
+                type="text"
+                value={loginAccessCode}
+                onChange={(e) => setLoginAccessCode(e.target.value.toUpperCase())}
+                placeholder="paste access code here"
+                className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm font-mono text-teal-950 outline-none"
+              />
+            </div>
+
+            {/* 2. Official Student ID field */}
             <div>
               <label className="block text-xs font-semibold text-teal-900 mb-1.5">
                 Official student ID
@@ -930,20 +967,7 @@ export const StudentPortal: React.FC = () => {
                 type="text"
                 value={loginStudentId}
                 onChange={(e) => setLoginStudentId(e.target.value.toUpperCase())}
-                placeholder=""
-                className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm font-mono text-teal-950 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-teal-900 mb-1.5">
-                Input access code
-              </label>
-              <input
-                type="text"
-                value={loginAccessCode}
-                onChange={(e) => setLoginAccessCode(e.target.value.toUpperCase())}
-                placeholder="Input access code"
+                placeholder="input your student ID here"
                 className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm font-mono text-teal-950 outline-none"
               />
             </div>

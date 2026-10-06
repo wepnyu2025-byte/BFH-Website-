@@ -556,9 +556,9 @@ export const CERTIFICATIONS_CONTENT = {
     },
     {
       id: 'cif-certification',
-      title: 'CIF — Complete Integrated Family-care Certification',
-      subtitle: 'A comprehensive certification combining all five Baby First Health programs.',
-      badge: 'Flagship All-In-One Program',
+      title: 'BCCP — Baby First Certified Childcare Professional',
+      subtitle:
+        'A comprehensive professional credential covering child development, health, safety, nutrition, psychology and childcare.',
       isFlagship: true,
       topics: [
         'Professional Childcare & Safety',

@@ -4,6 +4,10 @@ import { MODULE_3_COGNITIVE_DEVELOPMENT } from './module3Data';
 import { MODULE_4_LANGUAGE_COMMUNICATION } from './module4Data';
 import { MODULE_5_SOCIAL_EMOTIONAL } from './module5Data';
 import { MODULE_6_DEVELOPMENTAL_MILESTONES } from './module6Data';
+import { MODULE_7_PLAY_EARLY_LEARNING } from './module7Data';
+import { MODULE_8_SUPPORTIVE_ENVIRONMENT } from './module8Data';
+import { MODULE_9_SUPPORTING_HEALTHY_DEVELOPMENT } from './module9Data';
+import { MODULE_10_RECOGNIZING_DEVELOPMENTAL_CONCERNS } from './module10Data';
 
 export const DEFAULT_PROGRAM: ProgramData = {
   id: 'ecd-cert',
@@ -14,9 +18,9 @@ export const DEFAULT_PROGRAM: ProgramData = {
   bannerUrl: '/banners/ecd-banner.jpg',
   description:
     'Comprehensive evidence-based clinical and developmental training program covering early childhood neuro-development, infant milestones, serve-and-return communication, and supportive caregiving for parents and educators.',
-  priceXAF: 30000,
-  priceNGN: 75000,
-  priceUSD: 50,
+  priceXAF: 10000,
+  priceNGN: 25000,
+  priceUSD: 18,
   passingScore: 70,
   maxQuizAttempts: 3,
   isActive: true,
@@ -684,6 +688,10 @@ Complete the comprehensive assessment below to demonstrate your mastery of Modul
   MODULE_4_LANGUAGE_COMMUNICATION,
   MODULE_5_SOCIAL_EMOTIONAL,
   MODULE_6_DEVELOPMENTAL_MILESTONES,
+  MODULE_7_PLAY_EARLY_LEARNING,
+  MODULE_8_SUPPORTIVE_ENVIRONMENT,
+  MODULE_9_SUPPORTING_HEALTHY_DEVELOPMENT,
+  MODULE_10_RECOGNIZING_DEVELOPMENTAL_CONCERNS,
 ];
 
 export const DEFAULT_SETTINGS: PortalSettings = {
@@ -691,9 +699,10 @@ export const DEFAULT_SETTINGS: PortalSettings = {
   connectPayeLinkXAF: 'https://connectpaye.com/pay/bfh-ecd-xaf',
   connectPayeLinkNGN: 'https://connectpaye.com/pay/bfh-ecd-ngn',
   connectPayeLinkUSD: 'https://connectpaye.com/pay/bfh-ecd-usd',
-  selarProductLinkXAF: 'https://selar.co',
-  selarProductLinkNGN: 'https://selar.co',
-  selarProductLinkUSD: 'https://selar.co',
+  selarProductLinkXAF: 'https://selar.com/71o111a2m1',
+  selarProductLinkNGN: 'https://selar.com/71o111a2m1',
+  selarProductLinkUSD: 'https://selar.com/71o111a2m1',
+  selarBccpLink: 'https://selar.com/9a79qe4a1i',
   ecdCourseBannerUrl: '/banners/ecd-banner.jpg',
   businessWhatsApp: '+237671752496',
   allowedVideoHosts: ['youtube.com', 'youtu.be', 'vimeo.com', 'drive.google.com'],
@@ -715,4 +724,17 @@ Any attempt to claim fraudulent chargebacks after receiving course access will r
 
 4. ADMINISTRATIVE VERIFICATION WINDOW
 Payments made through ConnectPaye or Selar are validated against transaction and access code records. Verification typically takes between 30 minutes to 1 hour during standard hours (8:00 AM - 8:00 PM WAT).`,
+  promoConfig: {
+    isActive: true,
+    badgeText: 'LIMITED TIME PROMO',
+    originalPriceXAF: 30000,
+    promoPriceXAF: 10000,
+    originalPriceNGN: 75000,
+    promoPriceNGN: 25000,
+    originalPriceUSD: 50,
+    promoPriceUSD: 18,
+    durationValue: 2,
+    durationUnit: 'weeks',
+    expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+  },
 };

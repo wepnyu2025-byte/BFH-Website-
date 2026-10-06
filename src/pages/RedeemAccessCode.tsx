@@ -1,70 +1,82 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link, useNavigate } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import {
   KeyRound,
   CheckCircle2,
   AlertCircle,
   ArrowRight,
-  BookOpen,
-  Sparkles,
-  HelpCircle,
   Copy,
-  Check
+  Check,
+  ShieldCheck,
+  HelpCircle,
 } from 'lucide-react';
 import { Container } from '../components/Container';
 import { Section } from '../components/Section';
 import { Headline } from '../components/Headline';
-import { redeemAccessCode } from '../services/portalService';
+import { retrievePairedAccessCode } from '../services/portalService';
 import { DEFAULT_PROGRAM } from '../data/portalDefaults';
 
 export const RedeemAccessCode: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
 
-  const codeParam = searchParams.get('code') || searchParams.get('access_code') || '';
-  const studentIdParam = searchParams.get('student_id') || '';
+  const studentIdParam = searchParams.get('student_id') || searchParams.get('id') || '';
+  const emailParam = searchParams.get('email') || '';
+  const nameParam = searchParams.get('name') || '';
 
-  const cachedStudentStr = localStorage.getItem('bfh_current_student');
+  const cachedStudentStr = typeof window !== 'undefined' ? localStorage.getItem('bfh_current_student') : null;
   const cachedStudent = cachedStudentStr ? JSON.parse(cachedStudentStr) : null;
 
-  const [accessCode, setAccessCode] = useState(codeParam);
   const [studentId, setStudentId] = useState(studentIdParam || cachedStudent?.studentId || '');
-  const [fullName, setFullName] = useState(cachedStudent?.fullName || '');
-  const [isRedeeming, setIsRedeeming] = useState(false);
+  const [email, setEmail] = useState(emailParam || cachedStudent?.email || '');
+  const [fullName, setFullName] = useState(nameParam || cachedStudent?.fullName || '');
+
+  const [isRetrieving, setIsRetrieving] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [activatedProgram, setActivatedProgram] = useState(DEFAULT_PROGRAM.title);
+  const [retrievedAccessCode, setRetrievedAccessCode] = useState<string | null>(null);
+  const [hasCopiedCode, setHasCopiedCode] = useState(false);
 
   useEffect(() => {
-    if (codeParam) {
-      setAccessCode(codeParam.toUpperCase());
-    }
-  }, [codeParam]);
+    if (studentIdParam) setStudentId(studentIdParam.toUpperCase());
+    if (emailParam) setEmail(emailParam);
+    if (nameParam) setFullName(nameParam);
+  }, [studentIdParam, emailParam, nameParam]);
 
-  const handleRedeemSubmit = async (e: React.FormEvent) => {
+  const handleRetrieveCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!accessCode.trim() || !studentId.trim() || !fullName.trim()) {
-      setErrorMsg('Please complete all fields (Access Code, Student ID, and Full Name).');
+    if (!studentId.trim() || !email.trim() || !fullName.trim()) {
+      setErrorMsg('Please enter your full name, official Student ID, and registered email address.');
       return;
     }
 
-    setIsRedeeming(true);
+    setIsRetrieving(true);
     setErrorMsg(null);
 
-    const res = await redeemAccessCode(
-      accessCode.trim(),
-      cachedStudent?.id || `student_${Date.now()}`,
-      studentId.trim(),
-      fullName.trim()
-    );
+    const res = await retrievePairedAccessCode(studentId.trim(), email.trim(), fullName.trim());
 
-    setIsRedeeming(false);
+    setIsRetrieving(false);
 
-    if (res.success) {
-      setIsSuccess(true);
-      if (res.programTitle) setActivatedProgram(res.programTitle);
+    if (res.success && res.accessCode) {
+      setRetrievedAccessCode(res.accessCode);
+      // Cache student profile in local storage
+      if (res.student) {
+        try {
+          localStorage.setItem('bfh_current_student', JSON.stringify(res.student));
+          localStorage.setItem(`bfh_student_${res.student.studentId}`, JSON.stringify(res.student));
+        } catch {}
+      }
     } else {
-      setErrorMsg(res.error || 'Failed to redeem access code. Please check your credentials.');
+      setErrorMsg(
+        res.error ||
+          'No matching student record found. Please verify your Student ID and Email, or contact admissions on WhatsApp.'
+      );
+    }
+  };
+
+  const handleCopyCode = () => {
+    if (retrievedAccessCode) {
+      navigator.clipboard.writeText(retrievedAccessCode);
+      setHasCopiedCode(true);
+      setTimeout(() => setHasCopiedCode(false), 2500);
     }
   };
 
@@ -77,10 +89,10 @@ export const RedeemAccessCode: React.FC = () => {
               Selar Product Access Portal
             </span>
             <Headline as="h1" align="auto">
-              {"Redeem Your Access Code & {{Activate Course}}"}
+              {"Retrieve Your Access Code & {{Enter Portal}}"}
             </Headline>
             <p className="font-body text-base md:text-lg text-teal-950/80 leading-relaxed [text-wrap:pretty]">
-              Thank you for purchasing via Selar. Enter the access code from your digital delivery receipt below to instantly unlock your learning dashboard.
+              Thank you for purchasing via Selar. Input your registered details below to automatically receive your paired access code and unlock your student dashboard.
             </p>
           </div>
         </Container>
@@ -89,7 +101,7 @@ export const RedeemAccessCode: React.FC = () => {
       <Section bg="teal-50" className="pt-[85px] pb-[85px]">
         <Container>
           <div className="max-w-[580px] mx-auto">
-            {isSuccess ? (
+            {retrievedAccessCode ? (
               <div className="bg-white rounded-[32px] p-8 sm:p-12 text-center space-y-6">
                 <div className="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center mx-auto text-teal-700">
                   <CheckCircle2 className="w-10 h-10" />
@@ -97,27 +109,70 @@ export const RedeemAccessCode: React.FC = () => {
 
                 <div className="space-y-2">
                   <span className="px-3.5 py-1 rounded-full bg-teal-100 text-teal-900 font-bold text-xs uppercase tracking-wider inline-block">
-                    Enrollment Active
+                    Access Code Ready
                   </span>
                   <h2 className="font-body font-bold text-teal-900 text-2xl sm:text-3xl">
-                    Welcome to Baby First Health!
+                    Here is your Access Code
                   </h2>
                   <p className="font-body text-sm text-teal-950/80 max-w-md mx-auto leading-relaxed">
-                    Your access code has been verified and registered to <strong>{fullName}</strong> ({studentId}). You now have full access to the curriculum, video lectures, checkpoint quizzes, and Pedia AI coach.
+                    This single-use access code is paired to <strong>{fullName}</strong> ({studentId}). Copy it below to enter your student portal.
                   </p>
                 </div>
 
-                <div className="pt-4 space-y-3">
+                {/* Prominent Access Code Display Box */}
+                <div className="bg-teal-900 text-white rounded-2xl p-5 space-y-3 text-center">
+                  <span className="text-[11px] uppercase tracking-wider text-teal-300 font-semibold block">
+                    Your Paired Course Access Code
+                  </span>
+                  <div className="font-mono text-2xl sm:text-3xl font-extrabold tracking-wider text-white select-all">
+                    {retrievedAccessCode}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleCopyCode}
+                    className="mt-2 px-5 py-2.5 rounded-full bg-white text-teal-950 hover:bg-teal-50 text-xs font-bold inline-flex items-center gap-2 transition-colors cursor-pointer"
+                  >
+                    {hasCopiedCode ? (
+                      <>
+                        <Check className="w-4 h-4 text-emerald-600" />
+                        <span className="text-emerald-700">Access Code Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-4 h-4 text-teal-800" />
+                        <span>Copy Access Code</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Helpful Instruction Box */}
+                <div className="p-4 rounded-2xl bg-teal-50/80 text-left space-y-1.5 border border-teal-100/60 text-xs text-teal-950/80">
+                  <div className="flex items-center gap-1.5 font-bold text-teal-900">
+                    <ShieldCheck className="w-4 h-4 text-teal-600" />
+                    <span>Next Step: Student Portal Login</span>
+                  </div>
+                  <p className="leading-relaxed">
+                    When you tap the button below, the Student Portal opens:
+                  </p>
+                  <ul className="list-disc pl-4 space-y-1">
+                    <li>Paste your access code in the <strong>paste access code here</strong> field</li>
+                    <li>Input your Student ID in the <strong>input your student ID here</strong> field</li>
+                  </ul>
+                </div>
+
+                <div className="pt-2 space-y-3">
                   <Link
-                    to="/portal"
+                    to={`/portal?access_code=${retrievedAccessCode}&student_id=${studentId}&name=${encodeURIComponent(fullName)}`}
                     className="w-full inline-flex items-center justify-center gap-2 py-4 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-body font-bold text-sm transition-all duration-300"
                   >
-                    <span>Enter Student Learning Portal</span>
+                    <span>Go to Student portal</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
 
                   <p className="text-xs text-teal-950/60">
-                    You can return to your courses anytime via the top navigation bar.
+                    Your credentials have been automatically loaded into the portal login fields.
                   </p>
                 </div>
               </div>
@@ -125,49 +180,21 @@ export const RedeemAccessCode: React.FC = () => {
               <div className="bg-white rounded-[32px] p-6 sm:p-10 space-y-6">
                 <div className="space-y-1">
                   <h2 className="font-body font-semibold text-teal-900 text-xl">
-                    Enter Selar Receipt Credentials
+                    Retrieve Your Access Code
                   </h2>
                   <p className="font-body text-xs text-teal-950/70">
-                    Each access code is single-use and permanently binds to your student record.
+                    Enter the exact Name, Student ID, and Email used on your registration form.
                   </p>
                 </div>
 
                 {errorMsg && (
                   <div className="p-4 rounded-[20px] bg-red-50 text-red-950 text-xs flex items-start gap-2.5">
                     <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
-                    <span>{errorMsg}</span>
+                    <span className="leading-relaxed">{errorMsg}</span>
                   </div>
                 )}
 
-                <form onSubmit={handleRedeemSubmit} className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-teal-900 mb-1.5">
-                      Access Code from Selar Receipt *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={accessCode}
-                      onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
-                      placeholder="e.g. BFH-ECD-7892-4105"
-                      className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm font-mono font-bold text-teal-950 uppercase outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-teal-900 mb-1.5">
-                      Your Official Student ID *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={studentId}
-                      onChange={(e) => setStudentId(e.target.value.toUpperCase())}
-                      placeholder="e.g. BFH-ECD-XXXXXXXX"
-                      className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm font-mono text-teal-950 outline-none"
-                    />
-                  </div>
-
+                <form onSubmit={handleRetrieveCode} className="space-y-4">
                   <div>
                     <label className="block text-xs font-semibold text-teal-900 mb-1.5">
                       Full Legal Name *
@@ -182,12 +209,40 @@ export const RedeemAccessCode: React.FC = () => {
                     />
                   </div>
 
+                  <div>
+                    <label className="block text-xs font-semibold text-teal-900 mb-1.5">
+                      Official Student ID *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={studentId}
+                      onChange={(e) => setStudentId(e.target.value.toUpperCase())}
+                      placeholder="e.g. BFH-ECD-XXXXXXXX"
+                      className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm font-mono text-teal-950 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-teal-900 mb-1.5">
+                      Registered Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="e.g. marie@example.com"
+                      className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm text-teal-950 outline-none"
+                    />
+                  </div>
+
                   <button
                     type="submit"
-                    disabled={isRedeeming}
-                    className="w-full py-4 rounded-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-body font-bold text-sm transition-all duration-300 mt-2"
+                    disabled={isRetrieving}
+                    className="w-full py-4 rounded-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-body font-bold text-sm transition-all duration-300 mt-2 cursor-pointer"
                   >
-                    {isRedeeming ? 'Validating Access Code...' : 'Activate Course Access'}
+                    {isRetrieving ? 'Verifying Student Record...' : 'Retrieve Access Code'}
                   </button>
                 </form>
 
@@ -196,17 +251,17 @@ export const RedeemAccessCode: React.FC = () => {
                   <div className="p-4 rounded-[20px] bg-teal-50/80 space-y-2 text-xs text-teal-950/80">
                     <div className="flex items-center gap-1.5 text-teal-900 font-semibold">
                       <HelpCircle className="w-4 h-4 text-teal-600" />
-                      <span>Where is my Access Code?</span>
+                      <span>How this works</span>
                     </div>
                     <p className="leading-relaxed">
-                      Your access code is located inside the digital PDF or receipt file downloaded directly from Selar upon completing payment.
+                      When you completed your registration, your Student ID was automatically paired with an Access Code. Once your Selar payment is processed, entering your details above delivers your code instantly.
                     </p>
                   </div>
 
                   <div className="text-center pt-2">
                     <Link
                       to="/apply"
-                      className="text-xs text-teal-700 hover:text-teal-900 font-semibold"
+                      className="text-xs text-teal-700 hover:text-teal-900 font-semibold underline underline-offset-2"
                     >
                       Haven't registered yet? Register here to get your Student ID
                     </Link>

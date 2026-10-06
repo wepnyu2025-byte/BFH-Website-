@@ -37,7 +37,10 @@ import {
   ChevronUp,
   ArrowLeft,
   Coins,
-  Edit3
+  Edit3,
+  Ban,
+  Tag,
+  ShieldAlert
 } from 'lucide-react';
 import { Container } from '../components/Container';
 import { Section } from '../components/Section';
@@ -55,11 +58,13 @@ import {
   getStoredOrInitialCodes,
   generateSecureStudentId,
   saveAdminGeneratedStudent,
-  deleteStudentProfileRecord
+  deleteStudentProfileRecord,
+  toggleBlockStudent
 } from '../services/portalService';
 import {
   PaymentClaimData,
   PortalSettings,
+  PromoConfig,
   CurrencyCode,
   AccessCode,
   CourseModule,
@@ -83,7 +88,7 @@ export interface AdminCourseItem {
 
 export const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'accessCodes' | 'courses' | 'ledger' | 'broadcast' | 'claims' | 'settings'>('accessCodes');
+  const [activeTab, setActiveTab] = useState<'accessCodes' | 'courses' | 'promo' | 'ledger' | 'broadcast' | 'claims' | 'settings'>('accessCodes');
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [claims, setClaims] = useState<PaymentClaimData[]>([]);
   const [accessCodes, setAccessCodes] = useState<AccessCode[]>([]);
@@ -92,6 +97,31 @@ export const AdminDashboard: React.FC = () => {
   const [settings, setSettings] = useState<PortalSettings>(DEFAULT_SETTINGS);
   const [searchQuery, setSearchQuery] = useState('');
   const [codeFilter, setCodeFilter] = useState<'ALL' | 'AVAILABLE' | 'REDEEMED'>('ALL');
+
+  // Promo Setup State
+  const [promoForm, setPromoForm] = useState<PromoConfig>(() => {
+    try {
+      const localPromo = localStorage.getItem('bfh_promo_config');
+      if (localPromo) return JSON.parse(localPromo);
+    } catch {}
+    return (
+      DEFAULT_SETTINGS.promoConfig || {
+        isActive: true,
+        badgeText: 'LIMITED TIME PROMO',
+        originalPriceXAF: 30000,
+        promoPriceXAF: 10000,
+        originalPriceNGN: 75000,
+        promoPriceNGN: 25000,
+        originalPriceUSD: 50,
+        promoPriceUSD: 18,
+        durationValue: 2,
+        durationUnit: 'weeks',
+        expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+      }
+    );
+  });
+  const [isSavingPromo, setIsSavingPromo] = useState(false);
+  const [promoSavedSuccess, setPromoSavedSuccess] = useState(false);
 
   // Admin Authentication State
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => {
@@ -1068,6 +1098,82 @@ export const AdminDashboard: React.FC = () => {
     setDeleteConfirmInput('');
   };
 
+  // Simple 1-click Block/Suspend or Unblock Student Account
+  const handleToggleBlockStudent = async (targetStudent: StudentProfile) => {
+    const isCurrentlyBlocked = targetStudent.isBlocked || targetStudent.status === 'SUSPENDED';
+    const newBlockedState = !isCurrentlyBlocked;
+    const reason = newBlockedState
+      ? 'Violation of our terms and policies (unverified Selar payment record)'
+      : '';
+
+    // Immediately update local UI state
+    setStudents((prev) =>
+      prev.map((s) =>
+        s.id === targetStudent.id || s.studentId === targetStudent.studentId
+          ? {
+              ...s,
+              isBlocked: newBlockedState,
+              status: newBlockedState ? 'SUSPENDED' : 'ACTIVE',
+              blockReason: reason,
+            }
+          : s
+      )
+    );
+
+    await toggleBlockStudent(targetStudent.id || targetStudent.studentId, newBlockedState, reason);
+  };
+
+  // Helpers to calculate expiry date from duration value and unit
+  const calculatePromoExpiry = (val: number, unit: 'days' | 'weeks' | 'months'): string => {
+    const d = new Date();
+    if (unit === 'days') d.setDate(d.getDate() + val);
+    else if (unit === 'weeks') d.setDate(d.getDate() + val * 7);
+    else if (unit === 'months') d.setMonth(d.getMonth() + val);
+    return d.toISOString();
+  };
+
+  const formatCalculatedExpiry = (val: number, unit: 'days' | 'weeks' | 'months'): string => {
+    const d = new Date();
+    if (unit === 'days') d.setDate(d.getDate() + val);
+    else if (unit === 'weeks') d.setDate(d.getDate() + val * 7);
+    else if (unit === 'months') d.setMonth(d.getMonth() + val);
+    return d.toLocaleDateString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
+  // Admin: Save Promo Setup
+  const handleSavePromoSetup = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setIsSavingPromo(true);
+    setPromoSavedSuccess(false);
+
+    const expiresAt = calculatePromoExpiry(
+      promoForm.durationValue || 14,
+      promoForm.durationUnit || 'days'
+    );
+
+    const updatedConfig: PromoConfig = {
+      ...promoForm,
+      expiresAt,
+    };
+
+    try {
+      await updatePortalSettings({ promoConfig: updatedConfig });
+      setSettings((prev) => ({ ...prev, promoConfig: updatedConfig }));
+      setPromoForm(updatedConfig);
+      setPromoSavedSuccess(true);
+      setTimeout(() => setPromoSavedSuccess(false), 3500);
+    } catch (err) {
+      console.error('Save promo setup error:', err);
+    } finally {
+      setIsSavingPromo(false);
+    }
+  };
+
   const handleOpenApprove = (claim: PaymentClaimData) => {
     setSelectedClaim(claim);
     setTxIdInput(claim.transactionIdHint || '');
@@ -1240,6 +1346,21 @@ export const AdminDashboard: React.FC = () => {
 
               <button
                 type="button"
+                onClick={() => setActiveTab('promo')}
+                className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors cursor-pointer inline-flex items-center gap-1.5 ${
+                  activeTab === 'promo'
+                    ? 'bg-orange-500 text-white'
+                    : 'bg-teal-800 text-teal-100 hover:bg-teal-700'
+                }`}
+              >
+                <span>Promo Setup</span>
+                {promoForm.isActive && (
+                  <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
+                )}
+              </button>
+
+              <button
+                type="button"
                 onClick={() => setActiveTab('ledger')}
                 className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors cursor-pointer ${
                   activeTab === 'ledger'
@@ -1321,6 +1442,17 @@ export const AdminDashboard: React.FC = () => {
                 className="w-full py-4 text-left text-sm font-semibold text-white hover:text-orange-400 transition-colors block cursor-pointer"
               >
                 Courses
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('promo');
+                  setIsMobileNavOpen(false);
+                }}
+                className="w-full py-4 text-left text-sm font-semibold text-white hover:text-orange-400 transition-colors block cursor-pointer"
+              >
+                Promo Setup
               </button>
 
               <button
@@ -2031,16 +2163,50 @@ export const AdminDashboard: React.FC = () => {
                               </div>
 
                               <div className="min-w-0">
-                                <h3 className="font-body font-bold text-teal-900 text-sm truncate">
-                                  {st.fullName}
-                                </h3>
-                                <span className="text-[11px] font-normal text-teal-950/60 block truncate">
-                                  {st.studentId}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                  <h3 className="font-body font-bold text-teal-900 text-sm truncate">
+                                    {st.fullName}
+                                  </h3>
+                                  {(st.isBlocked || st.status === 'SUSPENDED') && (
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700">
+                                      Suspended
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-1.5 text-[11px] font-normal text-teal-950/60 truncate">
+                                  <span className="font-mono">{st.studentId}</span>
+                                  {st.email && <span className="truncate">• {st.email}</span>}
+                                </div>
                               </div>
                             </div>
 
                             <div className="flex items-center gap-1.5 shrink-0">
+                              {/* Simple 1-click icon for Block/Suspend */}
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleToggleBlockStudent(st);
+                                }}
+                                className={`p-2 rounded-full transition-colors cursor-pointer ${
+                                  st.isBlocked || st.status === 'SUSPENDED'
+                                    ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                                    : 'hover:bg-red-50 text-teal-700 hover:text-red-600'
+                                }`}
+                                title={
+                                  st.isBlocked || st.status === 'SUSPENDED'
+                                    ? 'Account Blocked / Suspended (Click to unblock)'
+                                    : 'Block / Suspend student account (Violation of terms: unverified Selar payment)'
+                                }
+                                aria-label={
+                                  st.isBlocked || st.status === 'SUSPENDED'
+                                    ? `Unblock ${st.fullName}`
+                                    : `Block ${st.fullName}`
+                                }
+                              >
+                                <Ban className="w-4 h-4" />
+                              </button>
+
                               <button
                                 type="button"
                                 onClick={(e) => {
@@ -2068,6 +2234,40 @@ export const AdminDashboard: React.FC = () => {
                               <div className="flex items-center justify-between">
                                 <span className="text-teal-950/70">Student ID:</span>
                                 <span className="font-mono font-semibold text-teal-900">{st.studentId}</span>
+                              </div>
+
+                              <div className="flex items-center justify-between">
+                                <span className="text-teal-950/70">Registered Email:</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-semibold text-teal-900">{st.email || 'N/A'}</span>
+                                  {st.email && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleCopySingleCode(st.email)}
+                                      className="p-1 rounded text-teal-700 hover:text-teal-950 transition-colors"
+                                      title="Copy email to cross-reference Selar records"
+                                    >
+                                      {copiedCodeId === st.email ? (
+                                        <Check className="w-3.5 h-3.5 text-orange-500" />
+                                      ) : (
+                                        <Copy className="w-3.5 h-3.5" />
+                                      )}
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="flex items-center justify-between">
+                                <span className="text-teal-950/70">Account Standing:</span>
+                                <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
+                                  st.isBlocked || st.status === 'SUSPENDED'
+                                    ? 'bg-red-100 text-red-800'
+                                    : 'bg-emerald-100 text-emerald-800'
+                                }`}>
+                                  {st.isBlocked || st.status === 'SUSPENDED'
+                                    ? 'Suspended (Unverified Selar Payment)'
+                                    : 'Active • Good Standing'}
+                                </span>
                               </div>
 
                               <div className="flex items-center justify-between">
@@ -2857,6 +3057,385 @@ export const AdminDashboard: React.FC = () => {
             </div>
           )}
 
+          {/* TAB: PROMO SETUP */}
+          {activeTab === 'promo' && (
+            <div className="space-y-6">
+              <div className="bg-white rounded-[32px] p-6 sm:p-10 space-y-8">
+                {/* Header */}
+                <div className="space-y-2">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <span className="px-3.5 py-1 rounded-full bg-teal-50 text-teal-900 font-body text-xs font-semibold inline-block">
+                      Promotional Campaigns
+                    </span>
+                    {promoForm.isActive && (
+                      <span className="px-3 py-0.5 rounded-full bg-orange-100 text-orange-900 font-bold text-xs uppercase tracking-wider">
+                        Active on Website
+                      </span>
+                    )}
+                  </div>
+                  <h2 className="font-body font-bold text-teal-900 text-2xl sm:text-3xl">
+                    Promo Setup & Pricing
+                  </h2>
+                  <p className="font-body text-xs sm:text-sm text-teal-950/75 max-w-2xl leading-relaxed">
+                    Set promotional course prices, configure promo badge labels, and schedule the active duration in days, weeks, or months. When active, original prices are slashed and promo prices become the main display across the site.
+                  </p>
+                </div>
+
+                {promoSavedSuccess && (
+                  <div className="p-4 rounded-[20px] bg-teal-50 text-teal-900 text-xs sm:text-sm font-semibold flex items-center gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-teal-700 shrink-0" />
+                    <span>Promo setup successfully saved and updated across all public pages!</span>
+                  </div>
+                )}
+
+                <form onSubmit={handleSavePromoSetup} className="space-y-8">
+                  {/* Toggle: Promo Status */}
+                  <div className="p-5 rounded-[24px] bg-teal-50/70 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-body font-bold text-teal-900 text-base">
+                          Enable Promotional Pricing
+                        </h3>
+                        <p className="text-xs text-teal-950/70 mt-0.5">
+                          Turn on promotional badges, price slashes, and promotional pricing across course pages.
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPromoForm((prev) => ({ ...prev, isActive: !prev.isActive }))
+                        }
+                        className={`w-14 h-8 rounded-full transition-colors relative cursor-pointer ${
+                          promoForm.isActive ? 'bg-orange-500' : 'bg-teal-200'
+                        }`}
+                        aria-label="Toggle promotional pricing active status"
+                      >
+                        <div
+                          className={`w-6 h-6 rounded-full bg-white shadow-md absolute top-1 transition-transform ${
+                            promoForm.isActive ? 'right-1' : 'left-1'
+                          }`}
+                        />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 1. Badge Text & Duration */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Badge Text */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-teal-900 uppercase tracking-wider">
+                        Promo Badge Text
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={promoForm.badgeText}
+                        onChange={(e) =>
+                          setPromoForm((prev) => ({ ...prev, badgeText: e.target.value.toUpperCase() }))
+                        }
+                        placeholder="e.g. LIMITED TIME PROMO"
+                        className="w-full px-4 py-3 rounded-full bg-teal-50 text-sm font-bold text-teal-950 uppercase outline-none"
+                      />
+                      <span className="text-[11px] text-teal-950/60 block">
+                        Displayed in orange pill badge above course titles.
+                      </span>
+                    </div>
+
+                    {/* Active Duration */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-teal-900 uppercase tracking-wider">
+                        Promo Active Duration
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="number"
+                          min="1"
+                          required
+                          value={promoForm.durationValue || ''}
+                          onChange={(e) =>
+                            setPromoForm((prev) => ({
+                              ...prev,
+                              durationValue: Math.max(1, parseInt(e.target.value) || 1),
+                            }))
+                          }
+                          className="w-24 px-4 py-3 rounded-full bg-teal-50 text-sm font-bold text-teal-950 outline-none text-center"
+                        />
+                        <select
+                          value={promoForm.durationUnit || 'weeks'}
+                          onChange={(e) =>
+                            setPromoForm((prev) => ({
+                              ...prev,
+                              durationUnit: e.target.value as 'days' | 'weeks' | 'months',
+                            }))
+                          }
+                          className="flex-1 px-4 py-3 rounded-full bg-teal-50 text-sm font-semibold text-teal-950 outline-none cursor-pointer"
+                        >
+                          <option value="days">Days</option>
+                          <option value="weeks">Weeks</option>
+                          <option value="months">Months</option>
+                        </select>
+                      </div>
+
+                      {/* Quick Preset Buttons */}
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {[
+                          { label: '3 Days', val: 3, unit: 'days' as const },
+                          { label: '7 Days', val: 7, unit: 'days' as const },
+                          { label: '2 Weeks', val: 2, unit: 'weeks' as const },
+                          { label: '1 Month', val: 1, unit: 'months' as const },
+                          { label: '3 Months', val: 3, unit: 'months' as const },
+                        ].map((preset) => (
+                          <button
+                            key={preset.label}
+                            type="button"
+                            onClick={() =>
+                              setPromoForm((prev) => ({
+                                ...prev,
+                                durationValue: preset.val,
+                                durationUnit: preset.unit,
+                              }))
+                            }
+                            className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-colors cursor-pointer ${
+                              promoForm.durationValue === preset.val &&
+                              promoForm.durationUnit === preset.unit
+                                ? 'bg-teal-900 text-white'
+                                : 'bg-teal-50 text-teal-800 hover:bg-teal-100'
+                            }`}
+                          >
+                            {preset.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Expiration date notice */}
+                  <div className="p-4 rounded-2xl bg-teal-50/70 border border-teal-100/60 flex items-center justify-between text-xs text-teal-950">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-teal-700 shrink-0" />
+                      <span>
+                        Calculated Promotion Expiration: <strong>{formatCalculatedExpiry(promoForm.durationValue || 14, promoForm.durationUnit || 'days')}</strong>
+                      </span>
+                    </div>
+                    <span className="font-semibold text-teal-800">
+                      {promoForm.durationValue} {promoForm.durationUnit} total
+                    </span>
+                  </div>
+
+                  {/* 2. Promo Prices Section */}
+                  <div className="space-y-4 pt-2">
+                    <h3 className="font-body font-bold text-teal-900 text-lg">
+                      Currency Pricing Setup (Original Slashed & Promo Main)
+                    </h3>
+                    <p className="text-xs text-teal-950/70">
+                      Enter the regular original tuition (slashed out) and the promotional discounted tuition (main display price).
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                      {/* XAF / FCFA */}
+                      <div className="p-5 rounded-[24px] bg-teal-50/60 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-teal-900 text-sm">FCFA / XAF</span>
+                          <span className="text-[11px] font-medium text-teal-800 bg-teal-100/70 px-2 py-0.5 rounded-full">Cameroon & CEMAC</span>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="block text-[11px] font-semibold text-teal-900 uppercase">
+                            Original Price (Slashed)
+                          </label>
+                          <input
+                            type="number"
+                            required
+                            value={promoForm.originalPriceXAF || ''}
+                            onChange={(e) =>
+                              setPromoForm((prev) => ({
+                                ...prev,
+                                originalPriceXAF: parseInt(e.target.value) || 0,
+                              }))
+                            }
+                            placeholder="30000"
+                            className="w-full px-3.5 py-2.5 rounded-full bg-white text-sm font-semibold text-teal-950 outline-none"
+                          />
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="block text-[11px] font-bold text-orange-600 uppercase">
+                            Promo Price (Main Price)
+                          </label>
+                          <input
+                            type="number"
+                            required
+                            value={promoForm.promoPriceXAF || ''}
+                            onChange={(e) =>
+                              setPromoForm((prev) => ({
+                                ...prev,
+                                promoPriceXAF: parseInt(e.target.value) || 0,
+                              }))
+                            }
+                            placeholder="10000"
+                            className="w-full px-3.5 py-2.5 rounded-full bg-white text-sm font-bold text-orange-600 outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      {/* NGN */}
+                      <div className="p-5 rounded-[24px] bg-teal-50/60 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-teal-900 text-sm">₦ NGN</span>
+                          <span className="text-[11px] font-medium text-teal-800 bg-teal-100/70 px-2 py-0.5 rounded-full">Nigeria</span>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="block text-[11px] font-semibold text-teal-900 uppercase">
+                            Original Price (Slashed)
+                          </label>
+                          <input
+                            type="number"
+                            required
+                            value={promoForm.originalPriceNGN || ''}
+                            onChange={(e) =>
+                              setPromoForm((prev) => ({
+                                ...prev,
+                                originalPriceNGN: parseInt(e.target.value) || 0,
+                              }))
+                            }
+                            placeholder="75000"
+                            className="w-full px-3.5 py-2.5 rounded-full bg-white text-sm font-semibold text-teal-950 outline-none"
+                          />
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="block text-[11px] font-bold text-orange-600 uppercase">
+                            Promo Price (Main Price)
+                          </label>
+                          <input
+                            type="number"
+                            required
+                            value={promoForm.promoPriceNGN || ''}
+                            onChange={(e) =>
+                              setPromoForm((prev) => ({
+                                ...prev,
+                                promoPriceNGN: parseInt(e.target.value) || 0,
+                              }))
+                            }
+                            placeholder="25000"
+                            className="w-full px-3.5 py-2.5 rounded-full bg-white text-sm font-bold text-orange-600 outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      {/* USD */}
+                      <div className="p-5 rounded-[24px] bg-teal-50/60 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-teal-900 text-sm">$ USD</span>
+                          <span className="text-[11px] font-medium text-teal-800 bg-teal-100/70 px-2 py-0.5 rounded-full">International</span>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="block text-[11px] font-semibold text-teal-900 uppercase">
+                            Original Price (Slashed)
+                          </label>
+                          <input
+                            type="number"
+                            required
+                            value={promoForm.originalPriceUSD || ''}
+                            onChange={(e) =>
+                              setPromoForm((prev) => ({
+                                ...prev,
+                                originalPriceUSD: parseInt(e.target.value) || 0,
+                              }))
+                            }
+                            placeholder="50"
+                            className="w-full px-3.5 py-2.5 rounded-full bg-white text-sm font-semibold text-teal-950 outline-none"
+                          />
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="block text-[11px] font-bold text-orange-600 uppercase">
+                            Promo Price (Main Price)
+                          </label>
+                          <input
+                            type="number"
+                            required
+                            value={promoForm.promoPriceUSD || ''}
+                            onChange={(e) =>
+                              setPromoForm((prev) => ({
+                                ...prev,
+                                promoPriceUSD: parseInt(e.target.value) || 0,
+                              }))
+                            }
+                            placeholder="18"
+                            className="w-full px-3.5 py-2.5 rounded-full bg-white text-sm font-bold text-orange-600 outline-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3. Live Preview Card */}
+                  <div className="space-y-3 pt-2">
+                    <h3 className="font-body font-bold text-teal-900 text-sm uppercase tracking-wider">
+                      Live Preview of Public Course Card
+                    </h3>
+                    <div className="p-6 rounded-[28px] bg-teal-900 text-white space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="space-y-1.5">
+                          {promoForm.isActive && (
+                            <span className="inline-block px-3 py-1 rounded-full bg-orange-500 text-white font-body text-xs font-bold uppercase tracking-wider">
+                              {promoForm.badgeText || 'LIMITED TIME PROMO'}
+                            </span>
+                          )}
+                          <h4 className="font-headline font-bold text-white text-xl">
+                            Early Childhood Development Certificate
+                          </h4>
+                          <p className="text-teal-200 text-xs">
+                            Understand how children grow, learn and develop from birth to age five.
+                          </p>
+                        </div>
+
+                        {/* Price Display */}
+                        <div className="text-left sm:text-right shrink-0">
+                          {promoForm.isActive ? (
+                            <div className="space-y-0.5">
+                              <div className="flex items-baseline gap-2 sm:justify-end">
+                                <span className="line-through text-teal-300/70 text-sm font-normal">
+                                  {promoForm.originalPriceXAF?.toLocaleString()} FCFA
+                                </span>
+                                <span className="font-headline font-extrabold text-orange-400 text-3xl tracking-tight">
+                                  {promoForm.promoPriceXAF?.toLocaleString()} FCFA
+                                </span>
+                              </div>
+                              <span className="text-[11px] text-teal-200 block">
+                                Promo active • {promoForm.durationValue} {promoForm.durationUnit}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="font-headline font-extrabold text-white text-3xl">
+                              {promoForm.originalPriceXAF?.toLocaleString()} FCFA
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Save Button */}
+                  <div className="pt-2">
+                    <button
+                      type="submit"
+                      disabled={isSavingPromo}
+                      className="px-8 py-4 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-body font-bold text-sm transition-all duration-300 disabled:opacity-50 cursor-pointer inline-flex items-center gap-2"
+                    >
+                      <Save className="w-4 h-4" />
+                      <span>{isSavingPromo ? 'Saving Changes...' : 'Save & Publish Promo'}</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
           {/* TAB: EMAIL BROADCAST */}
           {activeTab === 'broadcast' && (
             <EmailBroadcastStudio />
@@ -2921,7 +3500,22 @@ export const AdminDashboard: React.FC = () => {
                     onChange={(e) =>
                       setSettings((prev) => ({ ...prev, selarProductLinkUSD: e.target.value }))
                     }
-                    placeholder="https://selar.co/..."
+                    placeholder="https://selar.com/..."
+                    className="w-full px-4 py-3 rounded-full bg-teal-50 text-xs sm:text-sm text-teal-950 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-teal-900 mb-1.5">
+                    Selar Dedicated Product Link for Flagship BCCP Program
+                  </label>
+                  <input
+                    type="url"
+                    value={settings.selarBccpLink || 'https://selar.com/9a79qe4a1i'}
+                    onChange={(e) =>
+                      setSettings((prev) => ({ ...prev, selarBccpLink: e.target.value }))
+                    }
+                    placeholder="https://selar.com/9a79qe4a1i"
                     className="w-full px-4 py-3 rounded-full bg-teal-50 text-xs sm:text-sm text-teal-950 outline-none"
                   />
                 </div>
